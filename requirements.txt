@@ -1,0 +1,6 @@
+wuy>=0.9.6
+vbuild
+lxml
+py3exiv2
+easygui
+
