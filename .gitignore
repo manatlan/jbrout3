@@ -1,7 +1,10 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 
-tempconf/
+tempconf/*.xml
+tempconf/*.json
+tempconf/*.conf
+
 SciTE.properties
 
 *.py[cod]
