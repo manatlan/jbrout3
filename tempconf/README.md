@@ -1,1 +1,1 @@
-Here is the jbrout conf (while this version is not stable)
+Here is the jbrout conf (til this version is not stable)

@@ -5,6 +5,7 @@
             @allclick="click($event,i,idx)"
             @dblclick="dblclick($event,i,idx)"
             :value="i"
+            :idx="idx"
             :class="$store.state.selected.indexOf(i.path)>=0?'selected':''"
         ></thumb>
 
@@ -20,6 +21,7 @@ export default {
     },
     created() {
         bus.$on("change-set-photos",()=>{
+            log("event change-set-photos")
             this.$el.scrollTop=0;
             this.list=[]
             this.feed(60)

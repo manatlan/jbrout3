@@ -1,6 +1,6 @@
 <template>
     <div class='click' @click="$emit('allclick',$event)" @click.middle="$emit('allclick',$event)" @dblclick="$emit('dblclick',$event)">
-        <img :src="'/thumb/'+value.path"/>
+        <img :src="'/thumb/'+value.path+'?idx='+idx"/>
 
         <div class="text" v-if="$store.state.displayType=='name'">{{value.path | basename}}</div>
         <div class="text" v-if="$store.state.displayType=='tags'">{{value.tags && value.tags.join(", ")}}</div>
@@ -11,13 +11,15 @@
 </template>
 <script>
 export default {
-    props:["value"],
+    props:["value","idx"],
 //~     computed: {
 //~         info: async function() {
 //~             return await wuy.getInfo(this.value.path)
 //~         }
 //~     },
-
+    // mounted() {
+    //     wuy.getInfo(this.idx,this.value.path)
+    // }
 }
 </script>
 <style scoped>

@@ -5,38 +5,10 @@ var bus=new Vue();
 
 var notImplemented=function() {alert("not implemented")}
 
-var photoNodes=function(ll) {
-    var PROPS=["comment","rating","resolution","tags"];
+wuy.on("set-info", (idx,path,info)=>mystore.dispatch("setInfo",{idx,path,info}) )
+var CACHE={}
 
-    var feed=function( orig ) {
-        wuy.getInfo(orig.path).then( more => {
-          for(var o of Object.keys(more)) {
-            Vue.set(orig,o,more[o])
-          }
-        })
-    }
-    //~ return ll.map( item => {
-        //~ return {
-          //~ path: item.path,
-          //~ date: item.date,
-          //~ tags: [],
-          //~ comment: "",
-          //~ resolution: "",
-          //~ rating: 0,
-        //~ }
-    //~ });
-    return ll.map( item => {
-        return new Proxy( item, {
-            tags: [],
-            get: function(target, propKey){
-                if(!target.hasOwnProperty(propKey)) {
-                    if( PROPS.includes(propKey)) feed(target)
-                }
-                return target[propKey];
-            },
-        })
-    });
-}
+var log=console.log;
 
 var mystore = new Vuex.Store({
   state: {
@@ -54,45 +26,66 @@ var mystore = new Vuex.Store({
   },
   // NO MUTATIONS (all in actions)
   actions: {
-    init: async function(context,obj) {
+    init: async function(context) {
+      log("*init")
       context.state.files=[];
       context.state.selected=[];
       context.state.folders=await wuy.getFolders();
       context.state.tags=await wuy.getTags();
     },
     selectAlbum: async function(context,{path,all}) {
+      log("*selectAlbum",path)
       var ll=await wuy.selectFromFolder(path,all)
       context.dispatch( "_feedFiles", ll )
     },
     selectTags: async function(context,tags) {
+      log("*selectTags",tags)
       var ll=await wuy.selectFromTags(tags)
       context.dispatch( "_feedFiles", ll )
     },
     selectBasket: async function(context) {
+      log("*selectBasket")
       var ll=await wuy.selectFromBasket()
       context.dispatch( "_feedFiles", ll )
     },
     _feedFiles: function(context,ll) {
+      log("*_feedFiles",ll.length)
       context.state.selected=[];
       ll.sort( (a,b)=>parseInt(a.date) - parseInt(b.date) );
       if(context.state.orderReverse) ll=ll.reverse();
 
-      context.state.files=photoNodes(ll);
+      //~ context.state.files=photoNodes(ll);
+
+      context.state.files=ll;
+      context.state.files.forEach( (item,idx)=>{
+        if (item.path in CACHE) context.dispatch( "setInfo", {idx:idx,path:item.path,info:CACHE[item.path]} )
+      })
+
       bus.$emit("change-set-photos")
     },
-
+    setInfo: async function(context,obj) {
+      // log("*setInfo",obj)
+      CACHE[obj.path]=obj.info
+      for(var k of Object.keys(obj.info)) {
+        Vue.set(context.state.files[obj.idx],k,obj.info[k])
+      }
+    },
+    
     // uiTop ...
     //==================================================
     addFolder: async function(context) {
+      log("*addFolder")
       var ok=await wuy.addFolder()
       if(ok) await context.dispatch( "init" )
     },
     setOrderReverse: function(context,bool) {
+      log("*setOrderReverse",bool)
       context.state.orderReverse=bool;
       var ll=context.state.files;
       context.dispatch( "_feedFiles", ll )
     },
     setDisplayType: function(context,displayType) {
+      log("*setDisplayType",displayType)
       context.state.displayType=displayType;
     },
 

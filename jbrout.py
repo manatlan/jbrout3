@@ -40,11 +40,14 @@ class index(wuy.Window):
         return content.replace("<!-- HERE -->",str(v))
 
     def request(self,req):  #override to hook others web requests
+        idx=req.query.get("idx",None)
         if req.path.startswith("/thumb/"):
             path=req.path[7:]
+            if idx is not None: self.emit("set-info",idx,path,api.getInfo(path))
             return api.getThumb(path)
         elif req.path.startswith("/image/"):
             path=req.path[7:]
+            if idx is not None: self.emit("set-info",idx,path,api.getInfo(path))
             return api.getImage(path)
 
     def getFolders(self):
@@ -60,8 +63,8 @@ class index(wuy.Window):
             return True
         return False
 
-    def getInfo(self,path):
-        return api.getInfo(path)
+    def getInfo(self,idx,path):
+        self.emit("set-info",idx,api.getInfo(path))
 
     def selectFromFolder(self,path,all=False):
         return api.selectFromFolder(path,all)

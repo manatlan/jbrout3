@@ -7,7 +7,7 @@
         @click.middle="hide()"
         @keyup="test($event)"
 
-        :style='`background-image: url("/image/`+item.path+`")`'>
+        :style='`background-image: url("/image/`+item.path+`?idx=`+idx+`")`'>
         <div>{{idx+1}}/{{$store.state.files.length}}</div>
         <div>Tags: {{item.tags && item.tags.join(", ")}}</div>
         <div>Comment: {{item.comment}}</div>
