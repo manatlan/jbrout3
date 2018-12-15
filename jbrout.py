@@ -91,7 +91,7 @@ if __name__=="__main__":
     #~ api.init("/home/manatlan/.local/share/ijbrout/")   #copy of the original jbrout
     #~ index(log=False)
 
-    api.init("./tempconf")
+    api.init(os.path.expanduser("~/.local/share/jbrout"))
     index(log=True) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
     api.save()
 
