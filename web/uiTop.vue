@@ -33,9 +33,6 @@ export default {
         },
         menuOrder(e) {
             var menu = [
-                //{name:'date', callback:  (n)=>{this.$store.dispatch("setOrderType",n)} },
-                //{name:'name', callback:  (n)=>{this.$store.dispatch("setOrderType",n)} },
-                //{name:'rating', callback:  (n)=>{this.$store.dispatch("setOrderType",n)} },
                 {name:'ascending', callback:  (n)=>{this.$store.dispatch("setOrderReverse",false)} },
                 {name:'descending', callback:  (n)=>{this.$store.dispatch("setOrderReverse",true)} },
             ];

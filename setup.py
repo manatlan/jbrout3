@@ -9,8 +9,8 @@ def read(fname):
         return inf.read()
 
 setup(
-    name='jbrout2',
-    version="0.0.3",
+    name='jbrout3',
+    version="0.0.1",
     description='Photo collection manager of new generation',
     author=u'manatlan',
     author_email='manatlan@gmail.com',
@@ -37,5 +37,5 @@ setup(
         "Topic :: Multimedia :: Graphics :: Viewers",
         "Topic :: Multimedia :: Graphics :: Capture :: Digital Camera",
     ],
-    install_requires=['py3exiv2', 'lxml', 'wuy', 'vbuild'],
+    install_requires=['py3exiv2', 'lxml', 'wuy', 'vbuild',"easygui"],
 )

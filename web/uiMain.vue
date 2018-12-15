@@ -1,7 +1,7 @@
 <template>
-    <div @contextmenu.prevent="menu">
+    <div @contextmenu.prevent="menu" @scroll="scroll()">
 
-        <thumb v-for="(i,idx) in $store.state.files" :key="idx"
+        <thumb v-for="(i,idx) in list" :key="idx"
             @allclick="click($event,i,idx)"
             @dblclick="dblclick($event,i,idx)"
             :value="i"
@@ -15,13 +15,27 @@ export default {
     data: function() {
         return {
             currentIndex: null,
+            list: [],
         }
     },
-    mounted() {
-        this.$el.addEventListener('scroll', this.refreshDataSrc);
-        this.$el.addEventListener('resize', this.refreshDataSrc);
+    created() {
+        bus.$on("change-set-photos",()=>{
+            this.$el.scrollTop=0;
+            this.list=[]
+            this.feed(60)
+        })
     },
     methods: {
+        feed(nb) {
+          var tot=this.list.length;
+          if(tot<this.$store.state.files.length)
+            for(var n=tot;n<=tot+nb;n++)
+              if(this.$store.state.files[n]) this.list.push( this.$store.state.files[n] )
+        },
+        scroll () {
+          if(this.$el.scrollTop+this.$el.clientHeight+200 >=this.$el.scrollHeight)
+            this.feed(10)
+        },
         dblclick(event,item,idx) {
             this.$root.$refs.viewer.view(idx)
         },
@@ -60,29 +74,13 @@ export default {
             if(menu.length>0)
                 this.$root.$refs.menu.pop(menu,e)
         },
-        refreshDataSrc(e) { //https://stackoverflow.com/questions/2321907/how-do-you-make-images-load-only-when-they-are-in-the-viewport
-            console.log("refresh thumbs")
-            var elements = document.querySelectorAll("img[data-src]");
-            for (var i = 0; i < elements.length; i++) {
-                    var boundingClientRect = elements[i].getBoundingClientRect();
-                    if (elements[i].hasAttribute("data-src") && boundingClientRect.top < window.innerHeight) {
-                        elements[i].setAttribute("src", elements[i].getAttribute("data-src"));
-                        elements[i].removeAttribute("data-src");
-                    }
-            }
-        },
 
     },
     watch: {
-        '$store.state.files':function (to, from) {
-            this.$el.scrollTop=0;
-            Vue.nextTick( this.refreshDataSrc);
-        },
-        // drawer: function (to, from) {
-        //     if(to==true) {
-        //         document.activeElement.blur();
-        //     }
-        // }
+        //~ '$store.state.files':function (to, from) {
+            //~ this.$el.scrollTop=0;
+            //~ Vue.nextTick( this.refreshDataSrc);
+        //~ },
     }
 }
 </script>

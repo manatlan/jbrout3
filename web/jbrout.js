@@ -1,9 +1,42 @@
 Vue.filter("basename", path => {return path.split(/[\\/]/).pop()} )
 Vue.filter("dirname", path => {return path.replace(/\\/g,'/').replace(/\/[^\/]*$/, '').split(/[\\/]/).pop()} ) // in fact its basename(dirname)
 
+var bus=new Vue();
 
 var notImplemented=function() {alert("not implemented")}
 
+var photoNodes=function(ll) {
+    var PROPS=["comment","rating","resolution","tags"];
+
+    var feed=function( orig ) {
+        wuy.getInfo(orig.path).then( more => {
+          for(var o of Object.keys(more)) {
+            Vue.set(orig,o,more[o])
+          }
+        })
+    }
+    //~ return ll.map( item => {
+        //~ return {
+          //~ path: item.path,
+          //~ date: item.date,
+          //~ tags: [],
+          //~ comment: "",
+          //~ resolution: "",
+          //~ rating: 0,
+        //~ }
+    //~ });
+    return ll.map( item => {
+        return new Proxy( item, {
+            tags: [],
+            get: function(target, propKey){
+                if(!target.hasOwnProperty(propKey)) {
+                    if( PROPS.includes(propKey)) feed(target)
+                }
+                return target[propKey];
+            },
+        })
+    });
+}
 
 var mystore = new Vuex.Store({
   state: {
@@ -12,7 +45,6 @@ var mystore = new Vuex.Store({
     files: [],           // list of photonodes/json
     selected:[],         // list of path
     displayType: "name", // "name", "date", "tags","album","comment"
-    orderType: "date",   // "date","rating","path"
     orderReverse:false,
   },
   getters: {
@@ -42,13 +74,11 @@ var mystore = new Vuex.Store({
     },
     _feedFiles: function(context,ll) {
       context.state.selected=[];
-      console.log("SORT",context.state.orderType,context.state.orderReverse)
-      if     (context.state.orderType=="date")   ll.sort( (a,b)=>parseInt(a.date) - parseInt(b.date) );
-      //~ else if(context.state.orderType=="rating") ll.sort( (a,b)=>a.rating>b.rating?1:-1 );
-      //~ else if(context.state.orderType=="path")   ll.sort( (a,b)=>(a,b) => (a.path > b.path) ? 1 : ((b.path > a.path) ? -1 : 0) );
+      ll.sort( (a,b)=>parseInt(a.date) - parseInt(b.date) );
       if(context.state.orderReverse) ll=ll.reverse();
 
-      context.state.files=ll;
+      context.state.files=photoNodes(ll);
+      bus.$emit("change-set-photos")
     },
 
     // uiTop ...
@@ -59,11 +89,6 @@ var mystore = new Vuex.Store({
     },
     setOrderReverse: function(context,bool) {
       context.state.orderReverse=bool;
-      var ll=context.state.files;
-      context.dispatch( "_feedFiles", ll )
-    },
-    setOrderType: function(context,orderType) {
-      context.state.orderType=orderType;
       var ll=context.state.files;
       context.dispatch( "_feedFiles", ll )
     },

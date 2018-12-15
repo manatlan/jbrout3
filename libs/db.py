@@ -383,13 +383,6 @@ class FolderNode(object):
         return self.__node.attrib["name"]
     file = property(__getFile)
 
-    #####################################################
-    @property
-    def xpath(self):
-        return "//folder[@name='%s']" % self.file
-    #####################################################
-
-
     def __getComment(self):
         ln = self.__node.xpath("c")
         if ln:

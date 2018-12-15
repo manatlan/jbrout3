@@ -60,6 +60,9 @@ class index(wuy.Window):
             return True
         return False
 
+    def getInfo(self,path):
+        return api.getInfo(path)
+
     def selectFromFolder(self,path,all=False):
         return api.selectFromFolder(path,all)
     def selectFromBasket(self):
@@ -75,6 +78,8 @@ if __name__=="__main__":
         pass
 
     #~ api.init("/home/manatlan/.local/share/ijbrout/")   #copy of the original jbrout
+    #~ index(log=False)
+
     api.init("./tempconf")
     index(log=True) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
     api.save()

@@ -9,7 +9,7 @@
 
         :style='`background-image: url("/image/`+item.path+`")`'>
         <div>{{idx+1}}/{{$store.state.files.length}}</div>
-        <div>Tags: {{item.tags.join(", ")}}</div>
+        <div>Tags: {{item.tags && item.tags.join(", ")}}</div>
         <div>Comment: {{item.comment}}</div>
         <div>Album: {{item.path | dirname}}</div>
         <div>Resolution: {{item.resolution}}</div>

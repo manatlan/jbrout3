@@ -111,7 +111,16 @@ def getFolders():
 
 
 def _photonodes2json(ll): #TODO: very expensive ! each attributs takes time ! (x2 per attribut)
-    return [dict(path=i.file,tags=i.tags,date=i.date,comment=i.comment,rating=i.rating,resolution=i.resolution) for i in ll]
+    #~ return [dict(path=i.file,tags=i.tags,date=i.date,comment=i.comment,rating=i.rating,resolution=i.resolution) for i in ll]
+    return [dict(path=i.file,date=i.date) for i in ll]
+
+def getInfo(path):
+    d=os.path.dirname(path)
+    b=os.path.basename(path)
+    ll= JBrout.db.select('''//folder[@name="%s"]/photo[@name="%s"]''' % (d,b))
+    i=ll[0]
+    return dict(tags=i.tags,comment=i.comment,rating=i.rating,resolution=i.resolution)
+
 
 def selectFromFolder(path,all=False):
     kind = "descendant::photo" if all else "photo"
@@ -138,14 +147,14 @@ def getImage(path): #-> bytes (jpeg/image)
         return fid.read()
 
 if __name__=="__main__":
-    init("./temp_conf/")
-    print(addFolder("/home/manatlan/Bureau/Cal2018"))
-    print(addFolder("/home/manatlan/Bureau/CAL2016"))
-    quit()
+    #~ init("./temp_conf/")
+    #~ print(addFolder("/home/manatlan/Bureau/Cal2018"))
+    #~ print(addFolder("/home/manatlan/Bureau/CAL2016"))
+    #~ quit()
     init("/home/manatlan/.local/share/ijbrout/")   #copy of the original jbrout
     #~ ll=JBrout.db.select('''//folder[@name="%s"]/%s''' % ("/nas/data/photos","descendant::photo"))
     ll=selectFromFolder("/nas/data/photos",True)
-    print(len(ll))
+    print(getInfo(ll[0]["path"]))
     quit()
 
     print(JBrout.db)
