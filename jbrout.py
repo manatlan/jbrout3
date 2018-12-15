@@ -26,7 +26,7 @@ __version__="0.0.1"
 class index(wuy.Window):
 #~ class index(wuy.Server):
 
-    size=(1074,800)
+    size=(1100,800)
 
     def _render(self,path): #here is the magic
         # load your template (from web folder)
@@ -63,9 +63,6 @@ class index(wuy.Window):
             return True
         return False
 
-    def getInfo(self,idx,path):
-        self.emit("set-info",idx,api.getInfo(path))
-
     def selectFromFolder(self,path,all=False):
         return api.selectFromFolder(path,all)
     def selectFromBasket(self):
@@ -73,6 +70,17 @@ class index(wuy.Window):
     def selectFromTags(self,tags):
         return api.selectFromTags(tags)
 
+    def photoRebuildThumbnail(self,path):
+        p=api.selectPhoto(path)
+        p.rebuildThumbnail()
+
+    def photoRotateRight(self,path):
+        p=api.selectPhoto(path)
+        p.rotate("R")
+
+    def photoRotateLeft(self,path):
+        p=api.selectPhoto(path)
+        p.rotate("L")
 
 if __name__=="__main__":
     try:

@@ -70,7 +70,24 @@ var mystore = new Vuex.Store({
         Vue.set(context.state.files[obj.idx],k,obj.info[k])
       }
     },
-    
+
+    photoRebuildThumbnail: async function(context,path) {
+      log("*photoRebuildThumbnail",path)
+      await wuy.photoRebuildThumbnail(path)
+      bus.$emit("change-photo",path)
+    },
+    photoRotateRight: async function(context,path) {
+      log("*photoRotateRight",path)
+      await wuy.photoRotateRight(path)
+      bus.$emit("change-photo",path)
+    },
+    photoRotateLeft: async function(context,path) {
+      log("*photoRotateLeft",path)
+      await wuy.photoRotateLeft(path)
+      bus.$emit("change-photo",path)
+    },
+
+
     // uiTop ...
     //==================================================
     addFolder: async function(context) {

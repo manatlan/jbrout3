@@ -36,8 +36,8 @@ import pyexiv2
 import time
 from datetime import datetime, timedelta
 #~ from PIL import Image
-from io import StringIO
-
+import io
+from PIL import Image
 import string
 import re
 from subprocess import Popen, PIPE
@@ -538,7 +538,7 @@ isreal : %s""" % (self.__file,
             im = None
 
         if im:
-            file1 = StringIO.StringIO()
+            file1 = io.BytesIO()
             im.save(file1, "JPEG")
             buf = file1.getvalue()
             file1.close()

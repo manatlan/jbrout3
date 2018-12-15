@@ -3,4 +3,5 @@ vbuild
 lxml
 py3exiv2
 easygui
+Pillow
 

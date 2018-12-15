@@ -7,7 +7,7 @@
         @click.middle="hide()"
         @keyup="test($event)"
 
-        :style='`background-image: url("/image/`+item.path+`?idx=`+idx+`")`'>
+        :style='src'>
         <div>{{idx+1}}/{{$store.state.files.length}}</div>
         <div>Tags: {{item.tags && item.tags.join(", ")}}</div>
         <div>Comment: {{item.comment}}</div>
@@ -22,8 +22,24 @@ export default {
         return {
             idx:null,
             item:{path:"",tags:[],comment:"",resolution:"",date:""},
+            reload:{},
         }
     },
+    created() {
+        bus.$on("change-photo",(path)=>{
+            this.reload[path]=new Date().getTime();
+        })
+    },    
+    computed: {
+        src: function() {
+            if(this.item.path in this.reload) {
+                return `background-image: url("/image/`+this.item.path+`?idx=`+this.idx+"&refresh="+this.reload[this.item.path]+`")`
+            }
+            else
+                return `background-image: url("/image/`+this.item.path+`?idx=`+this.idx+`")`
+        }
+    },
+
     methods: {
         test(e) {
             console.log(e)

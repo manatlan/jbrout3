@@ -37,5 +37,5 @@ setup(
         "Topic :: Multimedia :: Graphics :: Viewers",
         "Topic :: Multimedia :: Graphics :: Capture :: Digital Camera",
     ],
-    install_requires=['py3exiv2', 'lxml', 'wuy', 'vbuild',"easygui"],
+    install_requires=['py3exiv2', 'lxml', 'wuy', 'vbuild',"easygui","Pillow"],
 )

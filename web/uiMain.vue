@@ -1,5 +1,5 @@
 <template>
-    <div @contextmenu.prevent="menu" @scroll="scroll()">
+    <div @contextmenu.prevent="menu" @scroll="scroll()" >
 
         <thumb v-for="(i,idx) in list" :key="idx"
             @allclick="click($event,i,idx)"
@@ -66,17 +66,16 @@ export default {
                 menu.push(    {name:'Select this time', callback: notImplemented } )
             }
             if(this.$store.state.selected.length>0) {
-                menu.push(    {name:'op> rotate left', callback: notImplemented } )
-                menu.push(    {name:'op> rotate right', callback: notImplemented } )
+                menu.push(    {name:'op> rotate left', callback: ()=>{this.$store.state.selected.forEach( p=>{ this.$store.dispatch('photoRotateLeft',p)})} } )
+                menu.push(    {name:'op> rotate right', callback: ()=>{this.$store.state.selected.forEach( p=>{ this.$store.dispatch('photoRotateRight',p)})} } )
                 menu.push(    {name:'op> change date', callback: notImplemented } )
-                menu.push(    {name:'op> rebuild thumbnail', callback: notImplemented } )
+                menu.push(    {name:'op> rebuild thumbnail', callback: ()=>{this.$store.state.selected.forEach( p=>{ this.$store.dispatch('photoRebuildThumbnail',p)})} } )
                 menu.push(    {name:'op> comment', callback: notImplemented } )
                 menu.push(    {name:'Delete', callback: notImplemented } )
             }
             if(menu.length>0)
                 this.$root.$refs.menu.pop(menu,e)
         },
-
     },
     watch: {
         //~ '$store.state.files':function (to, from) {
@@ -97,8 +96,6 @@ export default {
     }
     :scope > * {
         flex: 0 0 auto;
-        width:160px;    /*TODO: not top*/
-        height:160px;   /*TODO: not top*/
     }
     .selected {background:yellow}
 </style>
