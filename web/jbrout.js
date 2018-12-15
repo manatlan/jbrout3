@@ -7,9 +7,22 @@ var notImplemented=function() {alert("not implemented")}
 
 wuy.on("set-info", (idx,path,info)=>mystore.dispatch("setInfo",{idx,path,info}) )
 var CACHE={}
-
 var log=console.log;
-
+document.addEventListener('keydown', function(evt) {
+  console.log(evt)
+  if(evt.ctrlKey) {
+      if(evt.code=="KeyL") { mystore.state.selected.forEach( p=>{ mystore.dispatch('photoRotateLeft',p)}); evt.preventDefault(); evt.stopPropagation(); return false }
+      if(evt.code=="KeyR") { mystore.state.selected.forEach( p=>{ mystore.dispatch('photoRotateRight',p)}) ; evt.preventDefault(); evt.stopPropagation();  return false }
+      if(evt.code=="KeyT") { mystore.state.selected.forEach( p=>{ mystore.dispatch('photoRebuildThumbnail',p)}) ; evt.preventDefault(); evt.stopPropagation();  return false }
+  }
+  else {
+    if(evt.code=="ArrowRight") { bus.$emit("viewer-next") }    
+    if(evt.code=="ArrowDown") { bus.$emit("viewer-next") }    
+    if(evt.code=="ArrowLeft") { bus.$emit("viewer-previous") }    
+    if(evt.code=="ArrowUp") { bus.$emit("viewer-previous") }    
+    if(evt.code=="Escape") { bus.$emit("viewer-close") }    
+  }
+})
 var mystore = new Vuex.Store({
   state: {
     folders: [],         // tree

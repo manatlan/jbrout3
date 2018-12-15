@@ -27,13 +27,17 @@ export default {
     },
     created() {
         bus.$on("change-photo",(path)=>{
-            this.reload[path]=new Date().getTime();
+            Vue.set(this.reload,path,new Date().getTime())
         })
+        bus.$on("viewer-next",()=>{if(this.idx!=null)this.scroll(1)})
+        bus.$on("viewer-previous",()=>{if(this.idx!=null) this.scroll(-1)})
+        bus.$on("viewer-close",()=>{if(this.idx!=null) this.hide()})
     },    
     computed: {
         src: function() {
-            if(this.item.path in this.reload) {
-                return `background-image: url("/image/`+this.item.path+`?idx=`+this.idx+"&refresh="+this.reload[this.item.path]+`")`
+            var ts=this.reload[this.item.path]
+            if(ts) {
+                return `background-image: url("/image/`+this.item.path+`?idx=`+this.idx+"&refresh="+ts+`")`
             }
             else
                 return `background-image: url("/image/`+this.item.path+`?idx=`+this.idx+`")`
