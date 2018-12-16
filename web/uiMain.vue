@@ -104,9 +104,11 @@ export default {
         display:flex;
         flex-flow: row wrap;
         align-content: flex-start;
+        justify-content: flex-start;
     }
     :scope > * {
         flex: 0 0 auto;
+        height:180px;
     }
     .selected {background:yellow}
 </style>

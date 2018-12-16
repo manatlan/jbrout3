@@ -92,6 +92,7 @@ var mystore = new Vuex.Store({
       await wuy.removeFolder(path)
       context.dispatch( "_feedFiles", [] )
       context.state.folders=await wuy.getFolders();
+      context.state.basket=await wuy.selectFromBasket()
     },
     view: function(context,idx) {
       log("*view",idx)
