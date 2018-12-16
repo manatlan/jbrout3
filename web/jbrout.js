@@ -215,11 +215,13 @@ var mystore = new Vuex.Store({
     },
     tagsDelTag: async function(context,txt) {
       log("*tagsDelTag")
+      //TODO: dont delete if used
       var ok=await wuy.tagsDelTag(txt)
       if(ok) context.state.tags=await wuy.getTags();
     },
     tagsDelCat: async function(context,txt) {
       log("*tagsDelCat")
+      //TODO: dont delete if used
       var ok=await wuy.tagsDelCat(txt)
       if(ok) context.state.tags=await wuy.getTags();
     },
