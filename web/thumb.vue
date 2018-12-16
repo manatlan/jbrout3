@@ -1,5 +1,9 @@
 <template>
-    <div class='click' @click="$emit('allclick',$event)" @click.middle="$emit('allclick',$event)" @dblclick="$emit('dblclick',$event)">
+    <div class='click' 
+        @contextmenu.prevent="$emit('menu',$event)"
+        @click="$emit('allclick',$event)" 
+        @click.middle="$emit('allclick',$event)" 
+        @dblclick="$emit('dblclick',$event)">
         <div class="photo">
             <img class="basket" src="gfx/basket.png" v-if="$store.getters.basket.indexOf(value.path)>=0"/>
             <img class="thumb" :src="src" :class="value.real=='no'?'noexif':''"/>

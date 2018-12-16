@@ -1,9 +1,10 @@
 <template>
-    <div @contextmenu.prevent="menu" @scroll="scroll()" >
+    <div @scroll="scroll()" @contextmenu.prevent="">
 
         <thumb v-for="(i,idx) in list" :key="idx"
             @allclick="click($event,i,idx)"
             @dblclick="dblclick($event,i,idx)"
+            @menu="menu($event,i,idx)"
             :value="i"
             :idx="idx"
             :class="$store.state.selected.indexOf(i.path)>=0?'selected':''"
@@ -56,8 +57,11 @@ export default {
 
             this.currentIndex=idx
         },
-        menu(e) {
+        menu(e,item,idx) {
             var menu = [];
+            this.currentIndex=idx
+            if(this.$store.state.selected.indexOf(item.path)<0)
+                this.$store.dispatch('selectJustOne',item.path)
 
             if(this.$store.state.selected.length>0) {
                 var all=true;

@@ -12,10 +12,12 @@ var log=console.log;
 
 document.addEventListener('keydown', function(evt) {
   var catsh=false;
+  console.log(evt)
   if(evt.ctrlKey) {
-      if(evt.code=="KeyL") { var p=(mystore.getters.photo!=null?mystore.getters.photo.path:null); mystore.dispatch('photoRotateLeft',p); catsh=true}
-      if(evt.code=="KeyR") { var p=(mystore.getters.photo!=null?mystore.getters.photo.path:null); mystore.dispatch('photoRotateRight',p) ; catsh=true}
-      if(evt.code=="KeyT") { var p=(mystore.getters.photo!=null?mystore.getters.photo.path:null); mystore.dispatch('photoRebuildThumbnail',p) ; catsh=true}
+      if(evt.key=="l") { var p=(mystore.getters.photo!=null?mystore.getters.photo.path:null); mystore.dispatch('photoRotateLeft',p); catsh=true}
+      if(evt.key=="r") { var p=(mystore.getters.photo!=null?mystore.getters.photo.path:null); mystore.dispatch('photoRotateRight',p) ; catsh=true}
+      if(evt.key=="t") { var p=(mystore.getters.photo!=null?mystore.getters.photo.path:null); mystore.dispatch('photoRebuildThumbnail',p) ; catsh=true}
+      if(evt.key=="a") { mystore.dispatch('selectAll');catsh=true}
   }
   else {
     if(evt.code=="ArrowRight") { mystore.dispatch("view","next"); catsh=true }    
@@ -197,6 +199,9 @@ var mystore = new Vuex.Store({
 
     // uiMain ...
     //==================================================
+    selectAll: function(context) {
+      context.state.selected = context.state.files.map( i=>i.path )
+    },
     selectJustOne: function(context,obj) {
       context.state.selected=[obj]
     },
