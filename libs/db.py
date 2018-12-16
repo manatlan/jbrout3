@@ -293,7 +293,7 @@ class DBPhotos:
 
             fid = open(file, "w")
             if fid:
-                fid.write((u"\n".join(list)).encode("utf_8"))
+                fid.write(u"\n".join(list))
                 fid.close()
         else:
             try:

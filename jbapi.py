@@ -139,6 +139,9 @@ def selectFromBasket():
     ll= JBrout.db.getBasket()
     return _photonodes2json(ll)
 
+def clearBasket():
+    JBrout.db.clearBasket()
+
 def selectFromTags(tags):
     xpath = " or ".join(['t=%s' % xpathquoter(t) for t in tags])
     ll= JBrout.db.select("""//photo[%s]""" % xpath)

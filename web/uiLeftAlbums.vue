@@ -1,6 +1,9 @@
 <template>
     <div>
-
+        <div class="click" style="padding-left:10px;"
+            @click="selectBasket()" 
+            v-if="$store.state.basket.length>0"
+            @contextmenu.prevent="menubasket($event)"> <img src="gfx/basket.png"/>basket ({{$store.state.basket.length}})</div>
         <tree-folders v-for="(i,idx) in $store.state.folders" :key="idx" :value="i" :parent="current"/>
 
     </div>
@@ -17,6 +20,9 @@ export default {
         select(path) {
             this.selectedPath = path;
         },
+        selectBasket(path) {
+            this.$store.dispatch('selectBasket')
+        },
         menu(e,path) {
             this.selectedPath = path;
             var menu = [
@@ -30,6 +36,12 @@ export default {
             ];
             this.$root.$refs.menu.pop(menu,e)
         },
+        menubasket(e) {
+            var menu = [
+                {name:'remove', callback: ()=>{this.$store.dispatch('removeBasket')} },
+            ];
+            this.$root.$refs.menu.pop(menu,e)
+        },        
     }
 }
 </script>

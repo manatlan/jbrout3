@@ -11,7 +11,7 @@
 
         <span style="float:right">
             <a href="#" @click="menuDisplay($event)" @contextmenu.prevent="menuDisplay($event)">display({{$store.state.displayType}})</a>
-            <a href="#" @click="menuOrder($event)" @contextmenu.prevent="menuOrder($event)">order({{$store.state.orderType}})</a>
+            <a href="#" @click="menuOrder($event)" @contextmenu.prevent="menuOrder($event)">order({{$store.state.orderReverse?"D":"A"}})</a>
         </span>
     </div>
 </template>

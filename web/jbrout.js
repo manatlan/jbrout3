@@ -38,6 +38,7 @@ var mystore = new Vuex.Store({
     folders: [],         // tree
     tags: [],            // tree
     files: [],           // list of photonodes/json
+    basket: [],           // list of photonodes/json
     selected:[],         // list of path
     displayType: "name", // "name", "date", "tags","album","comment"
     orderReverse:false,
@@ -50,6 +51,9 @@ var mystore = new Vuex.Store({
           else
             return null;
       },
+      basket(state) {
+        return state.basket.map( p=>p.path )
+      },
   },
   // NO MUTATIONS (all in actions)
   actions: {
@@ -57,6 +61,8 @@ var mystore = new Vuex.Store({
       log("*init")
       context.state.files=[];
       context.state.selected=[];
+      context.state.basket=await wuy.selectFromBasket();
+      console.log("BASK",context.getters.basket)
       context.state.folders=await wuy.getFolders();
       context.state.tags=await wuy.getTags();
       context.state.displayType=await wuy.cfgGet("displayType","name")
@@ -73,6 +79,11 @@ var mystore = new Vuex.Store({
       context.dispatch( "selectAlbum", {path,all:true} )
       context.state.files.forEach( i=>bus.$emit("change-photo",i.path))
       context.state.folders=await wuy.getFolders();
+    },
+    removeBasket: async function(context,path) {
+      log("*removeBasket",path)
+      await wuy.removeBasket()
+      context.state.basket=await wuy.selectFromBasket()
     },
     removeAlbum: async function(context,path) {
       log("*removeAlbum",path)
@@ -100,8 +111,7 @@ var mystore = new Vuex.Store({
     },
     selectBasket: async function(context) {
       log("*selectBasket")
-      var ll=await wuy.selectFromBasket()
-      context.dispatch( "_feedFiles", ll )
+      context.dispatch( "_feedFiles", context.state.basket )
     },
     _feedFiles: function(context,ll) {
       log("*_feedFiles",ll.length)
@@ -152,6 +162,16 @@ var mystore = new Vuex.Store({
       }
       else
         context.state.selected.forEach( p=>context.dispatch("photoRotateLeft",p))
+    },
+    photoBasket: async function(context,{path,bool}) {
+      log("*photoBasket",path,bool)
+      if(path) {
+        await wuy.photoBasket(path,bool)
+        context.state.basket=await wuy.selectFromBasket();
+      }
+      else
+        context.state.selected.forEach( p=>context.dispatch("photoBasket",{path:p,bool}))
+
     },
 
 

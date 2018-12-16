@@ -1,6 +1,10 @@
 <template>
     <div class='click' @click="$emit('allclick',$event)" @click.middle="$emit('allclick',$event)" @dblclick="$emit('dblclick',$event)">
-        <div class="photo"><img :src="src" :class="value.real=='no'?'noexif':''"/></div>
+        <div class="photo">
+            <img class="basket" src="gfx/basket.png" v-if="$store.getters.basket.indexOf(value.path)>=0"/>
+            <img class="thumb" :src="src" :class="value.real=='no'?'noexif':''"/>
+        </div>
+        
 
         <div class="text" v-if="$store.state.displayType=='name'">{{value.path | basename}}</div>
         <div class="text" v-if="$store.state.displayType=='tags'">{{value.tags && value.tags.join(", ")}}</div>
@@ -49,7 +53,7 @@ export default {
         height:160px;
         position: relative;
     }
-    img {
+    div.photo img.thumb {
         max-width: 100%;
         max-height: 100%;
         width: auto;
@@ -73,5 +77,11 @@ export default {
     div.text {
         text-align:center;   
         width:160px;
+    }
+    div.photo img.basket {
+        position:relative;
+        top:0px;
+        z-index:2;
+        left:-60px;
     }
 </style>

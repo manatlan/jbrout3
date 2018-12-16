@@ -63,6 +63,16 @@ class jbrout:
         p=api.selectPhoto(path)
         p.rotate("L")
 
+    def removeBasket(self):
+        api.clearBasket()
+
+    def photoBasket(self,path,bool):
+        p=api.selectPhoto(path)
+        if bool:
+            p.addToBasket()
+        else:
+            p.removeFromBasket()
+
     def cfgGet(self,k,default=None):
         cfg=api.getConf()
         return cfg.get(k,default)

@@ -59,8 +59,15 @@ export default {
         menu(e) {
             var menu = [];
 
-            if(this.$store.state.selected.length>0)
-                menu.push(    {name:'Add to basket', callback: notImplemented } )
+            if(this.$store.state.selected.length>0) {
+                var all=true;
+                for(var p of this.$store.state.selected)
+                    all=all & (this.$store.getters.basket.indexOf(p)>=0)
+                if(all)
+                    menu.push(    {name:'Remove from basket', callback: ()=>{this.$store.dispatch('photoBasket',{path:null,bool:false})}  } )
+                else
+                    menu.push(    {name:'Add to basket', callback: ()=>{this.$store.dispatch('photoBasket',{path:null,bool:true})}  } )
+            }
             if(this.$store.state.selected.length==1) {
                 menu.push(    {name:'Select this album', callback: notImplemented } )
                 menu.push(    {name:'Select this time', callback: notImplemented } )
