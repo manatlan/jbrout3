@@ -14,13 +14,13 @@ export default {
     },
     methods: {
         select(item) {
-            if(item.children.length==0)
+            if(item.type=="tag")
                 this.$store.dispatch('selectTags',[item.name])
             else {
                 var gett=function(item) {
                     var tags=[]
                     for(var i of item.children) {
-                        if(i.children.length==0)
+                        if(i.type=="tag")
                             tags.push(i.name)
                         else
                             tags=tags.concat( gett(i) )
