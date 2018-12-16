@@ -1033,6 +1033,18 @@ class DBTags:
         #~ fid.close()
         ElementTree(self.root).write(self.file)
 
+    #====================================== new
+    def selectTag(self,tag):
+        ll = self.root.xpath('''//tag[.="%s"]''' % tag)
+        if ll:
+            return TagNode(ll[0])
+    def selectCat(self,catg):
+        ll = self.root.xpath('''//tags[@name="%s"]''' % catg)
+        if ll:
+            return CatgNode(ll[0])
+    #====================================== new
+
+
     #def getTagForKey(self, key):
     #    """ return the tag as utf_8 for the key 'key' """
     #    ln=self.root.xpath("//tag[@key='%s']"%key)
@@ -1078,9 +1090,13 @@ class DBTags:
 
         if newTags:
             # create a category imported
-            nom = u"Imported Tags"
-            while 1:
+            nom = "Imported Tags"
+            nc=self.selectCat(nom)
+            if not nc:
                 nc = r.addCatg(nom)
+
+            while 1:
+
                 if nc is not None:
                     break
                 else:

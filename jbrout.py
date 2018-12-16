@@ -78,6 +78,18 @@ class jbrout:
     def getYear(self,year):
         return api.getYear(year)
 
+    def tagsAddTag(self,cat,txt):
+        return api.tagsAddTag(cat,txt)
+
+    def tagsAddCat(self,cat,txt):
+        return api.tagsAddCat(cat,txt)
+
+    def tagsDelTag(self,txt):
+        return api.tagsDelTag(txt)
+
+    def tagsDelCat(self,txt):
+        return api.tagsDelCat(txt)
+
     def cfgGet(self,k,default=None):
         cfg=api.getConf()
         return cfg.get(k,default)

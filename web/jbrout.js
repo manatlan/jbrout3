@@ -195,6 +195,35 @@ var mystore = new Vuex.Store({
     },
 
 
+    // uiLeftTags ...
+    //==================================================
+    tagsAddTag: async function(context,cat) {
+      log("*tagsAddTag")
+      var txt=prompt("New Tag under '"+cat+"' ?")
+      if(txt) {
+        var ok=await wuy.tagsAddTag(cat,txt)
+        if(ok) context.state.tags=await wuy.getTags();
+      }
+    },
+    tagsAddCat: async function(context,cat) {
+      log("*tagsAddCat")
+      var txt=prompt("New Category under '"+cat+"' ?")
+      if(txt) {
+        var ok=await wuy.tagsAddCat(cat,txt)
+        if(ok) context.state.tags=await wuy.getTags();
+      }
+    },
+    tagsDelTag: async function(context,txt) {
+      log("*tagsDelTag")
+      var ok=await wuy.tagsDelTag(txt)
+      if(ok) context.state.tags=await wuy.getTags();
+    },
+    tagsDelCat: async function(context,txt) {
+      log("*tagsDelCat")
+      var ok=await wuy.tagsDelCat(txt)
+      if(ok) context.state.tags=await wuy.getTags();
+    },
+
     // uiTop ...
     //==================================================
     addFolder: async function(context) {

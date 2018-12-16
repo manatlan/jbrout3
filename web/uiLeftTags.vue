@@ -18,10 +18,13 @@ export default {
         menu(e,item) {
             console.log(item)
             var menu = [];
-            if(item.type=="cat") menu.push( {name:'Add a tag', callback: notImplemented } )
-            if(item.type=="cat") menu.push( {name:'Add a category', callback: notImplemented } );
+            if(item.type=="cat") menu.push( {name:'Add a tag', callback: ()=>{this.$store.dispatch("tagsAddTag", item.name)} } )
+            if(item.type=="cat") menu.push( {name:'Add a category', callback:  ()=>{this.$store.dispatch("tagsAddCat", item.name)} } );
             if(item.type=="cat") menu.push( {name:'Rename category', callback: notImplemented } );
-            menu.push( {name:'Delete', callback: notImplemented } );
+            if(item.type=="cat")
+                menu.push( {name:'Delete', callback: ()=>{this.$store.dispatch("tagsDelCat", item.name)} } );
+            else
+                menu.push( {name:'Delete', callback: ()=>{this.$store.dispatch("tagsDelTag", item.name)} } );
             this.$root.$refs.menu.pop(menu,e)
         },  
     }

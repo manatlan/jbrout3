@@ -169,11 +169,38 @@ def getImage(path): #-> bytes (jpeg/image)
     with open(path,"rb") as fid:
         return fid.read()
 
+def tagsAddCat(cat,newCat):
+    c=JBrout.tags.selectCat(cat)
+    if c:
+        return c.addCatg(newCat.strip())
+def tagsAddTag(cat,newTag):
+    c=JBrout.tags.selectCat(cat)
+    if c:
+        return c.addTag(newTag.strip())
+    
+def tagsDelTag(tag):
+    c=JBrout.tags.selectTag(tag)
+    if c:
+        c.remove()
+        return True
+def tagsDelCat(cat):
+    c=JBrout.tags.selectCat(cat)
+    if c:
+        c.remove()
+        return True
+
+
 if __name__=="__main__":
     #~ print(addFolder("/home/manatlan/Bureau/Cal2018"))
     #~ print(addFolder("/home/manatlan/Bureau/CAL2016"))
     #~ quit()
     init("/home/manatlan/.local/share/ijbrout/")   #copy of the original jbrout
+    x=JBrout.tags.getAllTags()
+    print(x)
+    x=JBrout.tags.selectTag("marco")
+    print(x)
+    x=JBrout.tags.selectCat("potes obernai")
+    print(x)
     #~ ll=JBrout.db.select('''//folder[@name="%s"]/%s''' % ("/nas/data/photos","descendant::photo"))
     #~ ll=selectFromFolder("/",True)
     #~ print( {i["date"][:4] for i in ll} )
