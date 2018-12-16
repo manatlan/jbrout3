@@ -88,14 +88,16 @@ def getTags():
             ll.append( dict(
                 name=c.name,
                 children=tol(c),
+                type="cat",
             ))
         for t in f.getTags():
             ll.append( dict(
                 name=t.name,
                 children=[],
+                type="tag",
             ))
         return ll
-    return tol( JBrout.tags.getRootTag() )
+    return [ dict(name="Tags",type="cat",children=tol( JBrout.tags.getRootTag() )) ]
 
 def getFolders():
     def tol(f):

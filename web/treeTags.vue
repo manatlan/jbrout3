@@ -1,12 +1,12 @@
 <template>
     <div>
-        <span class="click" @click="select(value)">{{value.name}}</span>
-        <tree-Tags v-for="(i,idx) in value.children" :key="idx" :value="i"/>
+        <span class="click" @click="select(value)" @contextmenu.prevent="parent.menu($event,value)">{{value.name}}</span>
+        <tree-Tags v-for="(i,idx) in value.children" :key="idx" :value="i" :parent="parent"/>
     </div>
 </template>
 <script>
 export default {
-    props:["value"],
+    props:["value","parent"],
     computed: {
     },
     methods: {
