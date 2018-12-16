@@ -66,12 +66,19 @@ var mystore = new Vuex.Store({
       log("*selectAlbum",path)
       var ll=await wuy.selectFromFolder(path,all)
       context.dispatch( "_feedFiles", ll )
-      context.state.files.forEach( i=>bus.$emit("change-photo",i.path))
     },
     refreshAlbum: async function(context,path) {
       log("*refreshAlbum",path)
       await wuy.refreshFolder(path)
       context.dispatch( "selectAlbum", {path,all:true} )
+      context.state.files.forEach( i=>bus.$emit("change-photo",i.path))
+      context.state.folders=await wuy.getFolders();
+    },
+    removeAlbum: async function(context,path) {
+      log("*removeAlbum",path)
+      await wuy.removeFolder(path)
+      context.dispatch( "_feedFiles", [] )
+      context.state.folders=await wuy.getFolders();
     },
     view: function(context,idx) {
       log("*view",idx)

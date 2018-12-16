@@ -24,7 +24,7 @@ export default {
                 {name:'Rename', callback: notImplemented },
                 {name:'New album', callback: notImplemented },
                 {name:'Refresh', callback: ()=>{this.$store.dispatch('refreshAlbum',this.selectedPath)}  },
-                {name:'Remove from jbrout', callback: notImplemented },
+                {name:'Remove from jbrout', callback: ()=>{this.$store.dispatch('removeAlbum',this.selectedPath)}},
                 {name:'Delete from disk', callback: notImplemented },
 
             ];

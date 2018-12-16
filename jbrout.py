@@ -41,6 +41,9 @@ class jbrout:
     def refreshFolder(self,folder):
         api.addFolder(folder)
 
+    def removeFolder(self,folder):
+        api.removeFolder(folder)
+
     def selectFromFolder(self,path,all=False):
         return api.selectFromFolder(path,all)
     def selectFromBasket(self):

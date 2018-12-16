@@ -259,6 +259,16 @@ class DBPhotos:
         else:
             return []
 
+    #======================================== nEW
+    def selectf(self, xpath):
+        ln = self.root.xpath(xpath)
+        if ln:
+            return [FolderNode(i) for i in ln]
+        else:
+            return []
+    #======================================== nEW
+
+
     def toXml(self):
         """ for tests only """
         from StringIO import StringIO

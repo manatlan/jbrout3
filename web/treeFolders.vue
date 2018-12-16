@@ -6,7 +6,7 @@
             @contextmenu.prevent="parent.menu($event,value.path)"
             @dblclick="$store.dispatch('selectAlbum',{path:value.path,all:true})"
             @click.middle="parent.select(value.path);$store.dispatch('selectAlbum',{path:value.path,all:false})"
-            ><img src="gfx/folder.png"/> {{value.path | basename}} ({{value.items}})</div>
+            ><img src="gfx/folder.png"/> {{value.path | basename}} <span v-show="value.items">({{value.items}})</span></div>
 
         <tree-folders v-for="(i,idx) in value.folders" :key="idx" :value="i" :parent="parent"/>
     </div>
@@ -16,7 +16,7 @@ export default {
     props:["value","parent"],
     computed: {
         classItem: function() {
-            return (this.parent.selectedPath == this.value.path?'tselected':'')+" click";
+            return (this.parent.selectedPath == this.value.path?'tselected':'')+" click " + (this.value.items>0?"":"nophotos");
         }
     }
 }
@@ -27,5 +27,8 @@ export default {
 }
 .tselected {
     background: yellow;
+}
+.nophotos {
+    color: #AAA;
 }
 </style>

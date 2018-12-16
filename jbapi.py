@@ -131,6 +131,10 @@ def selectFromFolder(path,all=False):
     ll= JBrout.db.select('''//folder[@name="%s"]/%s''' % (path,kind))
     return _photonodes2json(ll)
 
+def removeFolder(path):
+    ll= JBrout.db.selectf('''//folder[@name="%s"]''' % path)
+    ll[0].remove()
+
 def selectFromBasket():
     ll= JBrout.db.getBasket()
     return _photonodes2json(ll)
