@@ -66,11 +66,11 @@ export default {
                 menu.push(    {name:'Select this time', callback: notImplemented } )
             }
             if(this.$store.state.selected.length>0) {
-                menu.push(    {name:'op> rotate left', callback: ()=>{this.$store.dispatch('photoRotateLeft')} } )
-                menu.push(    {name:'op> rotate right', callback: ()=>{this.$store.dispatch('photoRotateRight')} } )
-                menu.push(    {name:'op> change date', callback: notImplemented } )
-                menu.push(    {name:'op> rebuild thumbnail', callback: ()=>{this.$store.dispatch('photoRebuildThumbnail')} } )
-                menu.push(    {name:'op> comment', callback: notImplemented } )
+                menu.push(    {name:'> rotate left (Ctrl-L)', callback: ()=>{this.$store.dispatch('photoRotateLeft')} } )
+                menu.push(    {name:'> rotate right (Ctrl-R)', callback: ()=>{this.$store.dispatch('photoRotateRight')} } )
+                menu.push(    {name:'> change date', callback: notImplemented } )
+                menu.push(    {name:'> rebuild thumbnail (Ctrl-T)', callback: ()=>{this.$store.dispatch('photoRebuildThumbnail')} } )
+                menu.push(    {name:'> comment', callback: notImplemented } )
                 menu.push(    {name:'Delete', callback: notImplemented } )
             }
             if(menu.length>0)
