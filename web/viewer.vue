@@ -12,7 +12,7 @@
         <div>Comment: {{comment}}</div>
         <div>Resolution: {{resolution}}</div>
         <div>Album: {{$store.getters.photo.path | dirname}}</div>
-        <div>Date: {{$store.getters.photo.date}}</div>
+        <div>Date: {{$store.getters.photo.date | date}}</div>
     </div>
 </template>
 <script>

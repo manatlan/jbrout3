@@ -3,6 +3,7 @@ var dirname=function(path) {return path.replace(/\\/g,'/').replace(/\/[^\/]*$/, 
 
 Vue.filter("basename", path => basename(path) )
 Vue.filter("dirname", path => basename(dirname(path)) ) // in fact its basename(dirname)
+Vue.filter("date", s => s.substr(0,4)+"/"+s.substr(4,2)+"/"+s.substr(6,2)+" "+s.substr(8,2)+":"+s.substr(10,2)+":"+s.substr(12,2) ) // in fact its basename(dirname)
 
 var bus=new Vue();
 

@@ -12,7 +12,7 @@
 
         <div class="text" v-if="$store.state.displayType=='name'">{{value.path | basename}}</div>
         <div class="text" v-if="$store.state.displayType=='tags'">{{value.tags && value.tags.join(", ")}}</div>
-        <div class="text" v-if="$store.state.displayType=='date'">{{value.date}}</div>
+        <div class="text" v-if="$store.state.displayType=='date'">{{value.date | date}}</div>
         <div class="text" v-if="$store.state.displayType=='comment'">{{value.comment}}</div>
         <div class="text" v-if="$store.state.displayType=='album'">{{value.path | dirname}}</div>
 
