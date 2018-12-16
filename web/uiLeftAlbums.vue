@@ -23,7 +23,7 @@ export default {
                 {name:'Select only', callback: ()=>{this.$store.dispatch('selectAlbum',{path:this.selectedPath,all:false}) }},
                 {name:'Rename', callback: notImplemented },
                 {name:'New album', callback: notImplemented },
-                {name:'Refresh', callback: notImplemented },
+                {name:'Refresh', callback: ()=>{this.$store.dispatch('refreshAlbum',this.selectedPath)}  },
                 {name:'Remove from jbrout', callback: notImplemented },
                 {name:'Delete from disk', callback: notImplemented },
 

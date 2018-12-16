@@ -15,55 +15,23 @@
 # #
 # ###########################################################################
 
+
+"""
+    This file is just for dev test (server mode)
+    it will disappear in the future (when 1.0)
+"""
 import os,sys
 import wuy,vbuild
 import jbapi as api
-#~ import jbfake as api
+from jbrout import jbrout
 
-
-__version__="0.0.1"
-
-class jbrout:
-
-    def getFolders(self):
-        return api.getFolders()
-    def getTags(self):
-        return api.getTags()
-
-    def addFolder(self):    #TODO: make async/yield here ! (for big folders)
-        import easygui  # until we found another way (in a cefpython instance ; it should be possible to make it client-side!)
-        folder=easygui.diropenbox(msg="Select folder/album to add", title="jbrout")
-        if folder:
-            api.addFolder(folder)
-            return True
-        return False
-
-    def refreshFolder(self,folder):
-        api.addFolder(folder)
-
-    def selectFromFolder(self,path,all=False):
-        return api.selectFromFolder(path,all)
-    def selectFromBasket(self):
-        return api.selectFromBasket()
-    def selectFromTags(self,tags):
-        return api.selectFromTags(tags)
-
-    def photoRebuildThumbnail(self,path):
-        p=api.selectPhoto(path)
-        p.rebuildThumbnail()
-
-    def photoRotateRight(self,path):
-        p=api.selectPhoto(path)
-        p.rotate("R")
-
-    def photoRotateLeft(self,path):
-        p=api.selectPhoto(path)
-        p.rotate("L")
-
-
-class index(wuy.Window,jbrout):
-    """ wuy tech class (with tech stuff) """
-    size=(1100,800)
+class index(wuy.Server,jbrout):
+    """
+        IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
+        IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
+        IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
+        IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
+    """
 
     def _render(self,path): #here is the magic
         # load your template (from web folder)
@@ -76,6 +44,13 @@ class index(wuy.Window,jbrout):
         # and inject them in your template
         return content.replace("<!-- HERE -->",str(v))
 
+    """
+        IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
+        IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
+        IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
+        IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
+    """
+
     def request(self,req):  #override to hook others web requests
         idx=req.query.get("idx",None)
         if req.path.startswith("/thumb/"):
@@ -87,17 +62,24 @@ class index(wuy.Window,jbrout):
             if idx is not None: self.emit("set-info",idx,path,api.getInfo(path))
             return api.getImage(path)
 
+    """
+        IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
+        IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
+        IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
+        IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
+    """
+
+
 if __name__=="__main__":
     try:
         os.chdir(os.path.split(sys.argv[0])[0])
     except:
         pass
 
-    #~ api.init("/home/manatlan/.local/share/ijbrout/")   #copy of the original jbrout
-    #~ index(log=False)
+    api.init(os.path.expanduser("~/.local/share/ijbrout"))  #copy of the original jbrout
+    #~ api.init("./tempconf")
+    index(log=False)
+    #~ api.save()
 
-    api.init("./tempconf")
-    index(log=True) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
-    api.save()
 
 
