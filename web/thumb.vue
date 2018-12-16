@@ -1,6 +1,6 @@
 <template>
     <div class='click' @click="$emit('allclick',$event)" @click.middle="$emit('allclick',$event)" @dblclick="$emit('dblclick',$event)">
-        <div class="photo"><img :src="src"/></div>
+        <div class="photo"><img :src="src" :class="value.real=='no'?'noexif':''"/></div>
 
         <div class="text" v-if="$store.state.displayType=='name'">{{value.path | basename}}</div>
         <div class="text" v-if="$store.state.displayType=='tags'">{{value.tags && value.tags.join(", ")}}</div>
@@ -65,6 +65,10 @@ export default {
         border:4px solid white;
         box-shadow: 0 0 10px #888;
 
+    }
+    img.noexif {
+        border:4px solid red;
+        box-shadow: 0 0 10px red;
     }
     div.text {
         text-align:center;   

@@ -114,12 +114,11 @@ def getFolders():
 
 
 def _photonodes2json(ll): #TODO: very expensive ! each attributs takes time ! (x2 per attribut)
-    #~ return [dict(path=i.file,tags=i.tags,date=i.date,comment=i.comment,rating=i.rating,resolution=i.resolution) for i in ll]
     return [dict(path=i.file,date=i.date) for i in ll]
 
 def getInfo(path):
     i=selectPhoto(path)
-    return dict(tags=i.tags,comment=i.comment,rating=i.rating,resolution=i.resolution)
+    return dict(tags=i.tags,comment=i.comment,rating=i.rating,resolution=i.resolution,real=i.real)
 
 def selectPhoto(path): # -> 1 PhotoNode
     d=os.path.dirname(path)
