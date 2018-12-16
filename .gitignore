@@ -4,6 +4,7 @@ __pycache__/
 tempconf/*.xml
 tempconf/*.json
 tempconf/*.conf
+tempconf/basket.txt
 
 SciTE.properties
 

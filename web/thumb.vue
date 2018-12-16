@@ -70,9 +70,9 @@ export default {
         box-shadow: 0 0 10px #888;
 
     }
-    img.noexif {
-        border:4px solid red;
-        box-shadow: 0 0 10px red;
+    .noexif {
+        border:4px solid red !important;
+        box-shadow: 0 0 10px red !important;
     }
     div.text {
         text-align:center;   
