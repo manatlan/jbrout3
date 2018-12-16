@@ -24,7 +24,7 @@ import jbapi as api
 __version__="0.0.1"
 
 class index(wuy.Window):
-# class index(wuy.Server):
+#~ class index(wuy.Server):
 
     size=(1100,800)
 
