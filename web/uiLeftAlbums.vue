@@ -45,6 +45,7 @@ export default {
         menubasket(e) {
             var menu = [
                 {name:'remove', callback: ()=>{this.$store.dispatch('removeBasket')} },
+                {name:'export', callback: notImplemented },
             ];
             this.$root.$refs.menu.pop(menu,e)
         },        
