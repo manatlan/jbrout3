@@ -1095,13 +1095,6 @@ class DBTags:
             if not nc:
                 nc = r.addCatg(nom)
 
-            while 1:
-
-                if nc is not None:
-                    break
-                else:
-                    nom += u"!"
-
             for tag in newTags:
                 ret = nc.addTag(tag)
                 assert ret is not None, "tag '%s' couldn't be added" % tag
