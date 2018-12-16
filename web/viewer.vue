@@ -8,6 +8,7 @@
         :style='src'>
 
         <div>{{$store.state.viewerIdx+1}}/{{$store.state.files.length}}</div>
+        <div>Name: {{$store.getters.photo.path | basename}}</div>
         <div>Tags: {{tags}}</div>
         <div>Comment: {{comment}}</div>
         <div>Resolution: {{resolution}}</div>
