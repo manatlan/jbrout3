@@ -1,13 +1,17 @@
 <template>
     <div>
-        Here will be the time-tab, to be able to select photos by period ;-)
+        <div v-for="year in $store.state.years"
+            class="click"
+            @click="$store.dispatch('getYear',year)">{{year}}</div>
+
+        <i>!!! NOT FINISHED !!!</i>
     </div>
 </template>
 <style scoped>
     :scope {
         overflow-y:auto;
         background:white;
-        padding:20px;
-        color:#AAA;
+        padding:5px;
     }
+    :scope div {margin:4px;}
 </style>

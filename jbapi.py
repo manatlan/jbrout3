@@ -131,6 +131,15 @@ def selectFromFolder(path,all=False):
     ll= JBrout.db.select('''//folder[@name="%s"]/%s''' % (path,kind))
     return _photonodes2json(ll)
 
+def getYears():
+    ll=selectFromFolder("/",True)
+    return sorted(list({i["date"][:4] for i in ll} ))
+
+def getYear(year):
+    xpath = """//photo[substring(@date, 1,4)="%s"]""" % str(year)
+    ll= JBrout.db.select(xpath)
+    return _photonodes2json(ll)
+
 def removeFolder(path):
     ll= JBrout.db.selectf('''//folder[@name="%s"]''' % path)
     ll[0].remove()
@@ -158,18 +167,15 @@ def getImage(path): #-> bytes (jpeg/image)
         return fid.read()
 
 if __name__=="__main__":
-    init("./tempconf/")
-
-    p=selectPhoto("/home/manatlan/Bureau/jbrout3/test_photos/jo/p19990101_222854.jpg")
-    p.rebuildThumbnail()
-
     #~ print(addFolder("/home/manatlan/Bureau/Cal2018"))
     #~ print(addFolder("/home/manatlan/Bureau/CAL2016"))
-    quit()
+    #~ quit()
     init("/home/manatlan/.local/share/ijbrout/")   #copy of the original jbrout
     #~ ll=JBrout.db.select('''//folder[@name="%s"]/%s''' % ("/nas/data/photos","descendant::photo"))
-    ll=selectFromFolder("/nas/data/photos",True)
-    print(getInfo(ll[0]["path"]))
+    #~ ll=selectFromFolder("/",True)
+    #~ print( {i["date"][:4] for i in ll} )
+    print( getYears() )
+    #~ print(getInfo(ll[0]["path"]))
     quit()
 
     print(JBrout.db)

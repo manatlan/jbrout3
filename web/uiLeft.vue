@@ -20,6 +20,7 @@ class Component:
         self.tab=1
     def setTab(self,n):
         self.tab=n
+        if n==2: self["$store"].dispatch("getYears")
     def getClass(self,n):
         return n==self.tab and "selected" or ""
 

@@ -73,6 +73,11 @@ class jbrout:
         else:
             p.removeFromBasket()
 
+    def getYears(self):
+        return api.getYears()
+    def getYear(self,year):
+        return api.getYear(year)
+
     def cfgGet(self,k,default=None):
         cfg=api.getConf()
         return cfg.get(k,default)
@@ -116,11 +121,11 @@ if __name__=="__main__":
     except:
         pass
 
-    #~ api.init("/home/manatlan/.local/share/ijbrout/")   #copy of the original jbrout
+    #~ api.init(os.path.expanduser("~/.local/share/jbrout"))  #copy of the original jbrout
     #~ index(log=False)
 
     api.init("./tempconf")
-    index(log=True) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
+    index(log=False) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
     api.save()
 
 

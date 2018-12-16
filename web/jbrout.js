@@ -49,6 +49,7 @@ var mystore = new Vuex.Store({
     displayType: "name", // "name", "date", "tags","album","comment"
     orderReverse:false,
     viewerIdx:null,
+    years:[],
   },
   getters: {
       photo(state) {
@@ -73,6 +74,16 @@ var mystore = new Vuex.Store({
       context.state.tags=await wuy.getTags();
       context.state.displayType=await wuy.cfgGet("displayType","name")
       context.state.orderReverse=await wuy.cfgGet("orderReverse",false)
+    },
+    getYears: async function(context) {
+      log("*getYears")
+      context.state.years=await wuy.getYears();
+      context.state.years.reverse();
+    },
+    getYear: async function(context,year) {
+      log("*getYear",year)
+      var ll=await wuy.getYear(year);
+      context.dispatch( "_feedFiles", ll )
     },
     selectAlbum: async function(context,{path,all}) {
       log("*selectAlbum",path)
