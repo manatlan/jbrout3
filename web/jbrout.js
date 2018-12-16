@@ -97,6 +97,7 @@ var mystore = new Vuex.Store({
       context.dispatch( "selectAlbum", {path,all:true} )
       context.state.files.forEach( i=>bus.$emit("change-photo",i.path))
       context.state.folders=await wuy.getFolders();
+      context.state.tags=await wuy.getTags();
     },
     removeBasket: async function(context,path) {
       log("*removeBasket",path)

@@ -1,6 +1,9 @@
 <template>
     <div>
-        <span class="click" @click="select(value)" @contextmenu.prevent="parent.menu($event,value)">{{value.name}}</span>
+        <span class="click" @click="select(value)" @contextmenu.prevent="parent.menu($event,value)">
+            <span :class="value.type">{{value.name}}</span>
+             
+        </span>
         <tree-Tags v-for="(i,idx) in value.children" :key="idx" :value="i" :parent="parent"/>
     </div>
 </template>
@@ -34,7 +37,20 @@ export default {
 :scope {
     padding-left:10px;
 }
+:scope span.tag{
+}
+:scope span.cat{
+    color: #AAA;
+}
+:scope span.cat:before {
+    content: "[";
+}
+:scope span.cat:after {
+    content: "]";
+}
+
 .selected {
     background: yellow;
 }
+
 </style>

@@ -89,6 +89,7 @@ def getTags():
                 name=c.name,
                 children=tol(c),
                 type="cat",
+                expand=c.expand,
             ))
         for t in f.getTags():
             ll.append( dict(
