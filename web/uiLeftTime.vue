@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div @contextmenu.prevent="">
         <div v-for="year in $store.state.years"
             class="click"
             @click="$store.dispatch('getYear',year)">{{year}}</div>

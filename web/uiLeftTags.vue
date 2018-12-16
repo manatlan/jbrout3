@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div @contextmenu.prevent="">
 
         <tree-tags v-for="(i,idx) in $store.state.tags" :key="idx" :value="i" :parent="current"/>
 

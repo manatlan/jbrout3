@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div @contextmenu.prevent="">
         Here will be the search-tab, to be able to search photos ;-)
     </div>
 </template>

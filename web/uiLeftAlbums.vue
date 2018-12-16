@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div @contextmenu.prevent="">
         <div class="click" style="padding-left:10px;"
             @click="selectBasket()" 
             v-if="$store.state.basket.length>0"
