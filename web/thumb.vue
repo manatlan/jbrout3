@@ -68,5 +68,6 @@ export default {
     }
     div.text {
         text-align:center;   
+        width:160px;
     }
 </style>

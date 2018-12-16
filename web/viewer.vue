@@ -1,27 +1,24 @@
 <template>
-    <div v-if="idx!=null"
+    <div v-if="$store.getters.photo!=null"
         @click="hide()"
         @contextmenu.prevent="hide()"
-        @wheel="scroll($event.deltaY)"
+        @wheel="$store.dispatch('view',$event.deltaY>0?'next':'previous')"
         @click.right="hide()"
         @click.middle="hide()"
-        @keyup="test($event)"
-
         :style='src'>
-        <div>{{idx+1}}/{{$store.state.files.length}}</div>
-        <div>Tags: {{item.tags && item.tags.join(", ")}}</div>
-        <div>Comment: {{item.comment}}</div>
-        <div>Album: {{item.path | dirname}}</div>
-        <div>Resolution: {{item.resolution}}</div>
-        <div>Date: {{item.date}}</div>
+
+        <div>{{$store.state.viewerIdx+1}}/{{$store.state.files.length}}</div>
+        <div>Tags: {{tags}}</div>
+        <div>Comment: {{comment}}</div>
+        <div>Resolution: {{resolution}}</div>
+        <div>Album: {{$store.getters.photo.path | dirname}}</div>
+        <div>Date: {{$store.getters.photo.date}}</div>
     </div>
 </template>
 <script>
 export default {
     data: function() {
         return {
-            idx:null,
-            item:{path:"",tags:[],comment:"",resolution:"",date:""},
             reload:{},
         }
     },
@@ -29,41 +26,37 @@ export default {
         bus.$on("change-photo",(path)=>{
             Vue.set(this.reload,path,new Date().getTime())
         })
-        bus.$on("viewer-next",()=>{if(this.idx!=null)this.scroll(1)})
-        bus.$on("viewer-previous",()=>{if(this.idx!=null) this.scroll(-1)})
-        bus.$on("viewer-close",()=>{if(this.idx!=null) this.hide()})
     },    
     computed: {
         src: function() {
-            var ts=this.reload[this.item.path]
-            if(ts) {
-                return `background-image: url("/image/`+this.item.path+`?idx=`+this.idx+"&refresh="+ts+`")`
+            if(this.$store.getters.photo!=null) {
+                var ts=this.reload[this.$store.getters.photo.path]
+                if(ts)
+                    return `background-image: url("/image/`+this.$store.getters.photo.path+`?idx=`+this.$store.state.viewerIdx+"&refresh="+ts+`")`
+                else
+                    return `background-image: url("/image/`+this.$store.getters.photo.path+`?idx=`+this.$store.state.viewerIdx+`")`
             }
-            else
-                return `background-image: url("/image/`+this.item.path+`?idx=`+this.idx+`")`
+        },
+        resolution: function() {
+            if(this.$store.getters.photo!=null) {
+                return this.$store.getters.photo.resolution
+            }
+        },
+        tags: function() {
+            if(this.$store.getters.photo!=null) {
+                return this.$store.getters.photo.tags.join(", ")
+            }
+        },
+        comment: function() {
+            if(this.$store.getters.photo!=null) {
+                return this.$store.getters.photo.comment
+            }
         }
     },
 
     methods: {
-        test(e) {
-            console.log(e)
-            alert(42)
-        },
-        view(idx) {
-            this.idx=idx;
-            this.item=this.$store.state.files[this.idx];
-        },
-        scroll(sens) {
-            if(sens>0)
-                this.idx+=1
-            else
-                this.idx+=-1
-
-            this.idx=(this.$store.state.files.length+this.idx)%this.$store.state.files.length;
-            this.item=this.$store.state.files[this.idx];
-        },
         hide() {
-            this.idx=null;
+            this.$store.dispatch("view",null)
         },
     },
 }

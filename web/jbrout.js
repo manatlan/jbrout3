@@ -8,21 +8,31 @@ var notImplemented=function() {alert("not implemented")}
 wuy.on("set-info", (idx,path,info)=>mystore.dispatch("setInfo",{idx,path,info}) )
 var CACHE={}
 var log=console.log;
+
+
 document.addEventListener('keydown', function(evt) {
-  console.log(evt)
+  var catsh=false;
   if(evt.ctrlKey) {
-      if(evt.code=="KeyL") { mystore.state.selected.forEach( p=>{ mystore.dispatch('photoRotateLeft',p)}); evt.preventDefault(); evt.stopPropagation(); return false }
-      if(evt.code=="KeyR") { mystore.state.selected.forEach( p=>{ mystore.dispatch('photoRotateRight',p)}) ; evt.preventDefault(); evt.stopPropagation();  return false }
-      if(evt.code=="KeyT") { mystore.state.selected.forEach( p=>{ mystore.dispatch('photoRebuildThumbnail',p)}) ; evt.preventDefault(); evt.stopPropagation();  return false }
+      if(evt.code=="KeyL") { var p=(mystore.getters.photo!=null?mystore.getters.photo.path:null); mystore.dispatch('photoRotateLeft',p); catsh=true}
+      if(evt.code=="KeyR") { var p=(mystore.getters.photo!=null?mystore.getters.photo.path:null); mystore.dispatch('photoRotateRight',p) ; catsh=true}
+      if(evt.code=="KeyT") { var p=(mystore.getters.photo!=null?mystore.getters.photo.path:null); mystore.dispatch('photoRebuildThumbnail',p) ; catsh=true}
   }
   else {
-    if(evt.code=="ArrowRight") { bus.$emit("viewer-next") }    
-    if(evt.code=="ArrowDown") { bus.$emit("viewer-next") }    
-    if(evt.code=="ArrowLeft") { bus.$emit("viewer-previous") }    
-    if(evt.code=="ArrowUp") { bus.$emit("viewer-previous") }    
-    if(evt.code=="Escape") { bus.$emit("viewer-close") }    
+    if(evt.code=="ArrowRight") { mystore.dispatch("view","next"); catsh=true }    
+    if(evt.code=="ArrowDown") { mystore.dispatch("view","next"); catsh=true }    
+    if(evt.code=="ArrowLeft") { mystore.dispatch("view","previous"); catsh=true }    
+    if(evt.code=="ArrowUp") { mystore.dispatch("view","previous"); catsh=true }    
+    if(evt.code=="Escape") { mystore.dispatch("view",null); catsh=true }    
+  }
+
+  if(catsh) {
+    evt.preventDefault();
+    evt.stopPropagation(); 
+    return false
   }
 })
+
+
 var mystore = new Vuex.Store({
   state: {
     folders: [],         // tree
@@ -31,10 +41,14 @@ var mystore = new Vuex.Store({
     selected:[],         // list of path
     displayType: "name", // "name", "date", "tags","album","comment"
     orderReverse:false,
+    viewerIdx:null,
   },
   getters: {
-      nimp() {                 // just for example
-          return state.title;
+      photo(state) {
+          if(state.viewerIdx!=null)
+            return state.files[state.viewerIdx]
+          else
+            return null;
       },
   },
   // NO MUTATIONS (all in actions)
@@ -50,6 +64,19 @@ var mystore = new Vuex.Store({
       log("*selectAlbum",path)
       var ll=await wuy.selectFromFolder(path,all)
       context.dispatch( "_feedFiles", ll )
+    },
+    view: function(context,idx) {
+      log("*view",idx)
+      if(context.state.viewerIdx!=null && idx=="next") {
+          context.state.viewerIdx+=1
+          context.state.viewerIdx=(context.state.files.length+context.state.viewerIdx)%context.state.files.length;
+      }
+      else if (context.state.viewerIdx!=null && idx=="previous") {
+          context.state.viewerIdx+=-1
+          context.state.viewerIdx=(context.state.files.length+context.state.viewerIdx)%context.state.files.length;
+      }
+      else
+        context.state.viewerIdx=idx;
     },
     selectTags: async function(context,tags) {
       log("*selectTags",tags)
@@ -86,18 +113,30 @@ var mystore = new Vuex.Store({
 
     photoRebuildThumbnail: async function(context,path) {
       log("*photoRebuildThumbnail",path)
-      await wuy.photoRebuildThumbnail(path)
-      bus.$emit("change-photo",path)
+      if(path) {
+        await wuy.photoRebuildThumbnail(path)
+        bus.$emit("change-photo",path)
+      }
+      else
+        context.state.selected.forEach( p=>context.dispatch("photoRebuildThumbnail",p))
     },
     photoRotateRight: async function(context,path) {
       log("*photoRotateRight",path)
-      await wuy.photoRotateRight(path)
-      bus.$emit("change-photo",path)
+      if(path) {
+        await wuy.photoRotateRight(path)
+        bus.$emit("change-photo",path)
+      }
+      else
+        context.state.selected.forEach( p=>context.dispatch("photoRotateRight",p))
     },
     photoRotateLeft: async function(context,path) {
       log("*photoRotateLeft",path)
-      await wuy.photoRotateLeft(path)
-      bus.$emit("change-photo",path)
+      if(path) {
+        await wuy.photoRotateLeft(path)
+        bus.$emit("change-photo",path)
+      }
+      else
+        context.state.selected.forEach( p=>context.dispatch("photoRotateLeft",p))
     },
 
 

@@ -23,8 +23,8 @@ import jbapi as api
 
 __version__="0.0.1"
 
-class index(wuy.Window):
-#~ class index(wuy.Server):
+#~ class index(wuy.Window):
+class index(wuy.Server):
 
     size=(1100,800)
 
@@ -88,11 +88,11 @@ if __name__=="__main__":
     except:
         pass
 
-    #~ api.init("/home/manatlan/.local/share/ijbrout/")   #copy of the original jbrout
-    #~ index(log=False)
+    api.init("/home/manatlan/.local/share/ijbrout/")   #copy of the original jbrout
+    index(log=False)
 
-    api.init("./tempconf")
-    index(log=True) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
-    api.save()
+    #~ api.init("./tempconf")
+    #~ index(log=True) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
+    #~ api.save()
 
 

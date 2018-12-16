@@ -39,7 +39,7 @@ export default {
             this.feed(10)
         },
         dblclick(event,item,idx) {
-            this.$root.$refs.viewer.view(idx)
+            this.$store.dispatch("view",idx)
         },
         click(event,item,idx) {
 
@@ -66,10 +66,10 @@ export default {
                 menu.push(    {name:'Select this time', callback: notImplemented } )
             }
             if(this.$store.state.selected.length>0) {
-                menu.push(    {name:'op> rotate left', callback: ()=>{this.$store.state.selected.forEach( p=>{ this.$store.dispatch('photoRotateLeft',p)})} } )
-                menu.push(    {name:'op> rotate right', callback: ()=>{this.$store.state.selected.forEach( p=>{ this.$store.dispatch('photoRotateRight',p)})} } )
+                menu.push(    {name:'op> rotate left', callback: ()=>{this.$store.dispatch('photoRotateLeft')} } )
+                menu.push(    {name:'op> rotate right', callback: ()=>{this.$store.dispatch('photoRotateRight')} } )
                 menu.push(    {name:'op> change date', callback: notImplemented } )
-                menu.push(    {name:'op> rebuild thumbnail', callback: ()=>{this.$store.state.selected.forEach( p=>{ this.$store.dispatch('photoRebuildThumbnail',p)})} } )
+                menu.push(    {name:'op> rebuild thumbnail', callback: ()=>{this.$store.dispatch('photoRebuildThumbnail')} } )
                 menu.push(    {name:'op> comment', callback: notImplemented } )
                 menu.push(    {name:'Delete', callback: notImplemented } )
             }
