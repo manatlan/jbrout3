@@ -60,6 +60,15 @@ class jbrout:
         p=api.selectPhoto(path)
         p.rotate("L")
 
+    def cfgGet(self,k,default=None):
+        cfg=api.getConf()
+        return cfg.get(k,default)
+
+    def cfgSet(self,k,v):
+        cfg=api.getConf()
+        cfg[k]=v
+        cfg.save()
+
 
 class index(wuy.Window,jbrout):
     """ wuy tech class (with tech stuff) """
@@ -86,6 +95,7 @@ class index(wuy.Window,jbrout):
             path=req.path[7:]
             if idx is not None: self.emit("set-info",idx,path,api.getInfo(path))
             return api.getImage(path)
+
 
 if __name__=="__main__":
     try:

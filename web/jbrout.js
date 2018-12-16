@@ -59,6 +59,8 @@ var mystore = new Vuex.Store({
       context.state.selected=[];
       context.state.folders=await wuy.getFolders();
       context.state.tags=await wuy.getTags();
+      context.state.displayType=await wuy.cfgGet("displayType","name")
+      context.state.orderReverse=await wuy.cfgGet("orderReverse",false)
     },
     selectAlbum: async function(context,{path,all}) {
       log("*selectAlbum",path)
@@ -158,10 +160,12 @@ var mystore = new Vuex.Store({
       context.state.orderReverse=bool;
       var ll=context.state.files;
       context.dispatch( "_feedFiles", ll )
+      wuy.cfgSet("orderReverse",bool)
     },
     setDisplayType: function(context,displayType) {
       log("*setDisplayType",displayType)
       context.state.displayType=displayType;
+      wuy.cfgSet("displayType",displayType)
     },
 
     // uiMain ...

@@ -78,7 +78,7 @@ if __name__=="__main__":
 
     api.init(os.path.expanduser("~/.local/share/ijbrout"))  #copy of the original jbrout
     #~ api.init("./tempconf")
-    index(log=False)
+    index(log=True)
     #~ api.save()
 
 
