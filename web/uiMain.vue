@@ -73,7 +73,7 @@ export default {
                     menu.push(    {name:'Add to basket', callback: ()=>{this.$store.dispatch('photoBasket',{path:null,bool:true})}  } )
             }
             if(this.$store.state.selected.length==1) {
-                menu.push(    {name:'Select this album', callback: notImplemented } )
+                menu.push(    {name:'Select this album', callback: ()=>{this.$store.dispatch('selectAlbum',{path:dirname(item.path),all:false})}  } )
                 menu.push(    {name:'Select this time', callback: notImplemented } )
             }
             if(this.$store.state.selected.length>0) {

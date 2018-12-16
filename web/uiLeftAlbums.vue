@@ -16,11 +16,17 @@ export default {
             current: this,
         }
     },
+    created() {
+        bus.$on("select-path",(path)=>{
+            this.select(path)
+        })
+    },        
     methods: {
         select(path) {
             this.selectedPath = path;
         },
         selectBasket(path) {
+            this.select("")
             this.$store.dispatch('selectBasket')
         },
         menu(e,path) {

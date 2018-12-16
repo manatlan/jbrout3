@@ -1,5 +1,8 @@
-Vue.filter("basename", path => {return path.split(/[\\/]/).pop()} )
-Vue.filter("dirname", path => {return path.replace(/\\/g,'/').replace(/\/[^\/]*$/, '').split(/[\\/]/).pop()} ) // in fact its basename(dirname)
+var basename=function(path) {return path.split(/[\\/]/).pop()}
+var dirname=function(path) {return path.replace(/\\/g,'/').replace(/\/[^\/]*$/, '')}
+
+Vue.filter("basename", path => basename(path) )
+Vue.filter("dirname", path => basename(dirname(path)) ) // in fact its basename(dirname)
 
 var bus=new Vue();
 
@@ -74,6 +77,7 @@ var mystore = new Vuex.Store({
       log("*selectAlbum",path)
       var ll=await wuy.selectFromFolder(path,all)
       context.dispatch( "_feedFiles", ll )
+      bus.$emit("select-path",path)
     },
     refreshAlbum: async function(context,path) {
       log("*refreshAlbum",path)
