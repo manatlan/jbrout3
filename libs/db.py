@@ -178,17 +178,21 @@ class DBPhotos:
             if m:
                 importErrors[file] = m
 
-        ln = self.root.xpath(u"""//folder[@name="%s"]""" % path)
+        ln = self.root.xpath('''//folder[@name="%s"]''' % path)
         if ln:
-            yield FolderNode(ln[0])
+            yield dict(importErrors=importErrors)
         else:
-            yield None
-        if len(importErrors) > 0:
-            k = list(importErrors.keys())
-            k.sort()
-            msgs = []
-            for f in k:
-                msgs.append('"%s" adding file: "%s"' % (importErrors[f], f))
+            yield path
+        # if ln:
+        #     yield FolderNode(ln[0])
+        # else:
+        #     yield None
+        # if len(importErrors) > 0:
+        #     k = list(importErrors.keys())
+        #     k.sort()
+        #     msgs = []
+        #     for f in k:
+        #         msgs.append('"%s" adding file: "%s"' % (importErrors[f], f))
             #~ MessageBoxScrolled(None, '\n'.join(msgs), 'Jbrout Import Errors')
 
     def __addPhoto(self, nodeDir, file, tags, filesInBasket):

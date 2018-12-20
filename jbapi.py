@@ -64,11 +64,14 @@ def init(confPath):
 
 def addFolder(folder): # in development ;-)
     importedTags={}
-    x=JBrout.db.add(folder,importedTags)
-    print(list(x))  # important !
-    print("importedTags",importedTags)
-    nbNewTags = JBrout.tags.updateImportedTags(list(importedTags.keys()))
-    print("nbNewTags",nbNewTags)
+    for i in JBrout.db.add(folder,importedTags):
+        if type(i)==dict:
+            last=i
+        else:
+            yield i
+    last["importedTags"]=list(importedTags.keys())
+    last["nbImportedTags"]=JBrout.tags.updateImportedTags(last["importedTags"])
+    yield last
 
 def save():
     JBrout.db.save()

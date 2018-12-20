@@ -34,12 +34,23 @@ class jbrout:
         import easygui  # until we found another way (in a cefpython instance ; it should be possible to make it client-side!)
         folder=easygui.diropenbox(msg="Select folder/album to add", title="jbrout")
         if folder:
-            api.addFolder(folder)
+            self.refreshFolder(folder)
             return True
         return False
 
     def refreshFolder(self,folder):
-        api.addFolder(folder)
+        g=api.addFolder(folder)
+        nb=next(g)
+        self.emit("set-working","0/%s"%nb)
+        last=None
+        for i in g:
+            if type(i)==dict:
+                self.emit("set-working",None)
+                last=i
+            else:
+                self.emit("set-working","%s/%s"%(i+1,nb))
+        print("######################################",last)
+        return last
 
     def removeFolder(self,folder):
         api.removeFolder(folder)
@@ -137,6 +148,7 @@ if __name__=="__main__":
     #~ index(log=False)
 
     api.init("./tempconf")
+    #~ index(log=True) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
     index(log=False) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
     api.save()
 

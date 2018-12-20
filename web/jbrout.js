@@ -10,8 +10,20 @@ var bus=new Vue();
 var notImplemented=function() {alert("not implemented")}
 
 wuy.on("set-info", (idx,path,info)=>mystore.dispatch("setInfo",{idx,path,info}) )
+wuy.on("set-working", (msg)=>mystore.dispatch("working",msg) 
+)
 var CACHE={}
 var log=console.log;
+
+
+async function asyncForEach(context,array, callback) {
+  context.dispatch("working","0/"+(array.length));
+  for (let index = 0; index < array.length; index++) {
+    context.dispatch("working",index+"/"+(array.length));
+    await callback(array[index], index, array);
+  }
+  context.dispatch("working",null);
+}
 
 
 document.addEventListener('keydown', function(evt) {
@@ -24,16 +36,16 @@ document.addEventListener('keydown', function(evt) {
       if(evt.key=="a") { mystore.dispatch('selectAll');catsh=true}
   }
   else {
-    if(evt.code=="ArrowRight") { mystore.dispatch("view","next"); catsh=true }    
-    if(evt.code=="ArrowDown") { mystore.dispatch("view","next"); catsh=true }    
-    if(evt.code=="ArrowLeft") { mystore.dispatch("view","previous"); catsh=true }    
-    if(evt.code=="ArrowUp") { mystore.dispatch("view","previous"); catsh=true }    
-    if(evt.code=="Escape") { mystore.dispatch("view",null); catsh=true }    
+    if(evt.code=="ArrowRight") { mystore.dispatch("view","next"); catsh=true }
+    if(evt.code=="ArrowDown") { mystore.dispatch("view","next"); catsh=true }
+    if(evt.code=="ArrowLeft") { mystore.dispatch("view","previous"); catsh=true }
+    if(evt.code=="ArrowUp") { mystore.dispatch("view","previous"); catsh=true }
+    if(evt.code=="Escape") { mystore.dispatch("view",null); catsh=true }
   }
 
   if(catsh) {
     evt.preventDefault();
-    evt.stopPropagation(); 
+    evt.stopPropagation();
     return false
   }
 })
@@ -50,6 +62,7 @@ var mystore = new Vuex.Store({
     orderReverse:false,
     viewerIdx:null,
     years:[],
+    working:null,
   },
   getters: {
       photo(state) {
@@ -64,6 +77,9 @@ var mystore = new Vuex.Store({
   },
   // NO MUTATIONS (all in actions)
   actions: {
+    working: function(context,txt) {
+      context.state.working=txt;
+    },
     init: async function(context) {
       log("*init")
       context.state.files=[];
@@ -163,7 +179,9 @@ var mystore = new Vuex.Store({
         bus.$emit("change-photo",path)
       }
       else
-        context.state.selected.forEach( p=>context.dispatch("photoRebuildThumbnail",p))
+        asyncForEach(context,context.state.selected, async (p,idx)=>{
+          await context.dispatch("photoRebuildThumbnail",p)
+        })
     },
     photoRotateRight: async function(context,path) {
       log("*photoRotateRight",path)
@@ -172,7 +190,10 @@ var mystore = new Vuex.Store({
         bus.$emit("change-photo",path)
       }
       else
-        context.state.selected.forEach( p=>context.dispatch("photoRotateRight",p))
+        asyncForEach(context,context.state.selected, async (p,idx)=>{
+          await context.dispatch("photoRotateRight",p)
+        })
+
     },
     photoRotateLeft: async function(context,path) {
       log("*photoRotateLeft",path)
@@ -181,7 +202,9 @@ var mystore = new Vuex.Store({
         bus.$emit("change-photo",path)
       }
       else
-        context.state.selected.forEach( p=>context.dispatch("photoRotateLeft",p))
+        asyncForEach(context,context.state.selected, async (p,idx)=>{
+          await context.dispatch("photoRotateLeft",p)
+        })
     },
     photoBasket: async function(context,{path,bool}) {
       log("*photoBasket",path,bool)
@@ -230,7 +253,9 @@ var mystore = new Vuex.Store({
     //==================================================
     addFolder: async function(context) {
       log("*addFolder")
+      context.dispatch("working","Select folder to add in")
       var ok=await wuy.addFolder()
+      context.dispatch("working",null)
       if(ok) await context.dispatch( "init" )
     },
     setOrderReverse: function(context,bool) {
