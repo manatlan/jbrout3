@@ -10,9 +10,11 @@ var bus=new Vue();
 var notImplemented=function() {alert("not implemented")}
 
 wuy.on("set-info", (idx,path,info)=>mystore.dispatch("setInfo",{idx,path,info}) )
-wuy.on("set-working", (msg)=>mystore.dispatch("working",msg) 
-)
-var CACHE={}
+wuy.on("set-working", (msg)=>mystore.dispatch("working",msg) )
+var CACHE={} // <- this things is here, just because browser CACHEs "http get jpg"
+             //    so it breaks the "set-info" system, and in that case
+             //    the vue app get info from here, for cached jpeg.
+
 var log=console.log;
 
 
@@ -111,7 +113,7 @@ var mystore = new Vuex.Store({
       log("*refreshAlbum",path)
       await wuy.refreshFolder(path)
       context.dispatch( "selectAlbum", {path,all:true} )
-      context.state.files.forEach( i=>bus.$emit("change-photo",i.path))
+      context.state.files.forEach( i=>bus.$emit("change-photo",i.path) )
       context.state.folders=await wuy.getFolders();
       context.state.tags=await wuy.getTags();
     },

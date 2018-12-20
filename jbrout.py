@@ -38,18 +38,19 @@ class jbrout:
             return True
         return False
 
-    def refreshFolder(self,folder):
+    async def refreshFolder(self,folder):
+        import asyncio
         g=api.addFolder(folder)
         nb=next(g)
         self.emit("set-working","0/%s"%nb)
         last=None
         for i in g:
+            await asyncio.sleep(0.00001)
             if type(i)==dict:
                 self.emit("set-working",None)
                 last=i
             else:
                 self.emit("set-working","%s/%s"%(i+1,nb))
-        print("######################################",last)
         return last
 
     def removeFolder(self,folder):
