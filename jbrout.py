@@ -15,7 +15,7 @@
 # #
 # ###########################################################################
 
-import os,sys
+import os,sys,asyncio
 import wuy,vbuild
 import jbapi as api
 #~ import jbfake as api
@@ -39,7 +39,6 @@ class jbrout:
         return False
 
     async def refreshFolder(self,folder):
-        import asyncio
         g=api.addFolder(folder)
         nb=next(g)
         self.emit("set-working","0/%s"%nb)
