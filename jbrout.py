@@ -30,13 +30,11 @@ class jbrout:
     def getTags(self):
         return api.getTags()
 
-    def addFolder(self):    #TODO: make async/yield here ! (for big folders)
+    async def addFolder(self):    #TODO: make async/yield here ! (for big folders)
         import easygui  # until we found another way (in a cefpython instance ; it should be possible to make it client-side!)
         folder=easygui.diropenbox(msg="Select folder/album to add", title="jbrout")
         if folder:
-            self.refreshFolder(folder)
-            return True
-        return False
+            return await self.refreshFolder(folder)
 
     async def refreshFolder(self,folder):
         g=api.addFolder(folder)
