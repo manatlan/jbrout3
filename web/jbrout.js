@@ -87,7 +87,6 @@ var mystore = new Vuex.Store({
       context.state.files=[];
       context.state.selected=[];
       context.state.basket=await wuy.selectFromBasket();
-      console.log("BASK",context.getters.basket)
       context.state.folders=await wuy.getFolders();
       context.state.tags=await wuy.getTags();
       context.state.displayType=await wuy.cfgGet("displayType","name")
