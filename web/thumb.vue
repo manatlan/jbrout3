@@ -50,13 +50,14 @@ export default {
     // }
     methods: {
         drop: function(ev) {
-            var tags = JSON.parse( ev.dataTransfer.getData("text") );
-
-            if(this.$store.state.selected.indexOf(this.value.path)>=0)
-                //multi
-                this.$store.dispatch("photoAddTags", {path:null,tags})
-            else//single
-                this.$store.dispatch("photoAddTags", {path:this.value.path,tags})
+            var obj = JSON.parse( ev.dataTransfer.getData("text") );
+            if(obj.tags) {
+                if(this.$store.state.selected.indexOf(this.value.path)>=0)
+                    //multi
+                    this.$store.dispatch("photoAddTags", {path:null,tags:obj.tags})
+                else//single
+                    this.$store.dispatch("photoAddTags", {path:this.value.path,tags:obj.tags})
+            }
         },
         dragover: function(ev) {
         },

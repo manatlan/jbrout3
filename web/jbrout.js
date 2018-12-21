@@ -144,8 +144,10 @@ var mystore = new Vuex.Store({
     },
     selectTags: async function(context,tags) {
       log("*selectTags",tags)
-      var ll=await wuy.selectFromTags(tags)
-      context.dispatch( "_feedFiles", ll )
+      if(tags.length>0) {
+        var ll=await wuy.selectFromTags(tags)
+        context.dispatch( "_feedFiles", ll )
+      }
     },
     selectBasket: async function(context) {
       log("*selectBasket")
@@ -264,16 +266,34 @@ var mystore = new Vuex.Store({
       }
     },
     tagsDelTag: async function(context,txt) {
-      log("*tagsDelTag")
-      //TODO: dont delete if used
-      var ok=await wuy.tagsDelTag(txt)
-      if(ok) context.state.tags=await wuy.getTags();
+      log("*tagsDelTag",txt)
+      var ll=await wuy.selectFromTags([txt])
+      if(ll.length>0)
+        alert("Tag is in use, can't be deleted")
+      else {
+        var ok=await wuy.tagsDelTag(txt)
+        if(ok) context.state.tags=await wuy.getTags();
+      }
     },
-    tagsDelCat: async function(context,txt) {
-      log("*tagsDelCat")
-      //TODO: dont delete if used
-      var ok=await wuy.tagsDelCat(txt)
-      if(ok) context.state.tags=await wuy.getTags();
+    tagsDelCat: async function(context,{cat,tags}) {
+      log("*tagsDelCat",cat)
+      var ll=await wuy.selectFromTags(tags)
+      if(ll.length>0)
+        alert("Category is in use, can't be deleted")
+      else {
+        var ok=await wuy.tagsDelCat(cat)
+        if(ok) context.state.tags=await wuy.getTags();
+      }
+    },
+    tagMoveToCat: async function(context,{tag,cat}) {
+      log("*tagMoveToCat",tag,cat)
+      await wuy.tagMoveToCat(tag,cat)
+      context.state.tags=await wuy.getTags();
+    },
+    catMoveToCat: async function(context,{cat1,cat2}) {
+      log("*catMoveToCat",cat1,cat2)
+      await wuy.catMoveToCat(cat1,cat2)
+      context.state.tags=await wuy.getTags();
     },
 
     // uiTop ...

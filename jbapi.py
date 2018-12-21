@@ -192,6 +192,17 @@ def tagsDelCat(cat):
         c.remove()
         return True
 
+def tagMoveToCat(tag,cat):
+    c1=JBrout.tags.selectTag(tag)
+    c2=JBrout.tags.selectCat(cat)
+    c1.moveToCatg(c2)
+
+def catMoveToCat(cat1,cat2):
+    c1=JBrout.tags.selectCat(cat1)
+    c2=JBrout.tags.selectCat(cat2)
+    c1.moveToCatg(c2)
+
+
 
 def photoAddTags(path, tags):
     assert type(tags) == list

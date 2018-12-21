@@ -58,7 +58,10 @@ class jbrout:
     def selectFromBasket(self):
         return api.selectFromBasket()
     def selectFromTags(self,tags):
-        return api.selectFromTags(tags)
+        if tags:
+            return api.selectFromTags(tags)
+        else:
+            return []
 
     def photoRebuildThumbnail(self,path):
         p=api.selectPhoto(path)
@@ -95,6 +98,12 @@ class jbrout:
         return api.tagsDelTag(txt)
     def tagsDelCat(self,txt):
         return api.tagsDelCat(txt)
+
+    def tagMoveToCat(self,tag,cat):
+        api.tagMoveToCat(tag,cat)
+
+    def catMoveToCat(self,cat1,cat2):
+        api.catMoveToCat(cat1,cat2)
 
 
     def photoAddTags(self, path, tags):

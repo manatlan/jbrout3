@@ -1043,7 +1043,10 @@ class DBTags:
         if ll:
             return TagNode(ll[0])
     def selectCat(self,catg):
-        ll = self.root.xpath('''//tags[@name="%s"]''' % catg)
+        if catg=="Tags":
+            ll = [self.root]
+        else:
+            ll = self.root.xpath('''//tags[@name="%s"]''' % catg)
         if ll:
             return CatgNode(ll[0])
     #====================================== new
