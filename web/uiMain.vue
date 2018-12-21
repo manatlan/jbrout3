@@ -71,6 +71,13 @@ export default {
                     menu.push(    {name:'Remove from basket', callback: ()=>{this.$store.dispatch('photoBasket',{path:null,bool:false})}  } )
                 else
                     menu.push(    {name:'Add to basket', callback: ()=>{this.$store.dispatch('photoBasket',{path:null,bool:true})}  } )
+                
+                var tagsCanBeRemoved=new Set([]);
+                this.$store.state.files.forEach(p=>{
+                    if(this.$store.state.selected.indexOf(p.path)>=0)
+                        for(var tag of p.tags)
+                            tagsCanBeRemoved.add(tag)
+                })
             }
             if(this.$store.state.selected.length==1) {
                 menu.push(    {name:'Select this album', callback: ()=>{this.$store.dispatch('selectAlbum',{path:dirname(item.path),all:false})}  } )
@@ -82,6 +89,12 @@ export default {
                 menu.push(    {name:'> change date', callback: notImplemented } )
                 menu.push(    {name:'> rebuild thumbnail (Ctrl-T)', callback: ()=>{this.$store.dispatch('photoRebuildThumbnail')} } )
                 menu.push(    {name:'> comment', callback: notImplemented } )
+                for(var tag of tagsCanBeRemoved)
+                    menu.push(    {name:'Remove tag:'+tag, callback: (n)=>{
+                        var tag=n.split(":")[1]
+                        this.$store.dispatch('photoDelTag',tag)
+                    }} )
+                menu.push(    {name:'Remove all tags', callback: ()=>{this.$store.dispatch('photoClearTags')}} )
                 menu.push(    {name:'Delete', callback: notImplemented } )
             }
             if(menu.length>0)

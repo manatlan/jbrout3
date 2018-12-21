@@ -441,7 +441,7 @@ isreal : %s""" % (self.__file,
         return True
 
     def sub(self, t):
-        assert type(t) == unicode
+        #~ assert type(t) == unicode
         if self.__readonly:
             return False
         if t in self.__tags:
@@ -468,7 +468,7 @@ isreal : %s""" % (self.__file,
             return False
         isModified = False
         for t in tags:
-            assert type(t) == unicode
+            #~ assert type(t) == unicode
             if t not in self.__tags:
                 isModified = True
                 self.__tags.append(t)

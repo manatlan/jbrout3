@@ -30,7 +30,8 @@ async function asyncForEach(context,array, callback) {
 
 document.addEventListener('keydown', function(evt) {
   var catsh=false;
-  console.log(evt)
+  if(mystore.state.working!=null) return; // no keyboard when working
+
   if(evt.ctrlKey) {
       if(evt.key=="l") { var p=(mystore.getters.photo!=null?mystore.getters.photo.path:null); mystore.dispatch('photoRotateLeft',p); catsh=true}
       if(evt.key=="r") { var p=(mystore.getters.photo!=null?mystore.getters.photo.path:null); mystore.dispatch('photoRotateRight',p) ; catsh=true}
@@ -215,7 +216,32 @@ var mystore = new Vuex.Store({
       }
       else
         context.state.selected.forEach( p=>context.dispatch("photoBasket",{path:p,bool}))
+    },
 
+    photoAddTags: async function(context,{path,tags}) {
+      log("*photoAddTags",path,tags)
+      if(path) {
+        await wuy.photoAddTags(path,tags)
+        bus.$emit("change-photo",path)
+      }
+      else
+        context.state.selected.forEach( p=>context.dispatch("photoAddTags",{path:p,tags}) )
+    },
+    photoClearTags: async function(context,path) {
+      log("*photoClearTags",path)
+      if(path) {
+        await wuy.photoClearTags(path)
+        bus.$emit("change-photo",path)
+      }
+      else
+      context.state.selected.forEach( p=>context.dispatch("photoClearTags",p) )
+    },
+    photoDelTag: async function(context,tag) {
+      log("*photoDelTag",tag)
+      context.state.selected.forEach( async p=>{
+        await wuy.photoDelTag(p,tag)
+        bus.$emit("change-photo",p)
+      })
     },
 
 

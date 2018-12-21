@@ -180,7 +180,7 @@ def tagsAddTag(cat,newTag):
     c=JBrout.tags.selectCat(cat)
     if c:
         return c.addTag(newTag.strip())
-    
+
 def tagsDelTag(tag):
     c=JBrout.tags.selectTag(tag)
     if c:
@@ -191,6 +191,21 @@ def tagsDelCat(cat):
     if c:
         c.remove()
         return True
+
+
+def photoAddTags(path, tags):
+    assert type(tags) == list
+    p=selectPhoto(path)
+    p.addTags(tags)
+
+def photoDelTag(path, tag):
+    # assert type(tag) == unicode
+    p=selectPhoto(path)
+    p.delTag(tag)
+
+def photoClearTags(path):
+    p=selectPhoto(path)
+    p.clearTags()
 
 
 if __name__=="__main__":

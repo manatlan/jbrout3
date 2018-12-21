@@ -798,7 +798,7 @@ class PhotoNode(object):
             self.updateInfo(pc)
 
     def delTag(self, tag):
-        assert type(tag) == unicode
+        # assert type(tag) == unicode
 
         pc = PhotoCmd(self.file)
         if pc.sub(tag):

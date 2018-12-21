@@ -1,7 +1,11 @@
 <template>
     <div>
-        <span class="click" @click="select(value)" @contextmenu.prevent="parent.menu($event,value)">
-            <span :class="value.type">{{value.name}}</span>
+        <span class="click" @dblclick="select(value)" @contextmenu.prevent="parent.menu($event,value)">
+            <span :class="value.type"
+                @dragstart="dragstart" 
+                draggable="true"
+                >{{value.name}}
+            </span>
              
         </span>
         <tree-Tags v-for="(i,idx) in value.children" :key="idx" :value="i" :parent="parent"/>
@@ -14,22 +18,23 @@ export default {
     },
     methods: {
         select(item) {
+            this.$store.dispatch('selectTags',this._getTags(item))
+        },
+        dragstart: function(ev) {        
+            ev.dataTransfer.setData("text",JSON.stringify(this._getTags(this.value)))
+        },
+        _getTags(item) {
+            var tags=[]
             if(item.type=="tag")
-                this.$store.dispatch('selectTags',[item.name])
-            else {
-                var gett=function(item) {
-                    var tags=[]
-                    for(var i of item.children) {
-                        if(i.type=="tag")
-                            tags.push(i.name)
-                        else
-                            tags=tags.concat( gett(i) )
-                    }
-                    return tags
-                }
-                this.$store.dispatch('selectTags',gett(item))
+                tags.push(item.name)
+            for(var i of item.children) {
+                if(i.type=="tag")
+                    tags.push(i.name)
+                else
+                    tags=tags.concat( this._getTags(i) )
             }
-        }
+            return tags
+        }        
     }
 }
 </script>

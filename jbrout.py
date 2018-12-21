@@ -89,15 +89,20 @@ class jbrout:
 
     def tagsAddTag(self,cat,txt):
         return api.tagsAddTag(cat,txt)
-
     def tagsAddCat(self,cat,txt):
         return api.tagsAddCat(cat,txt)
-
     def tagsDelTag(self,txt):
         return api.tagsDelTag(txt)
-
     def tagsDelCat(self,txt):
         return api.tagsDelCat(txt)
+
+
+    def photoAddTags(self, path, tags):
+        api.photoAddTags(path,tags)
+    def photoDelTag(self, path, tag):
+        api.photoDelTag(path,tag)
+    def photoClearTags(self,path):
+        api.photoClearTags(path)
 
     def cfgGet(self,k,default=None):
         cfg=api.getConf()

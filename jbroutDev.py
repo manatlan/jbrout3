@@ -76,10 +76,10 @@ if __name__=="__main__":
     except:
         pass
 
-    api.init(os.path.expanduser("~/.local/share/jbrout"))  #copy of the original jbrout
-    #~ api.init("./tempconf")
+    #~ api.init(os.path.expanduser("~/.local/share/jbrout"))  #copy of the original jbrout
+    api.init("./tempconf")
     index(log=True)
-    #~ api.save()
+    api.save()
 
 
 

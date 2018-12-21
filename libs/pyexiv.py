@@ -142,8 +142,8 @@ class Exiv2Metadata(object):
         return ll
 
     def setTags(self, l):
-        for i in l:
-            assert type(i) == unicode
+        #~ for i in l:
+            #~ assert type(i) == unicode
 
         if l:
             self._md["Iptc.Application2.Keywords"] = \
