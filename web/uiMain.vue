@@ -74,7 +74,7 @@ export default {
                 
                 var tagsCanBeRemoved=new Set([]);
                 this.$store.state.files.forEach(p=>{
-                    if(this.$store.state.selected.indexOf(p.path)>=0)
+                    if(this.$store.state.selected.indexOf(p.path)>=0 && p.tags)
                         for(var tag of p.tags)
                             tagsCanBeRemoved.add(tag)
                 })
@@ -94,7 +94,7 @@ export default {
                         var tag=n.split(":")[1]
                         this.$store.dispatch('photoDelTag',tag)
                     }} )
-                menu.push(    {name:'Remove all tags', callback: ()=>{this.$store.dispatch('photoClearTags')}} )
+                if(tagsCanBeRemoved.size>0) menu.push(    {name:'Remove all tags', callback: ()=>{this.$store.dispatch('photoClearTags')}} )
                 menu.push(    {name:'Delete', callback: notImplemented } )
             }
             if(menu.length>0)
