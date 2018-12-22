@@ -7,6 +7,8 @@
         @click.middle="hide()"
         :style='src'>
 
+        <img class="basket" src="gfx/basket.png" v-if="isInBasket"/>
+
         <div>{{$store.state.viewerIdx+1}}/{{$store.state.files.length}}</div>
         <div>Name: {{$store.getters.photo.path | basename}}</div>
         <div>Tags: {{tags}}</div>
@@ -29,6 +31,10 @@ export default {
         })
     },    
     computed: {
+        isInBasket: function() {
+            if(this.$store.getters.photo!=null)
+                return this.$store.getters.basket.indexOf(this.$store.getters.photo.path)>=0
+        },
         src: function() {
             if(this.$store.getters.photo!=null) {
                 var ts=this.reload[this.$store.getters.photo.path]

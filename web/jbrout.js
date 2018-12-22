@@ -31,7 +31,7 @@ async function asyncForEach(context,array, callback) {
 document.addEventListener('keydown', function(evt) {
   var catsh=false;
   if(mystore.state.working!=null) return; // no keyboard when working
-
+  
   if(evt.ctrlKey) {
       if(evt.key=="l") { var p=(mystore.getters.photo!=null?mystore.getters.photo.path:null); mystore.dispatch('photoRotateLeft',p); catsh=true}
       if(evt.key=="r") { var p=(mystore.getters.photo!=null?mystore.getters.photo.path:null); mystore.dispatch('photoRotateRight',p) ; catsh=true}
@@ -44,6 +44,7 @@ document.addEventListener('keydown', function(evt) {
     if(evt.code=="ArrowLeft") { mystore.dispatch("view","previous"); catsh=true }
     if(evt.code=="ArrowUp") { mystore.dispatch("view","previous"); catsh=true }
     if(evt.code=="Escape") { mystore.dispatch("view",null); catsh=true }
+    if(evt.code=="Space") { mystore.dispatch("switchBasket"); catsh=true }
   }
 
   if(catsh) {
@@ -145,6 +146,10 @@ var mystore = new Vuex.Store({
       }
       else
         context.state.viewerIdx=idx;
+
+      if(context.state.viewerIdx!=null)
+        context.dispatch( "selectJustOne", context.state.files[context.state.viewerIdx].path )
+        
     },
     selectTags: async function(context,tags) {
       log("*selectTags",tags)
@@ -223,6 +228,13 @@ var mystore = new Vuex.Store({
       }
       else
         context.state.selected.forEach( p=>context.dispatch("photoBasket",{path:p,bool}))
+    },
+    switchBasket: async function(context) {
+      log("*switchBasket")
+      context.state.selected.forEach( p=>{
+        var isInBasket=context.getters.basket.indexOf(p)>=0;
+        context.dispatch("photoBasket",{path:p,bool:!isInBasket})
+      });
     },
 
     photoAddTags: async function(context,{path,tags}) {
@@ -334,12 +346,15 @@ var mystore = new Vuex.Store({
     // uiMain ...
     //==================================================
     selectAll: function(context) {
+      log("*selectAll")
       context.state.selected = context.state.files.map( i=>i.path )
     },
     selectJustOne: function(context,obj) {
+      log("*selectJustOne",obj)
       context.state.selected=[obj]
     },
     selectSwitchOne: function(context,obj) {
+      log("*selectSwitchOne",obj)
       var idx=context.state.selected.indexOf(obj);
       if(idx>=0)
         context.state.selected.splice(idx, 1)
@@ -347,6 +362,7 @@ var mystore = new Vuex.Store({
         context.state.selected.push(obj)
     },
     selectAddOne: function(context,obj) {
+      log("*selectAddOne",obj)
       var idx=context.state.selected.indexOf(obj);
       if(idx<0)
         context.state.selected.push(obj)
