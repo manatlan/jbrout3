@@ -125,7 +125,7 @@ class jbrout:
 
 class index(wuy.Window,jbrout):
     """ wuy tech class (with tech stuff) """
-    size=(1100,800)
+    size=(1024,780)
 
     def _render(self,path): #here is the magic
         # load your template (from web folder)

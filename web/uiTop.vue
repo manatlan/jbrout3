@@ -8,7 +8,7 @@
             @dragend.prevent="mydragend($event)"
             @drop.prevent="mydrop(null,$event)"
             >+</button>
-
+        <span class="title">{{$store.state.content}}</span>
         <span style="float:right">
             <a href="#" @click="menuDisplay($event)" @contextmenu.prevent="menuDisplay($event)">display({{$store.state.displayType}})</a>
             <a href="#" @click="menuOrder($event)" @contextmenu.prevent="menuOrder($event)">order({{$store.state.orderReverse?"D":"A"}})</a>
@@ -59,6 +59,7 @@ export default {
 </script>
 <style scoped>
     :scope {padding:10px}
+    :scope .title{margin:230px}
     a {text-decoration:none}
     .dropHighlight {background: white;}
 </style>

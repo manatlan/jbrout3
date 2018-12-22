@@ -21,7 +21,7 @@ export default {
     },
     methods: {
         select(item) {
-            this.$store.dispatch('selectTags',this._getTags(item))
+            this.$store.dispatch('selectTags',{tags:this._getTags(item),cat: item.type=="cat"?item.name:null})
         },
         dragstart: function(ev) {        
             this.$store.dispatch("dragging","tag")

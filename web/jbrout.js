@@ -67,6 +67,7 @@ var mystore = new Vuex.Store({
     viewerIdx:null,
     years:[],
 
+    content:"",           // <- title of what kind of thing is displayed in listview
     working:null,
     dragging: null,
     notify:[],
@@ -122,13 +123,13 @@ var mystore = new Vuex.Store({
     },
     getYear: async function(context,year) {
       log("*getYear",year)
-      var ll=await wuy.getYear(year);
-      context.dispatch( "_feedFiles", ll )
+      var list=await wuy.getYear(year);
+      context.dispatch( "_feedFiles", {list,title:"Year "+year} )
     },
     selectAlbum: async function(context,{path,all}) {
       log("*selectAlbum",path)
-      var ll=await wuy.selectFromFolder(path,all)
-      context.dispatch( "_feedFiles", ll )
+      var list=await wuy.selectFromFolder(path,all)
+      context.dispatch( "_feedFiles", {list,title:"Album '"+basename(path)+"'"} )
       bus.$emit("select-path",path)
     },
     refreshAlbum: async function(context,path) {
@@ -149,7 +150,7 @@ var mystore = new Vuex.Store({
     removeAlbum: async function(context,path) {
       log("*removeAlbum",path)
       await wuy.removeFolder(path)
-      context.dispatch( "_feedFiles", [] )
+      context.dispatch( "_feedFiles", {list:[],title:""} )
       context.state.folders=await wuy.getFolders();
       context.state.basket=await wuy.selectFromBasket()
     },
@@ -178,26 +179,29 @@ var mystore = new Vuex.Store({
       if(context.state.viewerIdx!=null)
         context.dispatch( "selectJustOne", context.state.files[context.state.viewerIdx].path )
     },
-    selectTags: async function(context,tags) {
+    selectTags: async function(context,{tags,cat}) {
       log("*selectTags",tags)
       if(tags.length>0) {
-        var ll=await wuy.selectFromTags(tags)
-        context.dispatch( "_feedFiles", ll )
+        var list=await wuy.selectFromTags(tags)
+        var title=cat==null?"Tag "+tags.join(", "):"Category '"+cat+"'";
+        context.dispatch( "_feedFiles", {list,title} )
       }
     },
     selectBasket: async function(context) {
       log("*selectBasket")
-      context.dispatch( "_feedFiles", context.state.basket )
+      context.dispatch( "_feedFiles", {list:context.state.basket,title:"Basket"} )
     },
-    _feedFiles: function(context,ll) {
-      log("*_feedFiles",ll.length)
+    _feedFiles: function(context,{list,title}) {
+      log("*_feedFiles",title,list.length)
       context.state.selected=[];
-      ll.sort( (a,b)=>parseInt(a.date) - parseInt(b.date) );
-      if(context.state.orderReverse) ll=ll.reverse();
+      list.sort( (a,b)=>parseInt(a.date) - parseInt(b.date) );
+      if(context.state.orderReverse) list=list.reverse();
 
       //~ context.state.files=photoNodes(ll);
 
-      context.state.files=ll;
+      if(title) context.state.content=title;
+
+      context.state.files=list;
       context.state.files.forEach( (item,idx)=>{
         if (item.path in CACHE) context.dispatch( "setInfo", {idx:idx,path:item.path,info:CACHE[item.path]} )
       })
@@ -360,8 +364,8 @@ var mystore = new Vuex.Store({
     setOrderReverse: function(context,bool) {
       log("*setOrderReverse",bool)
       context.state.orderReverse=bool;
-      var ll=context.state.files;
-      context.dispatch( "_feedFiles", ll )
+      var list=context.state.files;
+      context.dispatch( "_feedFiles", {list,title:null} )
       wuy.cfgSet("orderReverse",bool)
     },
     setDisplayType: function(context,displayType) {
