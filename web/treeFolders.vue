@@ -13,7 +13,9 @@
             draggable="true"
             @dragstart="dragstart" 
             @dragend="dragend"                     
-            ><img src="gfx/folder.png"/> {{value.path | basename}} <span v-show="value.items">({{value.items}})</span></div>
+            ><img src="gfx/folder.png"/> {{value.path | basename}} 
+            <span v-show="value.items">({{value.items}})</span>
+        </div>
 
         <tree-folders v-for="(i,idx) in value.folders" :key="idx" :value="i" :parent="parent"/>
     </div>
@@ -23,7 +25,7 @@ export default {
     props:["value","parent"],
     computed: {
         classItem: function() {
-            return (this.parent.selectedPath == this.value.path?'tselected':'')+" click " + (this.value.items>0?"":"nophotos");
+            return "item "+ (this.parent.selectedPath == this.value.path?'tselected':'')+" click " + (this.value.items>0?"":"nophotos");
         }
     },
     methods: {
@@ -51,6 +53,10 @@ export default {
 :scope {
     padding-left:10px;
 }
+:scope div.item *{
+    vertical-align: middle;
+}
+
 .tselected {
     background: yellow;
 }
