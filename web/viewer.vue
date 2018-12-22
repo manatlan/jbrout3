@@ -50,7 +50,7 @@ export default {
             }
         },
         tags: function() {
-            if(this.$store.getters.photo!=null) {
+            if(this.$store.getters.photo!=null && this.$store.getters.photo.tags) {
                 return this.$store.getters.photo.tags.join(", ")
             }
         },

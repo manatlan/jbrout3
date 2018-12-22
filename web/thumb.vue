@@ -37,6 +37,10 @@ export default {
             if(path==this.value.path)
                 this.refresh=true;
         })
+        bus.$on("scroll-to-path",(path)=>{
+            if(path==this.value.path)
+                this.$el.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"})
+        })
     },    
     computed: {
         src: function() {

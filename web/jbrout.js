@@ -136,6 +136,15 @@ var mystore = new Vuex.Store({
     },
     view: function(context,idx) {
       log("*view",idx)
+
+      if(idx==null && context.state.viewerIdx!=null) {
+        // prepare to return to listview, and scroll til the selected
+        var p=context.state.files[context.state.viewerIdx].path;
+        Vue.nextTick( ()=>{
+          bus.$emit("scroll-to-path",p)
+        })
+      }
+
       if(context.state.viewerIdx!=null && idx=="next") {
           context.state.viewerIdx+=1
           context.state.viewerIdx=(context.state.files.length+context.state.viewerIdx)%context.state.files.length;
@@ -149,7 +158,6 @@ var mystore = new Vuex.Store({
 
       if(context.state.viewerIdx!=null)
         context.dispatch( "selectJustOne", context.state.files[context.state.viewerIdx].path )
-        
     },
     selectTags: async function(context,tags) {
       log("*selectTags",tags)
@@ -349,23 +357,23 @@ var mystore = new Vuex.Store({
       log("*selectAll")
       context.state.selected = context.state.files.map( i=>i.path )
     },
-    selectJustOne: function(context,obj) {
-      log("*selectJustOne",obj)
-      context.state.selected=[obj]
+    selectJustOne: function(context,path) {
+      log("*selectJustOne",path)
+      context.state.selected=[path]
     },
-    selectSwitchOne: function(context,obj) {
-      log("*selectSwitchOne",obj)
-      var idx=context.state.selected.indexOf(obj);
+    selectSwitchOne: function(context,path) {
+      log("*selectSwitchOne",path)
+      var idx=context.state.selected.indexOf(path);
       if(idx>=0)
         context.state.selected.splice(idx, 1)
       else
-        context.state.selected.push(obj)
+        context.state.selected.push(path)
     },
-    selectAddOne: function(context,obj) {
-      log("*selectAddOne",obj)
-      var idx=context.state.selected.indexOf(obj);
+    selectAddOne: function(context,path) {
+      log("*selectAddOne",path)
+      var idx=context.state.selected.indexOf(path);
       if(idx<0)
-        context.state.selected.push(obj)
+        context.state.selected.push(path)
     },
 }
 })
