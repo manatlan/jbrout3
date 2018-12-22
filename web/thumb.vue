@@ -86,7 +86,7 @@ export default {
 <style scoped>
     :scope {
         height:auto;
-        margin:2px;
+        padding:5px;
         text-align:center;
     }
     div.photo {
