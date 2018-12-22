@@ -319,7 +319,7 @@ var mystore = new Vuex.Store({
       log("*tagsDelTag",txt)
       var ll=await wuy.selectFromTags([txt])
       if(ll.length>0)
-        alert("Tag is in use, can't be deleted")
+        context.dispatch("notify","Tag is in use, can't be deleted")
       else {
         var ok=await wuy.tagsDelTag(txt)
         if(ok) context.state.tags=await wuy.getTags();
@@ -329,7 +329,7 @@ var mystore = new Vuex.Store({
       log("*tagsDelCat",cat)
       var ll=await wuy.selectFromTags(tags)
       if(ll.length>0)
-        alert("Category is in use, can't be deleted")
+        context.dispatch("notify","Category is in use, can't be deleted")
       else {
         var ok=await wuy.tagsDelCat(cat)
         if(ok) context.state.tags=await wuy.getTags();
