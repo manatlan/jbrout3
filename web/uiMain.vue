@@ -20,14 +20,17 @@ export default {
             list: [],
         }
     },
-    created() {
+    beforeMount() {
         bus.$on("change-set-photos",()=>{
             log("event change-set-photos")
             this.$el.scrollTop=0;
             this.list=[]
             this.feed(60)
         })
-    },
+    },    
+    beforeDestroy() {
+        bus.$off("change-set-photos");
+    },      
     methods: {
         feed(nb) {
           var tot=this.list.length;
@@ -101,12 +104,6 @@ export default {
                 this.$root.$refs.menu.pop(menu,e)
         },
     },
-    watch: {
-        //~ '$store.state.files':function (to, from) {
-            //~ this.$el.scrollTop=0;
-            //~ Vue.nextTick( this.refreshDataSrc);
-        //~ },
-    }
 }
 </script>
 <style scoped>

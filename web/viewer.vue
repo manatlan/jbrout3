@@ -25,11 +25,14 @@ export default {
             reload:{},
         }
     },
-    created() {
+    beforeMount() {
         bus.$on("change-photo",(path)=>{
             Vue.set(this.reload,path,new Date().getTime())
         })
     },    
+    beforeDestroy() {
+        bus.$off("change-photo")
+    },     
     computed: {
         isInBasket: function() {
             if(this.$store.getters.photo!=null)

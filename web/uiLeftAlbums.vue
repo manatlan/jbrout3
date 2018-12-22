@@ -13,11 +13,14 @@ export default {
             current: this,
         }
     },
-    created() {
+    beforeMount() {
         bus.$on("select-path",(path)=>{
             this.select(path)
         })
-    },        
+    },    
+    beforeDestroy() {
+        bus.$off("select-path")
+    },               
     methods: {
         select(path) {
             this.selectedPath = path;

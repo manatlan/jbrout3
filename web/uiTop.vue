@@ -8,7 +8,7 @@
             @dragend.prevent="mydragend($event)"
             @drop.prevent="mydrop(null,$event)"
             >+</button>
-        <span class="title">{{$store.state.content}}</span>
+        <span class="title" v-html="$store.state.content"></span>
 
         <div class="click basket"
             @click="selectBasket()" 

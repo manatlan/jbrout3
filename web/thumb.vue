@@ -32,7 +32,7 @@ export default {
     data:function() {
         return {refresh:false}
     },
-    mounted() {
+    beforeMount() {
         bus.$on("change-photo",(path)=>{
             if(path==this.value.path)
                 this.refresh=true;
@@ -42,6 +42,10 @@ export default {
                 this.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"})
         })
     },    
+    beforeDestroy() {
+        bus.$off("change-photo")
+        bus.$off("scroll-to-path")
+    },     
     computed: {
         src: function() {
             if(this.refresh) {
@@ -52,17 +56,13 @@ export default {
                 return '/thumb/'+this.value.path+'?idx='+this.idx;
         }
     },
-    // mounted() {
-    //     wuy.getInfo(this.idx,this.value.path)
-    // }
     methods: {
         drop: function(ev) {
             var obj = JSON.parse( ev.dataTransfer.getData("text") );
             if(obj.tags) {
-                if(this.$store.state.selected.indexOf(this.value.path)>=0)
-                    //multi
+                if(this.$store.state.selected.indexOf(this.value.path)>=0) //multi
                     this.$store.dispatch("photoAddTags", {path:null,tags:obj.tags})
-                else//single
+                else //single
                     this.$store.dispatch("photoAddTags", {path:this.value.path,tags:obj.tags})
             }
         },
