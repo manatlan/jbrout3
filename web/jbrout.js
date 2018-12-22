@@ -134,6 +134,7 @@ var mystore = new Vuex.Store({
     refreshAlbum: async function(context,path) {
       log("*refreshAlbum",path)
       var info=await wuy.refreshFolder(path)
+      //TODO: treat info (for errors, new imported tags ...)
       context.dispatch( "notify", info.nb+" photo(s) in '"+info.name+"'" )
       context.dispatch( "selectAlbum", {path,all:true} )
       context.state.files.forEach( i=>bus.$emit("change-photo",i.path) )
