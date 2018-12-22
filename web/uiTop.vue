@@ -9,10 +9,11 @@
             @drop.prevent="mydrop(null,$event)"
             >+</button>
         <span class="title">{{$store.state.content}}</span>
-        <span style="float:right">
-            <a href="#" @click="menuDisplay($event)" @contextmenu.prevent="menuDisplay($event)">display({{$store.state.displayType}})</a>
-            <a href="#" @click="menuOrder($event)" @contextmenu.prevent="menuOrder($event)">order({{$store.state.orderReverse?"D":"A"}})</a>
-        </span>
+
+        <div class="click basket"
+            @click="selectBasket()" 
+            v-if="$store.state.basket.length>0"
+            @contextmenu.prevent="menubasket($event)"> <img src="gfx/basket.png"/> <span>{{$store.state.basket.length}}</span></div>
     </div>
 </template>
 <script>
@@ -21,24 +22,6 @@ export default {
         return {};
     },
     methods: {
-        menuDisplay(e) {
-            var menu = [
-                {name:'name', callback: (n)=>{this.$store.dispatch("setDisplayType",n)} },
-                {name:'tags', callback: (n)=>{this.$store.dispatch("setDisplayType",n)} },
-                {name:'date', callback: (n)=>{this.$store.dispatch("setDisplayType",n)} },
-                {name:'comment', callback: (n)=>{this.$store.dispatch("setDisplayType",n)} },
-                {name:'album', callback: (n)=>{this.$store.dispatch("setDisplayType",n)} },
-            ];
-            this.$root.$refs.menu.pop(menu,e)
-        },
-        menuOrder(e) {
-            var menu = [
-                {name:'ascending', callback:  (n)=>{this.$store.dispatch("setOrderReverse",false)} },
-                {name:'descending', callback:  (n)=>{this.$store.dispatch("setOrderReverse",true)} },
-            ];
-            this.$root.$refs.menu.pop(menu,e)
-        },
-
         mydragover(e) { e.target.classList.add("dropHighlight") },
         mydragend(e) { e.target.classList.remove("dropHighlight") },
         mydrop(i,e) {
@@ -54,12 +37,25 @@ export default {
                 console.log("===",items[i],entry,file)
             }
         },
+
+        selectBasket(path) {
+            this.$store.dispatch('selectBasket')
+        },
+        menubasket(e) {
+            var menu = [
+                {name:'remove', callback: ()=>{this.$store.dispatch('removeBasket')} },
+                {name:'export', callback: notImplemented },
+            ];
+            this.$root.$refs.menu.pop(menu,e)
+        },        
+
     }
 }
 </script>
 <style scoped>
     :scope {padding:10px}
     :scope .title{margin:230px}
-    a {text-decoration:none}
+    :scope .basket{float:right;}
+    :scope .basket * {vertical-align: middle}
     .dropHighlight {background: white;}
 </style>

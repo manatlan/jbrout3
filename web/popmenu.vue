@@ -1,6 +1,6 @@
 <template>
     <ul tabindex="-1" ref="popmenu" v-if="menus.length>0" @blur="menus=[]" class="noselect" :style="style" @contextmenu.prevent="">
-        <li v-for="i in menus" @click="caller(i)">{{i.name}}</li>
+        <li v-for="i in menus" @click="caller(i)" v-html="i.name"></li>
     </ul>
 </template>
 <script>
