@@ -7,7 +7,7 @@ Vue.filter("date", s => s.substr(0,4)+"/"+s.substr(4,2)+"/"+s.substr(6,2)+" "+s.
 
 var bus=new Vue();
 
-var notImplemented=function() {alert("not implemented")}
+var notImplemented=function() {mystore.dispatch("notify","not implemented")}
 
 wuy.on("set-info", (idx,path,info)=>mystore.dispatch("setInfo",{idx,path,info}) )
 wuy.on("set-working", (msg)=>mystore.dispatch("working",msg) )
@@ -133,7 +133,8 @@ var mystore = new Vuex.Store({
     },
     refreshAlbum: async function(context,path) {
       log("*refreshAlbum",path)
-      await wuy.refreshFolder(path)
+      var info=await wuy.refreshFolder(path)
+      context.dispatch( "notify", info.nb+" photo(s) in '"+info.name+"'" )
       context.dispatch( "selectAlbum", {path,all:true} )
       context.state.files.forEach( i=>bus.$emit("change-photo",i.path) )
       context.state.folders=await wuy.getFolders();

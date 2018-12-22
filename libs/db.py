@@ -180,7 +180,7 @@ class DBPhotos:
 
         ln = self.root.xpath('''//folder[@name="%s"]''' % path)
         if ln:
-            yield dict(importErrors=importErrors)
+            yield dict(importErrors=importErrors,name=os.path.basename(path),nb=len(files))
         else:
             yield path
         # if ln:
