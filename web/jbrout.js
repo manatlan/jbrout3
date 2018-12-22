@@ -66,6 +66,7 @@ var mystore = new Vuex.Store({
     viewerIdx:null,
     years:[],
     working:null,
+    dragging: null,
   },
   getters: {
       photo(state) {
@@ -82,6 +83,9 @@ var mystore = new Vuex.Store({
   actions: {
     working: function(context,txt) {
       context.state.working=txt;
+    },
+    dragging: function(context,txt) {
+      context.state.dragging=txt;
     },
     init: async function(context) {
       log("*init")
@@ -172,7 +176,8 @@ var mystore = new Vuex.Store({
       // log("*setInfo",obj)
       CACHE[obj.path]=obj.info
       for(var k of Object.keys(obj.info)) {
-        Vue.set(context.state.files[obj.idx],k,obj.info[k])
+        if(context.state.files[obj.idx])
+          Vue.set(context.state.files[obj.idx],k,obj.info[k])
       }
     },
 
@@ -245,6 +250,14 @@ var mystore = new Vuex.Store({
         bus.$emit("change-photo",p)
       })
     },
+    photoMoveAlbum: async function(context,path) { //TODO: finnish here
+      log("*photoMoveAlbum",path)
+      alert("NOT DONE : will move "+context.state.selected.length+"selected to "+path)
+    },
+    albumMoveAlbum: async function(context,{path1,path2}) { //TODO: finnish here
+      log("*albumMoveAlbum",path1,path2)
+      alert("NOT DONE : will move "+path1+" to "+path2)
+    },
 
 
     // uiLeftTags ...
@@ -287,13 +300,13 @@ var mystore = new Vuex.Store({
     },
     tagMoveToCat: async function(context,{tag,cat}) {
       log("*tagMoveToCat",tag,cat)
-      await wuy.tagMoveToCat(tag,cat)
-      context.state.tags=await wuy.getTags();
+      var ok=await wuy.tagMoveToCat(tag,cat)
+      if(ok) context.state.tags=await wuy.getTags();
     },
     catMoveToCat: async function(context,{cat1,cat2}) {
       log("*catMoveToCat",cat1,cat2)
-      await wuy.catMoveToCat(cat1,cat2)
-      context.state.tags=await wuy.getTags();
+      var ok=await wuy.catMoveToCat(cat1,cat2)
+      if(ok) context.state.tags=await wuy.getTags();
     },
 
     // uiTop ...

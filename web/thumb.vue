@@ -8,11 +8,14 @@
             <img class="basket" src="gfx/basket.png" v-if="$store.getters.basket.indexOf(value.path)>=0"/>
             <img 
                 @drop.prevent="drop" 
-                @dragover.prevent="dragover" 
+                @dragover="dragover" 
+                
+                draggable="true"
+                @dragstart="dragstart" 
+                @dragend="dragend" 
                 :src="src" 
                 :class="value.real=='no'?'thumb noexif':'thumb'"/>
         </div>
-        
 
         <div class="text" v-if="$store.state.displayType=='name'">{{value.path | basename}}</div>
         <div class="text" v-if="$store.state.displayType=='tags'">{{value.tags && value.tags.join(", ")}}</div>
@@ -60,7 +63,19 @@ export default {
             }
         },
         dragover: function(ev) {
+            if(this.$store.state.dragging=="tag") // allow drop tag only
+                ev.preventDefault();
         },
+        dragstart: function(ev) {
+            if(this.$store.state.selected.indexOf(this.value.path)<0)
+                this.$store.dispatch('selectJustOne',this.value.path)
+
+            ev.dataTransfer.setData("text",JSON.stringify({photos:"photos"}))
+            this.$store.dispatch("dragging","photo")
+        },        
+        dragend: function(ev) {  
+            this.$store.dispatch("dragging",null)
+        },        
     },
 }
 </script>

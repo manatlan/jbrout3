@@ -3,12 +3,12 @@
         <span class="click" @dblclick="select(value)" @contextmenu.prevent="parent.menu($event,value)">
             <span :class="value.type"
                 @dragstart="dragstart" 
+                @dragend="dragend" 
                 draggable="true"
 
                 @drop.prevent="drop" 
                 @dragover="dragover"                 
-                >{{value.name}}
-            </span>
+                >{{value.name}}</span>
              
         </span>
         <tree-Tags v-for="(i,idx) in value.children" :key="idx" :value="i" :parent="parent"/>
@@ -24,7 +24,11 @@ export default {
             this.$store.dispatch('selectTags',this._getTags(item))
         },
         dragstart: function(ev) {        
+            this.$store.dispatch("dragging","tag")
             ev.dataTransfer.setData("text",JSON.stringify( {tags:this._getTags(this.value),name:this.value.name,type:this.value.type} ))
+        },
+        dragend: function(ev) {        
+            this.$store.dispatch("dragging",null)
         },
         _getTags(item) {    // duplicated in uiLeftTags.vue ;-(
             var tags=[]
@@ -45,9 +49,8 @@ export default {
 
         },
         dragover: function(ev) {
-            if( this.value.type=="cat" )
-                ev.preventDefault()
-        },
+            if(this.$store.state.dragging=="tag") // allow drop tag only
+                ev.preventDefault();        },
     }
 }
 </script>

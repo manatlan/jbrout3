@@ -100,10 +100,10 @@ class jbrout:
         return api.tagsDelCat(txt)
 
     def tagMoveToCat(self,tag,cat):
-        api.tagMoveToCat(tag,cat)
+        return api.tagMoveToCat(tag,cat)
 
     def catMoveToCat(self,cat1,cat2):
-        api.catMoveToCat(cat1,cat2)
+        return api.catMoveToCat(cat1,cat2)
 
 
     def photoAddTags(self, path, tags):

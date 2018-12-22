@@ -195,12 +195,16 @@ def tagsDelCat(cat):
 def tagMoveToCat(tag,cat):
     c1=JBrout.tags.selectTag(tag)
     c2=JBrout.tags.selectCat(cat)
-    c1.moveToCatg(c2)
+    if c1 and c2:
+        c1.moveToCatg(c2)
+        return True
 
 def catMoveToCat(cat1,cat2):
     c1=JBrout.tags.selectCat(cat1)
     c2=JBrout.tags.selectCat(cat2)
-    c1.moveToCatg(c2)
+    if c1 and c2:
+        c1.moveToCatg(c2)
+        return True
 
 
 
