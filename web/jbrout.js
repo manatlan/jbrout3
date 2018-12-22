@@ -129,8 +129,15 @@ var mystore = new Vuex.Store({
     selectAlbum: async function(context,{path,all}) {
       log("*selectAlbum",path)
       var list=await wuy.selectFromFolder(path,all)
-      context.dispatch( "_feedFiles", {list,title:"Album '"+basename(path)+"'"} )
+      context.dispatch( "_feedFiles", {list,title:"Album '"+basename(path)+"'"+(all?" and rest":" only")} )
       bus.$emit("select-path",path)
+    },
+    selectPhoto: async function(context,path) {
+      log("*selectPhoto",path)
+
+      await context.dispatch('selectAlbum',{path:dirname(path),all:false})
+      context.dispatch('selectJustOne',path)
+      bus.$emit("scroll-to-path",path);
     },
     refreshAlbum: async function(context,path) {
       log("*refreshAlbum",path)

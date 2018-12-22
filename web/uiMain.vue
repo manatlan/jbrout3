@@ -80,11 +80,7 @@ export default {
                 })
             }
             if(this.$store.state.selected.length==1) {
-                menu.push(    {name:'Select this album', callback: async ()=>{
-                    await this.$store.dispatch('selectAlbum',{path:dirname(item.path),all:false})
-                    this.$store.dispatch('selectJustOne',item.path)
-                    bus.$emit("scroll-to-path",item.path)
-                }})
+                menu.push(    {name:'Select this album', callback: ()=>{this.$store.dispatch('selectPhoto',item.path)}});
                 menu.push(    {name:'Select this time', callback: notImplemented } )
             }
             if(this.$store.state.selected.length>0) {

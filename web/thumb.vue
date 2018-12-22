@@ -32,14 +32,14 @@ export default {
     data:function() {
         return {refresh:false}
     },
-    created() {
+    mounted() {
         bus.$on("change-photo",(path)=>{
             if(path==this.value.path)
                 this.refresh=true;
         })
         bus.$on("scroll-to-path",(path)=>{
             if(path==this.value.path)
-                this.$el.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"})
+                this.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"})
         })
     },    
     computed: {
