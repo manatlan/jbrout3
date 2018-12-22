@@ -66,8 +66,10 @@ var mystore = new Vuex.Store({
     orderReverse:false,
     viewerIdx:null,
     years:[],
+
     working:null,
     dragging: null,
+    notify:[],
   },
   getters: {
       photo(state) {
@@ -88,6 +90,21 @@ var mystore = new Vuex.Store({
     dragging: function(context,txt) {
       context.state.dragging=txt;
     },
+    notify: function(context,txt) {
+      var inPipe = context.state.notify.length>0
+
+      context.state.notify.push(txt);
+
+      var popn=function()  {
+          setTimeout( ()=>{
+            context.state.notify.shift();
+            if(context.state.notify.length>0) popn()
+          },3000)
+      }
+      
+      if(!inPipe) popn()
+    },
+
     init: async function(context) {
       log("*init")
       context.state.files=[];
