@@ -150,6 +150,10 @@ def removeFolder(path):
     ll= JBrout.db.selectf('''//folder[@name="%s"]''' % path)
     ll[0].remove()
 
+def albumExpand(path,bool):
+    ll= JBrout.db.selectf('''//folder[@name="%s"]''' % path)
+    ll[0].setExpand(bool)
+
 def selectFromBasket():
     ll= JBrout.db.getBasket()
     return _photonodes2json(ll)

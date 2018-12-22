@@ -311,7 +311,10 @@ var mystore = new Vuex.Store({
       log("*albumMoveAlbum",path1,path2)
       alert("NOT DONE : will move "+path1+" to "+path2)
     },
-
+    albumExpand: async function(context,{path,bool}) {
+      log("*albumExpand",path,bool)
+      await wuy.albumExpand(path,bool)
+    },
 
     // uiLeftTags ...
     //==================================================

@@ -52,6 +52,8 @@ class jbrout:
 
     def removeFolder(self,folder):
         api.removeFolder(folder)
+    def albumExpand(self,folder,bool):
+        api.albumExpand(folder,bool)
 
     def selectFromFolder(self,path,all=False):
         return api.selectFromFolder(path,all)
@@ -158,6 +160,7 @@ if __name__=="__main__":
 
     #~ api.init(os.path.expanduser("~/.local/share/jbrout"))  #copy of the original jbrout
     #~ index(log=False)
+    #~ quit()
 
     api.init("./tempconf")
     #~ index(log=True) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)

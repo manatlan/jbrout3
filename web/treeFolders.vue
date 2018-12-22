@@ -1,6 +1,12 @@
 <template>
     <div>
-        <div
+        <span class="expander" v-if="value.folders.length>0">
+            <span class="click" v-show="value.expand==true" @click="expand(false)">&#9660;</span>
+            <span class="click" v-show="value.expand==false" @click="expand(true)">&#9654;</span>
+        </span>
+        <span class="expander" v-else>
+        </span>
+        <span
             :class="classItem"
             @click="parent.select(value.path)"
             @contextmenu.prevent="parent.menu($event,value.path)"
@@ -13,11 +19,12 @@
             draggable="true"
             @dragstart="dragstart" 
             @dragend="dragend"                     
-            ><img src="gfx/folder.png"/> {{value.path | basename}} 
+            >
+            <img src="gfx/folder.png"/> {{value.path | basename}} 
             <span v-show="value.items">({{value.items}})</span>
-        </div>
+        </span>
 
-        <tree-folders v-for="(i,idx) in value.folders" :key="idx" :value="i" :parent="parent"/>
+        <tree-folders v-for="(i,idx) in value.folders" :key="idx" :value="i" :parent="parent" v-show="value.expand"/>
     </div>
 </template>
 <script>
@@ -29,6 +36,10 @@ export default {
         }
     },
     methods: {
+        expand:function(v) {
+            this.$store.dispatch('albumExpand',{path:this.value.path,bool:v})
+            this.value.expand=v;                                                    // NOT TOP (change state outside of mystore !!!!)
+        },
         drop: function(ev) {
             var obj = JSON.parse(ev.dataTransfer.getData("text"));
             if(obj.photos)
@@ -53,7 +64,13 @@ export default {
 :scope {
     padding-left:10px;
 }
-:scope div.item *{
+:scope span.expander{
+    display:inline-block;
+    width:17px;
+    height:17px;
+    overflow:hidden;
+}
+:scope *{
     vertical-align: middle;
 }
 
