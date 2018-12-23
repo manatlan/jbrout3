@@ -1,5 +1,6 @@
 <template>
     <div>
+        <expander :show="value.type=='cat' && value.children.length>0" @click="expand" :value="value.expand"></expander>
         <span class="click" @dblclick="select(value)" @contextmenu.prevent="parent.menu($event,value)">
             <span :class="value.type"
                 @dragstart="dragstart" 
@@ -11,7 +12,7 @@
                 >{{value.name}}</span>
              
         </span>
-        <tree-Tags v-for="(i,idx) in value.children" :key="idx" :value="i" :parent="parent"/>
+        <tree-Tags v-for="(i,idx) in value.children" :key="idx" :value="i" :parent="parent" v-show="value.expand==true"/>
     </div>
 </template>
 <script>
@@ -20,6 +21,10 @@ export default {
     computed: {
     },
     methods: {
+        expand:function(v) {
+            this.$store.dispatch('catExpand',{name:this.value.name,bool:v})
+            this.value.expand=v; // NOT TOP (change state outside of mystore !!!!)
+        },        
         select(item) {
             this.$store.dispatch('selectTags',{tags:this._getTags(item),cat: item.type=="cat"?item.name:null})
         },
@@ -57,6 +62,9 @@ export default {
 <style scoped>
 :scope {
     padding-left:10px;
+}
+:scope *{
+    vertical-align: middle;
 }
 :scope span.tag{
 }

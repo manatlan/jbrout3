@@ -54,6 +54,8 @@ class jbrout:
         api.removeFolder(folder)
     def albumExpand(self,folder,bool):
         api.albumExpand(folder,bool)
+    def catExpand(self,cat,bool):
+        api.catExpand(cat,bool)
 
     def selectFromFolder(self,path,all=False):
         return api.selectFromFolder(path,all)

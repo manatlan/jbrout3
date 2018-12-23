@@ -101,7 +101,7 @@ def getTags():
                 type="tag",
             ))
         return ll
-    return [ dict(name="Tags",type="cat",children=tol( JBrout.tags.getRootTag() )) ]
+    return [ dict(name="Tags",type="cat",expand=True,children=tol( JBrout.tags.getRootTag() )) ]
 
 def getFolders():
     def tol(f):
@@ -153,6 +153,11 @@ def removeFolder(path):
 def albumExpand(path,bool):
     ll= JBrout.db.selectf('''//folder[@name="%s"]''' % path)
     ll[0].setExpand(bool)
+
+def catExpand(cat,bool):
+    c=JBrout.tags.selectCat(cat)
+    if c:
+        c.setExpand(bool)
 
 def selectFromBasket():
     ll= JBrout.db.getBasket()

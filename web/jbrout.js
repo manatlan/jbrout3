@@ -315,6 +315,10 @@ var mystore = new Vuex.Store({
       log("*albumExpand",path,bool)
       await wuy.albumExpand(path,bool)
     },
+    catExpand: async function(context,{name,bool}) {
+      log("*catExpand",name,bool)
+      await wuy.catExpand(name,bool)
+    },
 
     // uiLeftTags ...
     //==================================================
