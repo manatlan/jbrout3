@@ -145,6 +145,10 @@ def getYear(year):
     xpath = """//photo[substring(@date, 1,4)="%s"]""" % str(year)
     ll= JBrout.db.select(xpath)
     return _photonodes2json(ll)
+def getYearMonth(yyyymm):
+    xpath = """//photo[substring(@date, 1,6)="%s"]""" % str(yyyymm)
+    ll= JBrout.db.select(xpath)
+    return _photonodes2json(ll)
 
 def removeFolder(path):
     ll= JBrout.db.selectf('''//folder[@name="%s"]''' % path)

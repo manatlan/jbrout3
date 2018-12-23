@@ -1,17 +1,36 @@
 <template>
     <div @contextmenu.prevent="">
-        <div v-for="year in $store.state.years"
-            class="click"
-            @click="$store.dispatch('getYear',year)">{{year}}</div>
+        <div v-for="y in $store.state.years" :key="y.year">
+            <expander :show="y.months.length>0" :value="y.expand" @click="expandYear(y)"></expander>
+            <span class="click" @click="expandYear(y)">{{y.year}}</span>
+            <div class="click" v-for="m in y.months" :key="m" v-show="y.expand" @click="$store.dispatch('getYearMonth',m)">
+                {{m | monthname}}
+            </div>
+        </div>
 
         <i>!!! NOT FINISHED !!!</i>
     </div>
 </template>
+<script>
+export default {
+    methods: {
+        expandYear:function (y) {
+            if(y.expand==false) {
+                this.$store.dispatch('getYear',y.year)
+            }
+            y.expand=!y.expand;
+        },
+    },
+}
+</script>
 <style scoped>
     :scope {
         overflow-y:auto;
         background:white;
         padding:5px;
+    }
+    :scope *{
+        vertical-align: middle;
     }
     :scope div {margin:4px;}
 </style>

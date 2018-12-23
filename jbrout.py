@@ -95,8 +95,10 @@ class jbrout:
 
     def getYears(self):
         return api.getYears()
-    def getYear(self,year):
-        return api.getYear(year)
+    def getYear(self,yyyy):
+        return api.getYear(yyyy)
+    def getYearMonth(self,yyyymm):
+        return api.getYearMonth(yyyymm)
 
     def tagsAddTag(self,cat,txt):
         return api.tagsAddTag(cat,txt)

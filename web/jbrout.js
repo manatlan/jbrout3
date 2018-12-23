@@ -1,6 +1,11 @@
 var basename=function(path) {return path.split(/[\\/]/).pop()}
 var dirname=function(path) {return path.replace(/\\/g,'/').replace(/\/[^\/]*$/, '')}
+var monthname=function(yyyymm) {
+  var m={1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun', 7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'}
+  return m[parseInt(yyyymm.substr(4,2))]+" " +yyyymm.substr(0,4)
+}
 
+Vue.filter("monthname", yyyymm => monthname(yyyymm) )
 Vue.filter("basename", path => basename(path) )
 Vue.filter("dirname", path => basename(dirname(path)) ) // in fact its basename(dirname)
 Vue.filter("date", s => s.substr(0,4)+"/"+s.substr(4,2)+"/"+s.substr(6,2)+" "+s.substr(8,2)+":"+s.substr(10,2)+":"+s.substr(12,2) ) // in fact its basename(dirname)
@@ -113,7 +118,6 @@ var mystore = new Vuex.Store({
 
     selectTab: async function(context,tab) {
       context.state.tab=tab;
-      if (tab==2) context.dispatch("getYears")
     },
     init: async function(context) {
       log("*init")
@@ -122,18 +126,35 @@ var mystore = new Vuex.Store({
       context.state.basket=await wuy.selectFromBasket();
       context.state.folders=await wuy.getFolders();
       context.state.tags=await wuy.getTags();
+
+      var years=await wuy.getYears();
+      years.reverse()
+      context.state.years=years.map( y=>{return {year:y,months:[],expand:false}} );
+
       context.state.displayType=await wuy.cfgGet("displayType","name")
       context.state.orderReverse=await wuy.cfgGet("orderReverse",false)
-    },
-    getYears: async function(context) {
-      log("*getYears")
-      context.state.years=await wuy.getYears();
-      context.state.years.reverse();
     },
     getYear: async function(context,year) {
       log("*getYear",year)
       var list=await wuy.getYear(year);
+
+      var months=new Set([]);
+      list.forEach(p=>{months.add( p.date.substr(0,6) )})
+      months=Array.from(months)
+      months.sort()
+      months.reverse()
+
+      for(var y of context.state.years) {
+        if(y.year==year)
+          y.months=months;
+      }
+
       context.dispatch( "_feedFiles", {list,title:"Year <b>"+year+"</b>"} )
+    },
+    getYearMonth: async function(context,yyyymm) {
+      log("*getYearMonth",yyyymm)
+      var list=await wuy.getYearMonth(yyyymm);
+      context.dispatch( "_feedFiles", {list,title:"<b>"+monthname(yyyymm)+"</b>"} )
     },
     selectAlbum: async function(context,{path,all}) {
       log("*selectAlbum",path)
