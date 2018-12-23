@@ -770,7 +770,7 @@ class PhotoNode(object):
         self.updateInfo(pc)
 
     def setComment(self, txt):
-        assert type(txt) == unicode
+        #~ assert type(txt) == unicode
 
         pc = PhotoCmd(self.file)
         if pc.addComment(txt):

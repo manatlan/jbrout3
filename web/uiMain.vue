@@ -76,10 +76,19 @@ export default {
                     menu.push(    {name:'Add to basket', callback: ()=>{this.$store.dispatch('photoBasket',{path:null,bool:true})}  } )
                 
                 var tagsCanBeRemoved=new Set([]);
+                var currentComment=null;
                 this.$store.state.files.forEach(p=>{
-                    if(this.$store.state.selected.indexOf(p.path)>=0 && p.tags)
-                        for(var tag of p.tags)
-                            tagsCanBeRemoved.add(tag)
+                    if(this.$store.state.selected.indexOf(p.path)>=0) {
+                        if(p.tags)
+                            for(var tag of p.tags)
+                                tagsCanBeRemoved.add(tag)
+                        if(p.comment) {
+                            if(currentComment==null)
+                                currentComment=p.comment;
+                            else
+                                currentComment=""; //more than one -> no currentComment !
+                        }
+                    }
                 })
             }
             if(this.$store.state.selected.length==1) {
@@ -91,7 +100,11 @@ export default {
                 menu.push(    {name:'> rotate right (Ctrl-R)', callback: ()=>{this.$store.dispatch('photoRotateRight')} } )
                 menu.push(    {name:'> change date', callback: notImplemented } )
                 menu.push(    {name:'> rebuild thumbnail (Ctrl-T)', callback: ()=>{this.$store.dispatch('photoRebuildThumbnail')} } )
-                menu.push(    {name:'> comment', callback: notImplemented } )
+                menu.push(    {name:'> comment', callback: ()=>{
+                    var txt=prompt("Comment ?",currentComment)
+                    if(txt!=null)
+                        this.$store.dispatch('photoComment',{path:null,txt: txt || ""})
+                }})
                 for(var tag of tagsCanBeRemoved)
                     menu.push(    {name:'Remove tag:'+tag, callback: (n)=>{
                         var tag=n.split(":")[1]

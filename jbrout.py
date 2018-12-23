@@ -79,6 +79,10 @@ class jbrout:
         p=api.selectPhoto(path)
         p.rotate("L")
 
+    def photoComment(self,path,txt):
+        p=api.selectPhoto(path)
+        p.setComment(txt)
+
     def removeBasket(self):
         api.clearBasket()
 

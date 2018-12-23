@@ -563,7 +563,7 @@ isreal : %s""" % (self.__file,
 
     def addComment(self, c):
     # /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
-        assert type(c) == unicode
+        #~ assert type(c) == unicode
         c = c.strip()
         if c == "":
             self.__info.clearComment()

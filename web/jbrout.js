@@ -282,6 +282,16 @@ var mystore = new Vuex.Store({
       else
         context.state.selected.forEach( p=>context.dispatch("photoBasket",{path:p,bool}))
     },
+    photoComment: async function(context,{path,txt}) {
+      log("*photoComment",path,txt)
+      if(path) {
+        await wuy.photoComment(path,txt)
+        bus.$emit("change-photo",path)
+      }
+      else
+        context.state.selected.forEach( p=>context.dispatch("photoComment",{path:p,txt}))
+    },
+
     switchBasket: async function(context) {
       log("*switchBasket")
       context.state.selected.forEach( p=>{
