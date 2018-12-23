@@ -3,12 +3,10 @@
         <div v-for="y in $store.state.years" :key="y.year">
             <expander :show="y.months.length>0" :value="y.expand" @click="expandYear(y)"></expander>
             <span class="click" @click="expandYear(y)">{{y.year}}</span>
-            <div class="click" v-for="m in y.months" :key="m" v-show="y.expand" @click="$store.dispatch('getYearMonth',m)">
+            <div class="months click" v-for="m in y.months" :key="m" v-show="y.expand" @click="$store.dispatch('getYearMonth',m)">
                 {{m | monthname}}
             </div>
         </div>
-
-        <i>!!! NOT FINISHED !!!</i>
     </div>
 </template>
 <script>
@@ -33,4 +31,5 @@ export default {
         vertical-align: middle;
     }
     :scope div {margin:4px;}
+    :scope div.months {padding-left:30px;}
 </style>

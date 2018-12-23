@@ -7,7 +7,8 @@
             @dragleave.prevent="mydragend($event)"
             @dragend.prevent="mydragend($event)"
             @drop.prevent="mydrop(null,$event)"
-            >+</button>
+            title="Add album in jBrout"
+            >&#65291;</button>
         <span class="title" v-html="$store.state.content"></span>
 
         <div class="click basket"
