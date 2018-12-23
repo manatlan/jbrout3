@@ -84,7 +84,7 @@ export default {
             }
             if(this.$store.state.selected.length==1) {
                 menu.push(    {name:'Select this album', callback: ()=>{this.$store.dispatch('selectPhoto',item.path)}});
-                menu.push(    {name:'Select this time', callback: notImplemented } )
+                menu.push(    {name:'Select this time', callback: ()=>{this.$store.dispatch('selectTime',item.date)} } )
             }
             if(this.$store.state.selected.length>0) {
                 menu.push(    {name:'> rotate left (Ctrl-L)', callback: ()=>{this.$store.dispatch('photoRotateLeft')} } )

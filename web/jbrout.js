@@ -57,6 +57,8 @@ document.addEventListener('keydown', function(evt) {
 
 var mystore = new Vuex.Store({
   state: {
+    tab: 1,
+
     folders: [],         // tree
     tags: [],            // tree
     files: [],           // list of photonodes/json
@@ -109,6 +111,10 @@ var mystore = new Vuex.Store({
       if(!inPipe) popn()
     },
 
+    selectTab: async function(context,tab) {
+      context.state.tab=tab;
+      if (tab==2) context.dispatch("getYears")
+    },
     init: async function(context) {
       log("*init")
       context.state.files=[];
@@ -137,10 +143,16 @@ var mystore = new Vuex.Store({
     },
     selectPhoto: async function(context,path) {
       log("*selectPhoto",path)
+      context.dispatch('selectTab',1)
       await context.dispatch('selectAlbum',{path:dirname(path),all:false})
       context.dispatch('selectJustOne',path)
       
       bus.$emit("scroll-to-path",path);
+    },
+    selectTime: async function(context,date) {
+      log("*selectTime",date)
+      context.dispatch('selectTab',2)
+      notImplemented()
     },
     refreshAlbum: async function(context,path) {
       log("*refreshAlbum",path)
