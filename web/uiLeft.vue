@@ -34,7 +34,7 @@ export default {
 </script>
 <style scoped>
     :scope {}
-    a {padding:4px;text-decoration:none}
+    a {padding:4px;flex: 1 0 auto;text-align:center}
     .selected {background:white}
 
     .leftwidth {flex: 0 0 250px;width:250px}

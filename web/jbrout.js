@@ -73,6 +73,8 @@ var mystore = new Vuex.Store({
     orderReverse:false,
     viewerIdx:null,
     years:[],
+    datemin:null,
+    datemax:null,
 
     content:"",           // <- title of what kind of thing is displayed in listview
     working:null,
@@ -127,9 +129,11 @@ var mystore = new Vuex.Store({
       context.state.folders=await wuy.getFolders();
       context.state.tags=await wuy.getTags();
 
-      var years=await wuy.getYears();
-      years.reverse()
-      context.state.years=years.map( y=>{return {year:y,months:[],expand:false}} );
+      var info=await wuy.getYears();
+      info.years.reverse()
+      context.state.years=info.years.map( y=>{return {year:y,months:[],expand:false}} );
+      context.state.datemin=info.min;
+      context.state.datemax=info.max;
 
       context.state.displayType=await wuy.cfgGet("displayType","name")
       context.state.orderReverse=await wuy.cfgGet("orderReverse",false)

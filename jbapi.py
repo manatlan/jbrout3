@@ -139,7 +139,16 @@ def selectFromFolder(path,all=False):
 
 def getYears():
     ll=selectFromFolder("/",True)
-    return sorted(list({i["date"][:4] for i in ll} ))
+
+    if ll:
+        ma = 11111111
+        mi = 99999999
+        for i in ll:
+            a = int(i["date"][:8])
+            ma = max(a, ma)
+            mi = min(a, mi)
+    f=lambda yyyymmdd: yyyymmdd[0:4]+"-"+yyyymmdd[4:6]+"-"+yyyymmdd[6:8]
+    return dict(years=sorted(list({i["date"][:4] for i in ll} )), min=f(str(mi)),max=f(str(ma)))
 
 def getYear(year):
     xpath = """//photo[substring(@date, 1,4)="%s"]""" % str(year)
@@ -241,8 +250,10 @@ if __name__=="__main__":
     #~ print(addFolder("/home/manatlan/Bureau/CAL2016"))
     #~ quit()
     init("/home/manatlan/.local/share/ijbrout/")   #copy of the original jbrout
-    x=JBrout.tags.getAllTags()
+    x=getYears()
+
     print(x)
+    quit()
     x=JBrout.tags.selectTag("marco")
     print(x)
     x=JBrout.tags.selectCat("potes obernai")
