@@ -2,8 +2,8 @@
     <div @contextmenu.prevent="">
         <div v-for="y in $store.state.years" :key="y.year">
             <expander :show="y.months.length>0" :value="y.expand" @click="expandYear(y)"></expander>
-            <span class="click" @click="expandYear(y)">{{y.year}}</span>
-            <div class="months click" v-for="m in y.months" :key="m" v-show="y.expand" @click="$store.dispatch('getYearMonth',m)">
+            <span class="click" @dblclick="expandYear(y)">{{y.year}}</span>
+            <div class="months click" v-for="m in y.months" :key="m" v-show="y.expand" @dblclick="$store.dispatch('getYearMonth',m)">
                 {{m | monthname}}
             </div>
         </div>
