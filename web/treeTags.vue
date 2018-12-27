@@ -1,8 +1,8 @@
 <template>
     <div>
         <expander :show="value.type=='cat' && value.children.length>0" @click="expand" :value="value.expand"></expander>
-        <span class="click" @dblclick="select(value)" @contextmenu.prevent="parent.menu($event,value)">
-            <span :class="value.type"
+        <span class="click" @click="select(value.name)" @dblclick="search(value)" @contextmenu.prevent="parent.menu($event,value)">
+            <span :class="value.type +' '+ isSelected(value.name)"
                 @dragstart="dragstart" 
                 @dragend="dragend" 
                 draggable="true"
@@ -21,11 +21,17 @@ export default {
     computed: {
     },
     methods: {
+        select:function(n) {
+            this.parent.selectedTag=n;
+        },
+        isSelected:function(n) {
+            return this.parent && n==this.parent.selectedTag?"selected":"";
+        },
         expand:function(v) {
             this.$store.dispatch('catExpand',{name:this.value.name,bool:v})
             this.value.expand=v; // NOT TOP (change state outside of mystore !!!!)
         },        
-        select(item) {
+        search(item) {
             this.$store.dispatch('selectTags',{tags:this._getTags(item),cat: item.type=="cat"?item.name:null})
         },
         dragstart: function(ev) {        

@@ -2,9 +2,12 @@ var basename=function(path) {return path.split(/[\\/]/).pop()}
 var dirname=function(path) {return path.replace(/\\/g,'/').replace(/\/[^\/]*$/, '')}
 var monthname=function(yyyymm) {
   var m={1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun', 7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'}
-  return m[parseInt(yyyymm.substr(4,2))]+" " +yyyymm.substr(0,4)
+  return m[parseInt(yyyymm.substr(4,2))]
 }
-
+var monthnameyear=function(yyyymm) {
+  var m={1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun', 7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'}
+  return monthname(yyyymm) +" " +yyyymm.substr(0,4)
+}
 Vue.filter("monthname", yyyymm => monthname(yyyymm) )
 Vue.filter("basename", path => basename(path) )
 Vue.filter("dirname", path => basename(dirname(path)) ) // in fact its basename(dirname)
@@ -158,7 +161,7 @@ var mystore = new Vuex.Store({
     getYearMonth: async function(context,yyyymm) {
       log("*getYearMonth",yyyymm)
       var list=await wuy.getYearMonth(yyyymm);
-      context.dispatch( "_feedFiles", {list,title:"<b>"+monthname(yyyymm)+"</b>"} )
+      context.dispatch( "_feedFiles", {list,title:"<b>"+monthnameyear(yyyymm)+"</b>"} )
     },
     selectAlbum: async function(context,{path,all}) {
       log("*selectAlbum",path)

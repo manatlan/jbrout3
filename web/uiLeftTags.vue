@@ -10,6 +10,7 @@ export default {
     data: function() {
         return {
             current: this,
+            selectedTag:null,
         }
     },
     created() {
