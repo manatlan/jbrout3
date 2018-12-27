@@ -24,6 +24,14 @@ export default {
     methods: {
         select(path) {
             this.selectedPath = path;
+
+            var expandPath=function(f) {
+                for(var o of f) {
+                    if(path.startsWith(o.path+"/")) o.expand=true;
+                    expandPath(o.folders)
+                }
+            }
+            expandPath(this.$store.state.folders)
         },
         menu(e,path) {
             this.selectedPath = path;

@@ -164,7 +164,7 @@ var mystore = new Vuex.Store({
       log("*selectAlbum",path)
       var list=await wuy.selectFromFolder(path,all)
       context.dispatch( "_feedFiles", {list,title:"Album <b>"+basename(path)+"</b>"+(all?" and sub-albums":" only")} )
-      bus.$emit("select-path",path) // if photo is not displayed in listview, the emit/scroll won't be possible
+      bus.$emit("select-path",path) 
     },
     selectPhoto: async function(context,path) {
       log("*selectPhoto",path)
@@ -172,7 +172,7 @@ var mystore = new Vuex.Store({
       await context.dispatch('selectAlbum',{path:dirname(path),all:false})
       context.dispatch('selectJustOne',path)
       
-      bus.$emit("scroll-to-path",path);
+      bus.$emit("scroll-to-path",path); // if photo is not displayed in listview, the emit/scroll won't be possible ;-(
     },
     selectTime: async function(context,date) {
       log("*selectTime",date)
