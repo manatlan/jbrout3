@@ -26,7 +26,7 @@ export default {
     props:["value","parent"],
     computed: {
         classItem: function() {
-            return "item "+ (this.parent.selectedPath == this.value.path?'tselected':'')+" click " + (this.value.items>0?"":"nophotos");
+            return "item "+ (this.parent.selectedPath == this.value.path?'selected':'')+" click " + (this.value.items>0?"":"nophotos");
         }
     },
     methods: {
@@ -62,9 +62,6 @@ export default {
     vertical-align: middle;
 }
 
-.tselected {
-    background: yellow;
-}
 .nophotos {
     color: #AAA;
 }

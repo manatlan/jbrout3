@@ -133,7 +133,7 @@ export default {
         flex: 0 0 auto;
         height:180px;
     }
-    .selected {background:yellow}
+
 </style>
 <style>
 .click {cursor:pointer}

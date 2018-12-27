@@ -27,7 +27,7 @@ export default {
     },
     methods: {
         getClass:function(n) {
-            return n==this.$store.state.tab ? "selected" : "";
+            return n==this.$store.state.tab ? "tselected" : "";
         }
     },
 }
@@ -35,7 +35,7 @@ export default {
 <style scoped>
     :scope {}
     a {padding:4px;flex: 1 0 auto;text-align:center}
-    .selected {background:white}
+    .tselected {background:white}
 
     .leftwidth {flex: 0 0 250px;width:250px}
 </style>

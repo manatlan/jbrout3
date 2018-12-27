@@ -2,8 +2,10 @@
     <div @contextmenu.prevent="">
         <div v-for="y in $store.state.years" :key="y.year">
             <expander :show="y.months.length>0" :value="y.expand" @click="expandYear(y)"></expander>
-            <span class="click" @dblclick="expandYear(y)">{{y.year}}</span>
-            <div class="months click" v-for="m in y.months" :key="m" v-show="y.expand" @dblclick="$store.dispatch('getYearMonth',m)">
+            <span class="click" :class="isSelected(y)" @click="select(y)" @dblclick="expandYear(y)">{{y.year}}</span>
+            <div class="months click" :class="isSelected(m)" v-for="m in y.months" :key="m" v-show="y.expand" 
+                @click="select(m)"
+                @dblclick="$store.dispatch('getYearMonth',m)">
                 {{m | monthname}}
             </div>
         </div>
@@ -11,13 +13,24 @@
 </template>
 <script>
 export default {
+    data:function() {
+        return {selected:null}
+    },  
+    computed: {
+    }  ,
     methods: {
+        isSelected:function(y) {
+            return y==this.selected?"selected":"";
+        },
         expandYear:function (y) {
             if(y.expand==false) {
                 this.$store.dispatch('getYear',y.year)
             }
             y.expand=!y.expand;
         },
+        select:function(s) {
+            this.selected=s;
+        }
     },
 }
 </script>
