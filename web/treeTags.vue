@@ -1,7 +1,7 @@
 <template>
     <div>
         <expander :show="value.type=='cat' && value.children.length>0" @click="expand" :value="value.expand"></expander>
-        <span class="click" @click="select(value.name)" @dblclick="search(value)" @contextmenu.prevent="parent.menu($event,value)">
+        <span class="click" @click="select(value.name)" @dblclick="search(value)" @contextmenu.prevent="select(value.name);parent.menu($event,value)">
             <span :class="value.type +' '+ isSelected(value.name)"
                 @dragstart="dragstart" 
                 @dragend="dragend" 
