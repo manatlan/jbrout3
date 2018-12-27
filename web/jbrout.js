@@ -418,6 +418,14 @@ var mystore = new Vuex.Store({
       var ok=await wuy.catMoveToCat(cat1,cat2)
       if(ok) context.state.tags=await wuy.getTags();
     },
+    catRename: async function(context,cat) {
+      log("*catRename",cat)
+      var newCat=prompt("new category name",cat)
+      if(newCat) {
+        var ok=await wuy.catRename(cat,newCat)
+        if(ok) context.state.tags=await wuy.getTags();
+      }
+    },
 
     // uiTop ...
     //==================================================

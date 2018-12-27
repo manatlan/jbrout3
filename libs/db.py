@@ -1179,7 +1179,9 @@ class CatgNode(object):
             return TagNode(n)
 
     def rename(self, newName):
-        self.__node.attrib["name"] = newName
+        if self.isUnique("cat",newName):
+            self.__node.attrib["name"] = newName
+            return True
 
     def remove(self):
         self.__node.getparent().remove(self.__node)

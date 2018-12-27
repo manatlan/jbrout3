@@ -22,7 +22,7 @@ export default {
             if(item.type=="cat") menu.push( {name:'Add a tag', callback: ()=>{this.$store.dispatch("tagsAddTag", item.name)} } )
             if(item.type=="cat") menu.push( {name:'Add a category', callback:  ()=>{this.$store.dispatch("tagsAddCat", item.name)} } );
             if(item.name!="Tags") {
-                if(item.type=="cat") menu.push( {name:'Rename category', callback: notImplemented } );
+                if(item.type=="cat") menu.push( {name:'Rename category', callback:  ()=>{this.$store.dispatch("catRename", item.name)} } );
                 if(item.type=="cat")
                     menu.push( {name:'Delete', callback: ()=>{this.$store.dispatch("tagsDelCat", {cat:item.name,tags:this._getTags(item)}) }} );
                 else

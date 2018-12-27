@@ -115,6 +115,9 @@ class jbrout:
     def catMoveToCat(self,cat1,cat2):
         return api.catMoveToCat(cat1,cat2)
 
+    def catRename(self,cat1,cat2):
+        return api.catRename(cat1,cat2)
+
 
     def photoAddTags(self, path, tags):
         api.photoAddTags(path,tags)

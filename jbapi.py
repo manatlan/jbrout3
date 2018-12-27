@@ -227,6 +227,10 @@ def catMoveToCat(cat1,cat2):
     if c1 and c2:
         c1.moveToCatg(c2)
         return True
+def catRename(cat1,cat2):
+    c1=JBrout.tags.selectCat(cat1)
+    if c1:
+        return c1.rename(cat2)
 
 
 
