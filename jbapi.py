@@ -137,19 +137,6 @@ def selectFromFolder(path,all=False):
     ll= JBrout.db.select('''//folder[@name="%s"]/%s''' % (path,kind))
     return _photonodes2json(ll)
 
-def getYears():
-    ll=selectFromFolder("/",True)
-
-    if ll:
-        ma = 11111111
-        mi = 99999999
-        for i in ll:
-            a = int(i["date"][:8])
-            ma = max(a, ma)
-            mi = min(a, mi)
-    f=lambda yyyymmdd: yyyymmdd[0:4]+"-"+yyyymmdd[4:6]+"-"+yyyymmdd[6:8]
-    return dict(years=sorted(list({i["date"][:4] for i in ll} )), min=f(str(mi)),max=f(str(ma)))
-
 def getYear(year):
     xpath = """//photo[substring(@date, 1,4)="%s"]""" % str(year)
     ll= JBrout.db.select(xpath)
@@ -233,20 +220,6 @@ def catRename(cat1,cat2):
         return c1.rename(cat2)
 
 
-
-def photoAddTags(path, tags):
-    assert type(tags) == list
-    p=selectPhoto(path)
-    p.addTags(tags)
-
-def photoDelTag(path, tag):
-    # assert type(tag) == unicode
-    p=selectPhoto(path)
-    p.delTag(tag)
-
-def photoClearTags(path):
-    p=selectPhoto(path)
-    p.clearTags()
 
 
 if __name__=="__main__":

@@ -94,7 +94,18 @@ class jbrout:
             p.removeFromBasket()
 
     def getYears(self):
-        return api.getYears()
+        ll=api.selectFromFolder("/",True)
+
+        if ll:
+            ma = 11111111
+            mi = 99999999
+            for i in ll:
+                a = int(i["date"][:8])
+                ma = max(a, ma)
+                mi = min(a, mi)
+        f=lambda yyyymmdd: yyyymmdd[0:4]+"-"+yyyymmdd[4:6]+"-"+yyyymmdd[6:8]
+        return dict(years=sorted(list({i["date"][:4] for i in ll} )), min=f(str(mi)),max=f(str(ma)))
+
     def getYear(self,yyyy):
         return api.getYear(yyyy)
     def getYearMonth(self,yyyymm):
@@ -120,11 +131,19 @@ class jbrout:
 
 
     def photoAddTags(self, path, tags):
-        api.photoAddTags(path,tags)
+        assert type(tags) == list
+        p=api.selectPhoto(path)
+        return p.addTags(tags)
     def photoDelTag(self, path, tag):
-        api.photoDelTag(path,tag)
+        p=api.selectPhoto(path)
+        return p.delTag(tag)
     def photoClearTags(self,path):
-        api.photoClearTags(path)
+        p=api.selectPhoto(path)
+        return p.clearTags()
+
+
+
+
 
     def cfgGet(self,k,default=None):
         cfg=api.getConf()
@@ -174,8 +193,8 @@ if __name__=="__main__":
     #~ quit()
 
     api.init("./tempconf")
-    #~ index(log=True) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
-    index(log=False) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
+    index(log=True) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
+    #~ index(log=False) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
     api.save()
 
 

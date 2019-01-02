@@ -31,7 +31,7 @@ export default {
         })
     },    
     beforeDestroy() {
-        bus.$off("change-photo")
+        // bus.$off("change-photo")
     },     
     computed: {
         isInBasket: function() {

@@ -30,30 +30,30 @@ export default {
     props:["value","idx"],
 
     data:function() {
-        return {refresh:false}
+        return {reload:{}}
     },
     beforeMount() {
         bus.$on("change-photo",(path)=>{
             if(path==this.value.path)
-                this.refresh=true;
+                Vue.set(this.reload,path,new Date().getTime())
         })
+
         bus.$on("scroll-to-path",(path)=>{
             if(path==this.value.path)
                 this.$el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"})
         })
     },    
     beforeDestroy() {
-        bus.$off("change-photo")
-        bus.$off("scroll-to-path")
+        // bus.$off("change-photo")
+        // bus.$off("scroll-to-path")
     },     
     computed: {
         src: function() {
-            if(this.refresh) {
-                this.refresh=false;
-                return '/thumb/'+this.value.path+'?idx='+this.idx+"&refresh="+new Date().getTime();
-            }
+            var ts=this.reload[this.value.path]
+            if(ts)
+                return '/thumb/'+this.value.path+'?idx='+this.idx+"&refresh="+ts;
             else
-                return '/thumb/'+this.value.path+'?idx='+this.idx;
+                return '/thumb/'+this.value.path+'?idx='+this.idx+"&refresh="+new Date().getTime();
         }
     },
     methods: {

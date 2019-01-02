@@ -29,7 +29,7 @@ export default {
         })
     },    
     beforeDestroy() {
-        bus.$off("change-set-photos");
+        // bus.$off("change-set-photos");
     },      
     methods: {
         feed(nb) {

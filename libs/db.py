@@ -775,6 +775,7 @@ class PhotoNode(object):
         pc = PhotoCmd(self.file)
         if pc.addComment(txt):
             self.updateInfo(pc)
+            return True
 
     def setRating(self, val):
         assert type(val) == int
@@ -782,6 +783,7 @@ class PhotoNode(object):
         pc = PhotoCmd(self.file)
         if pc.addRating(val):  # always true
             self.updateInfo(pc)
+            return True
 
     def addTag(self, tag):
         assert type(tag) == unicode
@@ -789,6 +791,7 @@ class PhotoNode(object):
         pc = PhotoCmd(self.file)
         if pc.add(tag):
             self.updateInfo(pc)
+            return True
 
     def addTags(self, tags):
         assert type(tags) == list
@@ -796,6 +799,7 @@ class PhotoNode(object):
         pc = PhotoCmd(self.file)
         if pc.addTags(tags):
             self.updateInfo(pc)
+            return True
 
     def delTag(self, tag):
         # assert type(tag) == unicode
@@ -803,11 +807,13 @@ class PhotoNode(object):
         pc = PhotoCmd(self.file)
         if pc.sub(tag):
             self.updateInfo(pc)
+            return True
 
     def clearTags(self):
         pc = PhotoCmd(self.file)
         if pc.clear():
             self.updateInfo(pc)
+            return True
 
     def rebuildThumbnail(self):
         pc = PhotoCmd(self.file)

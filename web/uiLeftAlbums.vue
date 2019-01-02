@@ -19,7 +19,7 @@ export default {
         })
     },    
     beforeDestroy() {
-        bus.$off("select-path")
+        // bus.$off("select-path")
     },               
     methods: {
         select(path) {

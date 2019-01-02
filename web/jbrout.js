@@ -331,8 +331,8 @@ var mystore = new Vuex.Store({
     photoAddTags: async function(context,{path,tags}) {
       log("*photoAddTags",path,tags)
       if(path) {
-        await wuy.photoAddTags(path,tags)
-        bus.$emit("change-photo",path)
+        var ok=await wuy.photoAddTags(path,tags)
+        if(ok) bus.$emit("change-photo",path)
       }
       else
         context.state.selected.forEach( p=>context.dispatch("photoAddTags",{path:p,tags}) )
@@ -340,8 +340,8 @@ var mystore = new Vuex.Store({
     photoClearTags: async function(context,path) {
       log("*photoClearTags",path)
       if(path) {
-        await wuy.photoClearTags(path)
-        bus.$emit("change-photo",path)
+        var ok=await wuy.photoClearTags(path)
+        if(ok) bus.$emit("change-photo",path)
       }
       else
       context.state.selected.forEach( p=>context.dispatch("photoClearTags",p) )
@@ -349,8 +349,8 @@ var mystore = new Vuex.Store({
     photoDelTag: async function(context,tag) {
       log("*photoDelTag",tag)
       context.state.selected.forEach( async p=>{
-        await wuy.photoDelTag(p,tag)
-        bus.$emit("change-photo",p)
+        var ok=await wuy.photoDelTag(p,tag)
+        if(ok) bus.$emit("change-photo",p)
       })
     },
     photoMoveAlbum: async function(context,path) { //TODO: finnish here
