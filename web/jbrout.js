@@ -5,7 +5,6 @@ var monthname=function(yyyymm) {
   return m[parseInt(yyyymm.substr(4,2))]
 }
 var monthnameyear=function(yyyymm) {
-  var m={1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun', 7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'}
   return monthname(yyyymm) +" " +yyyymm.substr(0,4)
 }
 Vue.filter("monthname", yyyymm => monthname(yyyymm) )
@@ -317,7 +316,9 @@ var mystore = new Vuex.Store({
         bus.$emit("change-photo",path)
       }
       else
-        context.state.selected.forEach( p=>context.dispatch("photoComment",{path:p,txt}))
+        asyncForEach(context,context.state.selected, async (p)=>{
+          await context.dispatch("photoComment",{path:p,txt})
+        })
     },
 
     switchBasket: async function(context) {
@@ -335,7 +336,9 @@ var mystore = new Vuex.Store({
         if(ok) bus.$emit("change-photo",path)
       }
       else
-        context.state.selected.forEach( p=>context.dispatch("photoAddTags",{path:p,tags}) )
+        asyncForEach(context,context.state.selected, async (p)=>{
+          await context.dispatch("photoAddTags",{path:p,tags})
+        })      
     },
     photoClearTags: async function(context,path) {
       log("*photoClearTags",path)
@@ -344,7 +347,9 @@ var mystore = new Vuex.Store({
         if(ok) bus.$emit("change-photo",path)
       }
       else
-      context.state.selected.forEach( p=>context.dispatch("photoClearTags",p) )
+        asyncForEach(context,context.state.selected, async (p)=>{
+          await context.dispatch("photoClearTags",p)
+        })
     },
     photoDelTag: async function(context,tag) {
       log("*photoDelTag",tag)
