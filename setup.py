@@ -3,6 +3,7 @@ import os
 import sys
 
 from setuptools import setup
+import jbrout
 
 def read(fname):
     with open(os.path.join(os.path.dirname(__file__), fname)) as inf:
@@ -10,7 +11,7 @@ def read(fname):
 
 setup(
     name='jbrout3',
-    version="0.0.1",
+    version=jbrout.__version__,
     description='Photo collection manager of new generation',
     author=u'manatlan',
     author_email='manatlan@gmail.com',
@@ -18,7 +19,7 @@ setup(
     long_description=read("README.md"),
     entry_points={
         'console_scripts': [
-            'jbrout=jbrout:index',
+            'jbrout=jbrout:main',
         ],
     },
     classifiers=[

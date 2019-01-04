@@ -55,12 +55,17 @@ class JBrout:
     conf=None
 
 def init(confPath):
-    JBrout.db = DBPhotos(os.path.join(confPath,"db.xml"))
-    JBrout.tags = DBTags(os.path.join(confPath,"tags.xml"))
-    JBrout.conf = Conf(os.path.join(confPath,"conf.json"))
-    JBrout.db.setNormalizeName(JBrout.conf["normalizeName"])
-    JBrout.db.setNormalizeNameFormat(str(JBrout.conf["normalizeNameFormat"]))
-    JBrout.db.setAutorotAtImport(JBrout.conf["autorotAtImport"])
+    if os.path.isdir(confPath):
+        print("USE CONF in",confPath)
+        JBrout.db = DBPhotos(os.path.join(confPath,"db.xml"))
+        JBrout.tags = DBTags(os.path.join(confPath,"tags.xml"))
+        JBrout.conf = Conf(os.path.join(confPath,"conf.json"))
+        JBrout.db.setNormalizeName(JBrout.conf["normalizeName"])
+        JBrout.db.setNormalizeNameFormat(str(JBrout.conf["normalizeNameFormat"]))
+        JBrout.db.setAutorotAtImport(JBrout.conf["autorotAtImport"])
+    else:
+        print("ERROR: can't find path to conf:",confPath)
+        os._exit(-1)
 
 def addFolder(folder): # in development ;-)
     importedTags={}

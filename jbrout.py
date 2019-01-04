@@ -54,6 +54,7 @@ class jbrout:
         api.removeFolder(folder)
     def albumExpand(self,folder,bool):
         api.albumExpand(folder,bool)
+
     def catExpand(self,cat,bool):
         api.catExpand(cat,bool)
 
@@ -181,10 +182,9 @@ class index(wuy.Window,jbrout):
             if idx is not None: self.emit("set-info",idx,path,api.getInfo(path))
             return api.getImage(path)
 
-
-if __name__=="__main__":
+def main():
     try:
-        os.chdir(os.path.split(sys.argv[0])[0])
+        os.chdir(os.path.dirname(__file__))
     except:
         pass
 
@@ -197,4 +197,5 @@ if __name__=="__main__":
     #~ index(log=False) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
     api.save()
 
-
+if __name__=="__main__":
+    main()
