@@ -35,11 +35,20 @@ class index(wuy.Server,jbrout):
 
     def _render(self,path): #here is the magic
         # load your template (from web folder)
+
+        # OVERRIDE PATH ! (should avoid when freezed), only during development
+        # OVERRIDE PATH ! (should avoid when freezed), only during development
+        # OVERRIDE PATH ! (should avoid when freezed), only during development
+        path= os.path.realpath(os.path.dirname(__file__))
+        # OVERRIDE PATH ! (should avoid when freezed), only during development
+        # OVERRIDE PATH ! (should avoid when freezed), only during development
+        # OVERRIDE PATH ! (should avoid when freezed), only during development
+
         with open( os.path.join(path,"web","index.html") ) as fid:
             content=fid.read()
 
         # load all vue/sfc components
-        v=vbuild.render( path+"web/*.vue" )
+        v=vbuild.render( os.path.join(path,"web/*.vue") )
 
         # and inject them in your template
         return content.replace("<!-- HERE -->",str(v))
