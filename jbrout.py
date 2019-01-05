@@ -162,15 +162,6 @@ class index(wuy.Window,jbrout):
 
     def _render(self,path): #here is the magic
         # load your template (from web folder)
-
-        # OVERRIDE PATH ! (should avoid when freezed), only during development
-        # OVERRIDE PATH ! (should avoid when freezed), only during development
-        # OVERRIDE PATH ! (should avoid when freezed), only during development
-        path= os.path.realpath(os.path.dirname(__file__))
-        # OVERRIDE PATH ! (should avoid when freezed), only during development
-        # OVERRIDE PATH ! (should avoid when freezed), only during development
-        # OVERRIDE PATH ! (should avoid when freezed), only during development
-
         with open( os.path.join(path,"web","index.html") ) as fid:
             content=fid.read()
 
@@ -194,6 +185,17 @@ class index(wuy.Window,jbrout):
 def main():
     try:
         os.chdir(os.path.dirname(__file__))
+        # Should Correct wuy
+        # Should Correct wuy
+        # Should Correct wuy
+        # Should Correct wuy
+        # Should Correct wuy
+        wuy.PATH=os.path.dirname(__file__)
+        # Should Correct wuy
+        # Should Correct wuy
+        # Should Correct wuy
+        # Should Correct wuy
+        # Should Correct wuy
     except:
         pass
 
