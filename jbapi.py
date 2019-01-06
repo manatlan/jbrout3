@@ -54,18 +54,30 @@ class JBrout:
     tags=None
     conf=None
 
-def init(confPath):
-    if os.path.isdir(confPath):
-        print("USE CONF in",confPath)
-        JBrout.db = DBPhotos(os.path.join(confPath,"db.xml"))
-        JBrout.tags = DBTags(os.path.join(confPath,"tags.xml"))
-        JBrout.conf = Conf(os.path.join(confPath,"conf.json"))
-        JBrout.db.setNormalizeName(JBrout.conf["normalizeName"])
-        JBrout.db.setNormalizeNameFormat(str(JBrout.conf["normalizeNameFormat"]))
-        JBrout.db.setAutorotAtImport(JBrout.conf["autorotAtImport"])
-    else:
-        print("ERROR: can't find path to conf:",confPath)
-        os._exit(-1)
+
+class init(object):
+
+    def __init__(self,confPath):
+        if os.path.isdir(confPath):
+            print("USE CONF in",confPath)
+            JBrout.db = DBPhotos(os.path.join(confPath,"db.xml"))
+            JBrout.tags = DBTags(os.path.join(confPath,"tags.xml"))
+            JBrout.conf = Conf(os.path.join(confPath,"conf.json"))
+            JBrout.db.setNormalizeName(JBrout.conf["normalizeName"])
+            JBrout.db.setNormalizeNameFormat(str(JBrout.conf["normalizeNameFormat"]))
+            JBrout.db.setAutorotAtImport(JBrout.conf["autorotAtImport"])
+        else:
+            print("ERROR: can't find path to conf:",confPath)
+            os._exit(-1)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        JBrout.db.save()
+        JBrout.tags.save()
+        JBrout.conf.save()
+
 
 def addFolder(folder): # in development ;-)
     importedTags={}
@@ -78,10 +90,6 @@ def addFolder(folder): # in development ;-)
     last["nbImportedTags"]=JBrout.tags.updateImportedTags(last["importedTags"])
     yield last
 
-def save():
-    JBrout.db.save()
-    JBrout.tags.save()
-    JBrout.conf.save()
 
 def getConf():
     return JBrout.conf
@@ -122,9 +130,7 @@ def getFolders():
         return ll
     return tol( JBrout.db.getRootFolder() )
 
-
-
-def _photonodes2json(ll): #TODO: very expensive ! each attributs takes time ! (x2 per attribut)
+def _photonodes2json(ll): # WARN: very expensive ; adding attributs takes time ! (x2 per attribut)
     return [dict(path=i.file,date=i.date) for i in ll]
 
 def selectPhotoNode(path): # -> 1 PhotoNode

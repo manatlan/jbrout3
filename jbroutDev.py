@@ -69,7 +69,7 @@ class index(wuy.Server,jbrout):
             pic=api.selectPhotoNode(path)
             if idx is not None: send_info(idx,path,pic)
             return pic.getImage()
-            
+
     """
         IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
         IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
@@ -81,10 +81,9 @@ def main():
     cwd = os.path.dirname(__file__)
     wuy.PATH = cwd
 
-    #~ api.init(os.path.expanduser("~/.local/share/jbrout"))  #copy of the original jbrout
-    api.init(os.path.join(cwd,"tempconf"))
-    index()
-    api.save()
+    #~ with api.init(os.path.expanduser("~/.local/share/jbrout")):  #copy of the original jbrout
+    with api.init(os.path.join(cwd,"tempconf")):
+        index()
 
 if __name__=="__main__":
     main()

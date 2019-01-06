@@ -168,7 +168,7 @@ class jbrout:
         c1=api.selectCatNode(cat1)
         if c1:
             return c1.rename(cat2)
-            
+
     def photoAddTags(self, path, tags):
         assert type(tags) == list
         p=api.selectPhotoNode(path)
@@ -188,7 +188,6 @@ class jbrout:
     def cfgSet(self,k,v):
         cfg=api.getConf()
         cfg[k]=v
-        cfg.save()
 
 
 class index(wuy.Window,jbrout):
@@ -230,13 +229,12 @@ def main():
 
     ## wuy.ChromeApp=wuy.ChromeAppCef    # to test with cefpython3
 
-    #~ api.init(os.path.expanduser("~/.local/share/jbrout"))  #copy of the original jbrout
-    #~ index()
+    #~ with api.init(os.path.expanduser("~/.local/share/jbrout")):  #copy of the original jbrout
+    #~     index()
     #~ quit()
 
-    api.init(os.path.join(cwd,"tempconf"))
-    index()
-    api.save()
+    with api.init(os.path.join(cwd,"tempconf")):
+        index()
 
 if __name__=="__main__":
     main()
