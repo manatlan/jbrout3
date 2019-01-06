@@ -77,6 +77,7 @@ var mystore = new Vuex.Store({
     years:[],
     datemin:null,
     datemax:null,
+    albumComment:null,    // str or null (comment of the selected album)
 
     content:"",           // <- title of what kind of thing is displayed in listview
     working:null,
@@ -165,7 +166,8 @@ var mystore = new Vuex.Store({
     selectAlbum: async function(context,{path,all}) {
       log("*selectAlbum",path)
       var list=await wuy.selectFromFolder(path,all)
-      context.dispatch( "_feedFiles", {list,title:"Album <b>"+basename(path)+"</b>"+(all?" and sub-albums":" only")} )
+      var comment = await wuy.albumComment(path)
+      context.dispatch( "_feedFiles", {list,title:"Album <b>"+basename(path)+"</b>"+(all?" and sub-albums":" only"),comment:comment} )
       bus.$emit("select-path",path) 
     },
     selectPhoto: async function(context,path) {
@@ -240,13 +242,12 @@ var mystore = new Vuex.Store({
       log("*selectBasket")
       context.dispatch( "_feedFiles", {list:context.state.basket,title:"<b>Basket</b>"} )
     },
-    _feedFiles: function(context,{list,title}) {
+    _feedFiles: function(context,{list,title,comment}) { // comment is filled only when album selected
       log("*_feedFiles",title,list.length)
+      context.state.albumComment=(comment?comment:null);
       context.state.selected=[];
       list.sort( (a,b)=>parseInt(a.date) - parseInt(b.date) );
       if(context.state.orderReverse) list=list.reverse();
-
-      //~ context.state.files=photoNodes(ll);
 
       if(title) context.state.content=title;
 

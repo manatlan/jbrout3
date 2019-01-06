@@ -159,6 +159,14 @@ def albumExpand(path,bool):
     ll= JBrout.db.selectf('''//folder[@name="%s"]''' % path)
     ll[0].setExpand(bool)
 
+def albumComment(path,value=None):
+    ll= JBrout.db.selectf('''//folder[@name="%s"]''' % path)
+    if value is None: # getter
+        return ll[0].comment
+    else:             # setter
+        return ll[0].setComment(value)
+
+
 def catExpand(cat,bool):
     c=JBrout.tags.selectCat(cat)
     if c:

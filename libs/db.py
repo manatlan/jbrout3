@@ -474,10 +474,8 @@ class FolderNode(object):
         comment = None
         file = os.path.join(self.file, FolderNode.commentFile)
         if os.path.isfile(file):
-            fid = open(file, "r")
-            if fid:
-                comment = fid.read().decode("utf_8")
-                fid.close()
+            with open(file, "r") as fid:
+                comment = fid.read().strip()
 
         if comment:
             if nodeComment is None:

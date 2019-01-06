@@ -1,7 +1,6 @@
 <template>
     <div class="ui" @contextmenu.prevent="">
 
-
         <button @click="$store.dispatch('addFolder')"
             @dragover.prevent="mydragover($event)"
             @dragleave.prevent="mydragend($event)"
@@ -9,7 +8,11 @@
             @drop.prevent="mydrop(null,$event)"
             title="Add album in jBrout"
             >&#65291;</button>
-        <span class="title" v-html="$store.state.content"></span>
+        
+        <span class="title">
+            <span v-html="$store.state.content"></span><br/>
+            <i v-if="$store.state.albumComment">{{$store.state.albumComment}}</i>
+        </span>
 
         <div class="click basket"
             @click="selectBasket()" 
@@ -55,7 +58,7 @@ export default {
 </script>
 <style scoped>
     :scope {padding:10px}
-    :scope .title{margin:230px}
+    :scope .title{margin-left:230px;display: inline-block;}
     :scope .basket{float:right;}
     :scope .basket * {vertical-align: middle}
     .dropHighlight {background: white;}

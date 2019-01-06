@@ -21,7 +21,7 @@ import jbapi as api
 #~ import jbfake as api
 
 
-__version__="0.2.0"
+__version__="0.2.1"
 
 class jbrout:
 
@@ -64,6 +64,9 @@ class jbrout:
 
     def removeFolder(self,folder):
         api.removeFolder(folder)
+
+    def albumComment(self,path,value=None): # getter & setter
+        return api.albumComment(path,value)
 
     def albumExpand(self,folder,bool):
         api.albumExpand(folder,bool)
