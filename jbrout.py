@@ -43,7 +43,7 @@ class jbrout:
         f=lambda yyyymmdd: yyyymmdd[0:4]+"-"+yyyymmdd[4:6]+"-"+yyyymmdd[6:8]
         return dict(years=sorted(list({i["date"][:4] for i in ll} )), min=f(str(mi)),max=f(str(ma)))
 
-    async def addFolder(self):    #TODO: make async/yield here ! (for big folders)
+    async def addFolder(self): 
         import easygui  # until we found another way (in a cefpython instance ; it should be possible to make it client-side!)
         folder=easygui.diropenbox(msg="Select folder/album to add", title="jbrout")
         if folder:
@@ -94,6 +94,13 @@ class jbrout:
             return self.api.selectFromTags(tags)
         else:
             return []
+            
+    def getYear(self,yyyy):
+        return self.api.getYear(yyyy)
+
+    def getYearMonth(self,yyyymm):
+        return self.api.getYearMonth(yyyymm)
+
 
     def photoRebuildThumbnail(self,path):
         p=self.api.selectPhotoNode(path)
@@ -120,12 +127,6 @@ class jbrout:
             p.addToBasket()
         else:
             p.removeFromBasket()
-
-    def getYear(self,yyyy):
-        return self.api.getYear(yyyy)
-
-    def getYearMonth(self,yyyymm):
-        return self.api.getYearMonth(yyyymm)
 
     def tagsAddTag(self,cat,txt):
         c=self.api.selectCatNode(cat)

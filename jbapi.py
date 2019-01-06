@@ -46,12 +46,9 @@ class Conf(dict):
     def save(self):
         with open(self.file,"w+") as fid:
             json.dump(self,fid, indent=4)
-##############################################################################
-##############################################################################
-##############################################################################
+
 def _photonodes2json(ll): # WARN: very expensive ; adding attributs takes time ! (x2 per attribut)
     return [dict(path=i.file,date=i.date) for i in ll]
-
 
 class JBrout(object):
     db=None
@@ -80,6 +77,9 @@ class JBrout(object):
         self.conf.save()
         print("JBrout : db saved !")
 
+    #=--------------------------------------------------------
+    #= apis jbrout
+    #=--------------------------------------------------------
 
     def addFolder(self,folder): # in development ;-)
         importedTags={}
@@ -92,11 +92,10 @@ class JBrout(object):
         last["nbImportedTags"]=self.tags.updateImportedTags(last["importedTags"])
         yield last
 
-
     def getConf(self):
         return self.conf
 
-    def getTags(self):
+    def getTags(self):  # -> tree
         def tol(f):
             ll=[]
             for c in f.getCatgs():
@@ -115,7 +114,7 @@ class JBrout(object):
             return ll
         return [ dict(name="Tags",type="cat",expand=True,children=tol( self.tags.getRootTag() )) ]
 
-    def getFolders(self):
+    def getFolders(self): # -> tree
         def tol(f):
             ll=[]
             if f:
@@ -146,18 +145,19 @@ class JBrout(object):
     def selectTagNode(self,tag):
         return self.tags.selectTag(tag)
 
-    def selectFromFolder(self,path,all=False):
-        kind = "descendant::photo" if all else "photo"
-        ll= self.db.select('''//folder[@name="%s"]/%s''' % (path,kind))
-        return _photonodes2json(ll)
-
     def getYear(self,year):
         xpath = """//photo[substring(@date, 1,4)="%s"]""" % str(year)
         ll= self.db.select(xpath)
         return _photonodes2json(ll)
+
     def getYearMonth(self,yyyymm):
         xpath = """//photo[substring(@date, 1,6)="%s"]""" % str(yyyymm)
         ll= self.db.select(xpath)
+        return _photonodes2json(ll)
+
+    def selectFromFolder(self,path,all=False):
+        kind = "descendant::photo" if all else "photo"
+        ll= self.db.select('''//folder[@name="%s"]/%s''' % (path,kind))
         return _photonodes2json(ll)
 
     def selectFromTags(self,tags):
