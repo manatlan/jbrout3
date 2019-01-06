@@ -5,7 +5,7 @@
             <span class="click" :class="isSelected(y)" @click="select(y)" @dblclick="selectYear(y)">{{y.year}}</span>
             <div class="months click" :class="isSelected(m)" v-for="m in y.months" :key="m" v-show="y.expand" 
                 @click="select(m)"
-                @dblclick="$store.dispatch('getYearMonth',m)">
+                @dblclick="$store.dispatch('selectYearMonth',m)">
                 {{m | monthname}}
             </div>
         </div>
@@ -23,7 +23,7 @@ export default {
             return y==this.selected?"selected":"";
         },
         selectYear:function (y) {
-            this.$store.dispatch('getYear',y.year)
+            this.$store.dispatch('selectYear',y.year)
             y.expand=true
         },
         expandYear:function (y) {

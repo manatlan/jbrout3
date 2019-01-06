@@ -145,12 +145,12 @@ class JBrout(object):
     def selectTagNode(self,tag):
         return self.tags.selectTag(tag)
 
-    def getYear(self,year):
+    def selectYear(self,year):
         xpath = """//photo[substring(@date, 1,4)="%s"]""" % str(year)
         ll= self.db.select(xpath)
         return _photonodes2json(ll)
 
-    def getYearMonth(self,yyyymm):
+    def selectYearMonth(self,yyyymm):
         xpath = """//photo[substring(@date, 1,6)="%s"]""" % str(yyyymm)
         ll= self.db.select(xpath)
         return _photonodes2json(ll)

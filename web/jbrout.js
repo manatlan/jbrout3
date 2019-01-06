@@ -141,9 +141,9 @@ var mystore = new Vuex.Store({
       context.state.displayType=await wuy.cfgGet("displayType","name")
       context.state.orderReverse=await wuy.cfgGet("orderReverse",false)
     },
-    getYear: async function(context,year) {
-      log("*getYear",year)
-      var list=await wuy.getYear(year);
+    selectYear: async function(context,year) {
+      log("*selectYear",year)
+      var list=await wuy.selectYear(year);
 
       var months=new Set([]);
       list.forEach(p=>{months.add( p.date.substr(0,6) )})
@@ -158,9 +158,9 @@ var mystore = new Vuex.Store({
 
       context.dispatch( "_feedFiles", {list,title:"Year <b>"+year+"</b>"} )
     },
-    getYearMonth: async function(context,yyyymm) {
-      log("*getYearMonth",yyyymm)
-      var list=await wuy.getYearMonth(yyyymm);
+    selectYearMonth: async function(context,yyyymm) {
+      log("*selectYearMonth",yyyymm)
+      var list=await wuy.selectYearMonth(yyyymm);
       context.dispatch( "_feedFiles", {list,title:"<b>"+monthnameyear(yyyymm)+"</b>"} )
     },
     selectAlbum: async function(context,{path,all}) {

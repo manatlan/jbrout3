@@ -94,12 +94,12 @@ class jbrout:
             return self.api.selectFromTags(tags)
         else:
             return []
-            
-    def getYear(self,yyyy):
-        return self.api.getYear(yyyy)
 
-    def getYearMonth(self,yyyymm):
-        return self.api.getYearMonth(yyyymm)
+    def selectYear(self,yyyy):
+        return self.api.selectYear(yyyy)
+
+    def selectYearMonth(self,yyyymm):
+        return self.api.selectYearMonth(yyyymm)
 
 
     def photoRebuildThumbnail(self,path):
