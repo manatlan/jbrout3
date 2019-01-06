@@ -54,21 +54,24 @@ class index(wuy.Server,jbrout):
 
     def request(self,req):  #override to hook others web requests
 
-        def send_info(idx,path,i):
-            info=dict(tags=i.tags,comment=i.comment,rating=i.rating,resolution=i.resolution,real=i.real)
-            self.emit("set-info",idx,path,info)
+        def getPic(path,idx):
+            i=self.api.selectPhotoNode(path)
+            if idx is not None:
+                info=dict(
+                    tags=i.tags,
+                    comment=i.comment,
+                    rating=i.rating,
+                    resolution=i.resolution,
+                    real=i.real
+                )
+                self.emit("set-info",idx,path,info)
+            return i
 
         idx=req.query.get("idx",None)
         if req.path.startswith("/thumb/"):
-            path=req.path[7:]
-            pic=self.api.selectPhotoNode(path)
-            if idx is not None: send_info(idx,path,pic)
-            return pic.getThumb()
+            return getPic(req.path[7:],idx).getThumb()
         elif req.path.startswith("/image/"):
-            path=req.path[7:]
-            pic=self.api.selectPhotoNode(path)
-            if idx is not None: send_info(idx,path,pic)
-            return pic.getImage()
+            return getPic(req.path[7:],idx).getImage()
 
     """
         IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !

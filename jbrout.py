@@ -26,8 +26,10 @@ class jbrout:
 
     def getFolders(self):
         return self.api.getFolders()
+
     def getTags(self):
         return self.api.getTags()
+
     def getYears(self):
         ll=self.api.selectFromFolder("/",True)
 
@@ -61,9 +63,6 @@ class jbrout:
                 self.emit("set-working","%s/%s"%(i+1,nb))
         return last
 
-
-
-
     def removeFolder(self,folder):
         f=self.api.selectFolderNode(folder)
         f.remove()
@@ -86,8 +85,10 @@ class jbrout:
 
     def selectFromFolder(self,folder,all=False):
         return self.api.selectFromFolder(folder,all)
+
     def selectFromBasket(self):
         return self.api.selectFromBasket()
+
     def selectFromTags(self,tags):
         if tags:
             return self.api.selectFromTags(tags)
@@ -120,10 +121,9 @@ class jbrout:
         else:
             p.removeFromBasket()
 
-
-
     def getYear(self,yyyy):
         return self.api.getYear(yyyy)
+
     def getYearMonth(self,yyyymm):
         return self.api.getYearMonth(yyyymm)
 
@@ -131,10 +131,12 @@ class jbrout:
         c=self.api.selectCatNode(cat)
         if c:
             return c.addTag(txt.strip())
+
     def tagsAddCat(self,cat,txt):
         c=self.api.selectCatNode(cat)
         if c:
             return c.addCatg(txt.strip())
+
     def tagsDelTag(self,txt):
         t=self.api.selectTagNode(txt)
         if t:
@@ -170,13 +172,14 @@ class jbrout:
         assert type(tags) == list
         p=self.api.selectPhotoNode(path)
         return p.addTags(tags)
+
     def photoDelTag(self, path, tag):
         p=self.api.selectPhotoNode(path)
         return p.delTag(tag)
+
     def photoClearTags(self,path):
         p=self.api.selectPhotoNode(path)
         return p.clearTags()
-
 
     def cfgGet(self,k,default=None):
         cfg=self.api.getConf()
@@ -204,21 +207,24 @@ class index(wuy.Window,jbrout):
 
     def request(self,req):  #override to hook others web requests
 
-        def send_info(idx,path,i):
-            info=dict(tags=i.tags,comment=i.comment,rating=i.rating,resolution=i.resolution,real=i.real)
-            self.emit("set-info",idx,path,info)
+        def getPic(path,idx):
+            i=self.api.selectPhotoNode(path)
+            if idx is not None:
+                info=dict(
+                    tags=i.tags,
+                    comment=i.comment,
+                    rating=i.rating,
+                    resolution=i.resolution,
+                    real=i.real
+                )
+                self.emit("set-info",idx,path,info)
+            return i
 
         idx=req.query.get("idx",None)
         if req.path.startswith("/thumb/"):
-            path=req.path[7:]
-            pic=self.api.selectPhotoNode(path)
-            if idx is not None: send_info(idx,path,pic)
-            return pic.getThumb()
+            return getPic(req.path[7:],idx).getThumb()
         elif req.path.startswith("/image/"):
-            path=req.path[7:]
-            pic=self.api.selectPhotoNode(path)
-            if idx is not None: send_info(idx,path,pic)
-            return pic.getImage()
+            return getPic(req.path[7:],idx).getImage()
 
 def main():
     cwd = os.path.dirname(__file__)
