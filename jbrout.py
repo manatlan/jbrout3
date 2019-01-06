@@ -81,7 +81,9 @@ class jbrout:
         f.setExpand(bool)
 
     def catExpand(self,cat,bool):
-        api.catExpand(cat,bool)
+        c=api.selectCatNode(cat)
+        if c:
+            c.setExpand(bool)
 
     def selectFromFolder(self,path,all=False):
         return api.selectFromFolder(path,all)
@@ -127,24 +129,46 @@ class jbrout:
         return api.getYearMonth(yyyymm)
 
     def tagsAddTag(self,cat,txt):
-        return api.tagsAddTag(cat,txt)
+        c=api.selectCatNode(cat)
+        if c:
+            return c.addTag(txt.strip())
     def tagsAddCat(self,cat,txt):
-        return api.tagsAddCat(cat,txt)
+        c=api.selectCatNode(cat)
+        if c:
+            return c.addCatg(txt.strip())
     def tagsDelTag(self,txt):
-        return api.tagsDelTag(txt)
+        t=api.selectTagNode(txt)
+        if t:
+            t.remove()
+            return True
+
     def tagsDelCat(self,txt):
-        return api.tagsDelCat(txt)
+        c=api.selectCatNode(cat)
+        if c:
+            c.remove()
+            return True
 
     def tagMoveToCat(self,tag,cat):
+        t1=api.selectTagNode(tag)
+        c2=api.selectCatNode(cat)
+        if t1 and c2:
+            t1.moveToCatg(c2)
+            return True
+
         return api.tagMoveToCat(tag,cat)
 
     def catMoveToCat(self,cat1,cat2):
-        return api.catMoveToCat(cat1,cat2)
+        c1=api.selectCatNode(cat1)
+        c2=api.selectCatNode(cat2)
+        if c1 and c2:
+            c1.moveToCatg(c2)
+            return True
 
     def catRename(self,cat1,cat2):
-        return api.catRename(cat1,cat2)
-
-
+        c1=api.selectCatNode(cat1)
+        if c1:
+            return c1.rename(cat2)
+            
     def photoAddTags(self, path, tags):
         assert type(tags) == list
         p=api.selectPhotoNode(path)

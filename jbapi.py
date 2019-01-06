@@ -137,6 +137,12 @@ def selectFolderNode(path):  # -> 1 FolderNode
     ll=JBrout.db.selectf('''//folder[@name="%s"]''' % path)
     return ll[0]
 
+def selectCatNode(cat):
+    return JBrout.tags.selectCat(cat)
+
+def selectTagNode(tag):
+    return JBrout.tags.selectTag(tag)
+
 def selectFromFolder(path,all=False):
     kind = "descendant::photo" if all else "photo"
     ll= JBrout.db.select('''//folder[@name="%s"]/%s''' % (path,kind))
@@ -160,54 +166,9 @@ def selectFromBasket():
     ll= JBrout.db.getBasket()
     return _photonodes2json(ll)
 
-def catExpand(cat,bool):
-    c=JBrout.tags.selectCat(cat)
-    if c:
-        c.setExpand(bool)
-
 def clearBasket():
     JBrout.db.clearBasket()
 
-def tagsAddCat(cat,newCat):
-    c=JBrout.tags.selectCat(cat)
-    if c:
-        return c.addCatg(newCat.strip())
-
-def tagsAddTag(cat,newTag):
-    c=JBrout.tags.selectCat(cat)
-    if c:
-        return c.addTag(newTag.strip())
-
-def tagsDelTag(tag):
-    c=JBrout.tags.selectTag(tag)
-    if c:
-        c.remove()
-        return True
-
-def tagsDelCat(cat):
-    c=JBrout.tags.selectCat(cat)
-    if c:
-        c.remove()
-        return True
-
-def tagMoveToCat(tag,cat):
-    c1=JBrout.tags.selectTag(tag)
-    c2=JBrout.tags.selectCat(cat)
-    if c1 and c2:
-        c1.moveToCatg(c2)
-        return True
-
-def catMoveToCat(cat1,cat2):
-    c1=JBrout.tags.selectCat(cat1)
-    c2=JBrout.tags.selectCat(cat2)
-    if c1 and c2:
-        c1.moveToCatg(c2)
-        return True
-
-def catRename(cat1,cat2):
-    c1=JBrout.tags.selectCat(cat1)
-    if c1:
-        return c1.rename(cat2)
 
 
 
