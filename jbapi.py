@@ -127,14 +127,14 @@ def getFolders():
 def _photonodes2json(ll): #TODO: very expensive ! each attributs takes time ! (x2 per attribut)
     return [dict(path=i.file,date=i.date) for i in ll]
 
-def getInfo(path):
-    i=selectPhoto(path)
-    return dict(tags=i.tags,comment=i.comment,rating=i.rating,resolution=i.resolution,real=i.real)
-
-def selectPhoto(path): # -> 1 PhotoNode
+def selectPhotoNode(path): # -> 1 PhotoNode
     d=os.path.dirname(path)
     b=os.path.basename(path)
     ll= JBrout.db.select('''//folder[@name="%s"]/photo[@name="%s"]''' % (d,b))
+    return ll[0]
+
+def selectFolderNode(path):  # -> 1 FolderNode
+    ll=JBrout.db.selectf('''//folder[@name="%s"]''' % path)
     return ll[0]
 
 def selectFromFolder(path,all=False):
@@ -151,53 +151,28 @@ def getYearMonth(yyyymm):
     ll= JBrout.db.select(xpath)
     return _photonodes2json(ll)
 
-def removeFolder(path):
-    ll= JBrout.db.selectf('''//folder[@name="%s"]''' % path)
-    ll[0].remove()
+def selectFromTags(tags):
+    xpath = " or ".join(['t=%s' % xpathquoter(t) for t in tags])
+    ll= JBrout.db.select("""//photo[%s]""" % xpath)
+    return _photonodes2json(ll)
 
-def albumExpand(path,bool):
-    ll= JBrout.db.selectf('''//folder[@name="%s"]''' % path)
-    ll[0].setExpand(bool)
-
-def albumComment(path,value=None):
-    ll= JBrout.db.selectf('''//folder[@name="%s"]''' % path)
-    if value is None: # getter
-        return ll[0].comment
-    else:             # setter
-        return ll[0].setComment(value)
-
+def selectFromBasket():
+    ll= JBrout.db.getBasket()
+    return _photonodes2json(ll)
 
 def catExpand(cat,bool):
     c=JBrout.tags.selectCat(cat)
     if c:
         c.setExpand(bool)
 
-def selectFromBasket():
-    ll= JBrout.db.getBasket()
-    return _photonodes2json(ll)
-
 def clearBasket():
     JBrout.db.clearBasket()
-
-def selectFromTags(tags):
-    xpath = " or ".join(['t=%s' % xpathquoter(t) for t in tags])
-    ll= JBrout.db.select("""//photo[%s]""" % xpath)
-    return _photonodes2json(ll)
-
-
-def getThumb(path): # -> bytes (jpeg/thumbnail)
-    t=Exiv2Metadata(path)
-    t.readMetadata()
-    return t.getThumbnailData()
-
-def getImage(path): #-> bytes (jpeg/image)
-    with open(path,"rb") as fid:
-        return fid.read()
 
 def tagsAddCat(cat,newCat):
     c=JBrout.tags.selectCat(cat)
     if c:
         return c.addCatg(newCat.strip())
+
 def tagsAddTag(cat,newTag):
     c=JBrout.tags.selectCat(cat)
     if c:
@@ -208,6 +183,7 @@ def tagsDelTag(tag):
     if c:
         c.remove()
         return True
+
 def tagsDelCat(cat):
     c=JBrout.tags.selectCat(cat)
     if c:
@@ -227,6 +203,7 @@ def catMoveToCat(cat1,cat2):
     if c1 and c2:
         c1.moveToCatg(c2)
         return True
+
 def catRename(cat1,cat2):
     c1=JBrout.tags.selectCat(cat1)
     if c1:

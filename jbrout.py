@@ -62,14 +62,23 @@ class jbrout:
                 self.emit("set-working","%s/%s"%(i+1,nb))
         return last
 
+
+
+
     def removeFolder(self,folder):
-        api.removeFolder(folder)
+        f=api.selectFolderNode(folder)
+        f.remove()
 
     def albumComment(self,path,value=None): # getter & setter
-        return api.albumComment(path,value)
+        f=api.selectFolderNode(path)
+        if value is None: # getter
+            return f.comment
+        else:             # setter
+            return f.setComment(value)
 
     def albumExpand(self,folder,bool):
-        api.albumExpand(folder,bool)
+        f=api.selectFolderNode(folder)
+        f.setExpand(bool)
 
     def catExpand(self,cat,bool):
         api.catExpand(cat,bool)
@@ -85,30 +94,31 @@ class jbrout:
             return []
 
     def photoRebuildThumbnail(self,path):
-        p=api.selectPhoto(path)
+        p=api.selectPhotoNode(path)
         p.rebuildThumbnail()
 
     def photoRotateRight(self,path):
-        p=api.selectPhoto(path)
+        p=api.selectPhotoNode(path)
         p.rotate("R")
 
     def photoRotateLeft(self,path):
-        p=api.selectPhoto(path)
+        p=api.selectPhotoNode(path)
         p.rotate("L")
 
     def photoComment(self,path,txt):
-        p=api.selectPhoto(path)
+        p=api.selectPhotoNode(path)
         p.setComment(txt)
 
     def removeBasket(self):
         api.clearBasket()
 
     def photoBasket(self,path,bool):
-        p=api.selectPhoto(path)
+        p=api.selectPhotoNode(path)
         if bool:
             p.addToBasket()
         else:
             p.removeFromBasket()
+
 
 
     def getYear(self,yyyy):
@@ -137,13 +147,13 @@ class jbrout:
 
     def photoAddTags(self, path, tags):
         assert type(tags) == list
-        p=api.selectPhoto(path)
+        p=api.selectPhotoNode(path)
         return p.addTags(tags)
     def photoDelTag(self, path, tag):
-        p=api.selectPhoto(path)
+        p=api.selectPhotoNode(path)
         return p.delTag(tag)
     def photoClearTags(self,path):
-        p=api.selectPhoto(path)
+        p=api.selectPhotoNode(path)
         return p.clearTags()
 
 
@@ -173,15 +183,22 @@ class index(wuy.Window,jbrout):
         return content.replace("<!-- HERE -->",str(v))
 
     def request(self,req):  #override to hook others web requests
+
+        def send_info(idx,path,i):
+            info=dict(tags=i.tags,comment=i.comment,rating=i.rating,resolution=i.resolution,real=i.real)
+            self.emit("set-info",idx,path,info)
+
         idx=req.query.get("idx",None)
         if req.path.startswith("/thumb/"):
             path=req.path[7:]
-            if idx is not None: self.emit("set-info",idx,path,api.getInfo(path))
-            return api.getThumb(path)
+            pic=api.selectPhotoNode(path)
+            if idx is not None: send_info(idx,path,pic)
+            return pic.getThumb()
         elif req.path.startswith("/image/"):
             path=req.path[7:]
-            if idx is not None: self.emit("set-info",idx,path,api.getInfo(path))
-            return api.getImage(path)
+            pic=api.selectPhotoNode(path)
+            if idx is not None: send_info(idx,path,pic)
+            return pic.getImage()
 
 def main():
     cwd = os.path.dirname(__file__)
