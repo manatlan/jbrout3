@@ -21,7 +21,7 @@ import jbapi as api
 #~ import jbfake as api
 
 
-__version__="0.1.0"
+__version__="0.2.0"
 
 class jbrout:
 
@@ -29,6 +29,18 @@ class jbrout:
         return api.getFolders()
     def getTags(self):
         return api.getTags()
+    def getYears(self):
+        ll=api.selectFromFolder("/",True)
+
+        if ll:
+            ma = 11111111
+            mi = 99999999
+            for i in ll:
+                a = int(i["date"][:8])
+                ma = max(a, ma)
+                mi = min(a, mi)
+        f=lambda yyyymmdd: yyyymmdd[0:4]+"-"+yyyymmdd[4:6]+"-"+yyyymmdd[6:8]
+        return dict(years=sorted(list({i["date"][:4] for i in ll} )), min=f(str(mi)),max=f(str(ma)))
 
     async def addFolder(self):    #TODO: make async/yield here ! (for big folders)
         import easygui  # until we found another way (in a cefpython instance ; it should be possible to make it client-side!)
@@ -52,6 +64,7 @@ class jbrout:
 
     def removeFolder(self,folder):
         api.removeFolder(folder)
+
     def albumExpand(self,folder,bool):
         api.albumExpand(folder,bool)
 
@@ -94,18 +107,6 @@ class jbrout:
         else:
             p.removeFromBasket()
 
-    def getYears(self):
-        ll=api.selectFromFolder("/",True)
-
-        if ll:
-            ma = 11111111
-            mi = 99999999
-            for i in ll:
-                a = int(i["date"][:8])
-                ma = max(a, ma)
-                mi = min(a, mi)
-        f=lambda yyyymmdd: yyyymmdd[0:4]+"-"+yyyymmdd[4:6]+"-"+yyyymmdd[6:8]
-        return dict(years=sorted(list({i["date"][:4] for i in ll} )), min=f(str(mi)),max=f(str(ma)))
 
     def getYear(self,yyyy):
         return api.getYear(yyyy)
@@ -141,9 +142,6 @@ class jbrout:
     def photoClearTags(self,path):
         p=api.selectPhoto(path)
         return p.clearTags()
-
-
-
 
 
     def cfgGet(self,k,default=None):
@@ -183,29 +181,15 @@ class index(wuy.Window,jbrout):
             return api.getImage(path)
 
 def main():
-    try:
-        os.chdir(os.path.dirname(__file__))
-        # Should Correct wuy
-        # Should Correct wuy
-        # Should Correct wuy
-        # Should Correct wuy
-        # Should Correct wuy
-        wuy.PATH=os.path.dirname(__file__)
-        # Should Correct wuy
-        # Should Correct wuy
-        # Should Correct wuy
-        # Should Correct wuy
-        # Should Correct wuy
-    except:
-        pass
+    currentPath = os.path.dirname(__file__)
+    wuy.PATH = currentPath
 
     #~ api.init(os.path.expanduser("~/.local/share/jbrout"))  #copy of the original jbrout
-    #~ index(log=False)
+    #~ index()
     #~ quit()
 
-    api.init("./tempconf")
-    index(log=True) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
-    #~ index(log=False) #log to False, speedify a lot ;-), but when debugguing, it's hard ;-)
+    api.init(os.path.join(currentPath,"tempconf"))
+    index()
     api.save()
 
 if __name__=="__main__":

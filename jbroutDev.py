@@ -70,28 +70,14 @@ class index(wuy.Server,jbrout):
         IF YOU CHANGE THINGS HERE, DONT FORGET TO REPORT TO jbrout.py:index !
     """
 
-
-if __name__=="__main__":
-    try:
-        os.chdir(os.path.split(sys.argv[0])[0])
-        # Should Correct wuy
-        # Should Correct wuy
-        # Should Correct wuy
-        # Should Correct wuy
-        # Should Correct wuy
-        wuy.PATH=os.path.dirname(__file__)
-        # Should Correct wuy
-        # Should Correct wuy
-        # Should Correct wuy
-        # Should Correct wuy
-        # Should Correct wuy
-    except:
-        pass
+def main():
+    currentPath = os.path.dirname(__file__)
+    wuy.PATH = currentPath
 
     #~ api.init(os.path.expanduser("~/.local/share/jbrout"))  #copy of the original jbrout
-    api.init("./tempconf")
-    index(log=True)
+    api.init(os.path.join(currentPath,"tempconf"))
+    index()
     api.save()
 
-
-
+if __name__=="__main__":
+    main()

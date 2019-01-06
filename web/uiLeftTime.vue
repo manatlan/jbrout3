@@ -24,6 +24,7 @@ export default {
         },
         selectYear:function (y) {
             this.$store.dispatch('getYear',y.year)
+            y.expand=true
         },
         expandYear:function (y) {
             y.expand=!y.expand;
