@@ -22,7 +22,7 @@
 """
 import os,sys
 import wuy,vbuild
-import jbapi as api
+from jbapi import JBrout
 from jbrout import jbrout
 
 class index(wuy.Server,jbrout):
@@ -61,12 +61,12 @@ class index(wuy.Server,jbrout):
         idx=req.query.get("idx",None)
         if req.path.startswith("/thumb/"):
             path=req.path[7:]
-            pic=api.selectPhotoNode(path)
+            pic=self.api.selectPhotoNode(path)
             if idx is not None: send_info(idx,path,pic)
             return pic.getThumb()
         elif req.path.startswith("/image/"):
             path=req.path[7:]
-            pic=api.selectPhotoNode(path)
+            pic=self.api.selectPhotoNode(path)
             if idx is not None: send_info(idx,path,pic)
             return pic.getImage()
 
@@ -82,8 +82,8 @@ def main():
     wuy.PATH = cwd
 
     #~ with api.init(os.path.expanduser("~/.local/share/jbrout")):  #copy of the original jbrout
-    with api.init(os.path.join(cwd,"tempconf")):
-        index()
+    with JBrout(os.path.join(cwd,"tempconf")) as api:
+        index(api=api)        
 
 if __name__=="__main__":
     main()

@@ -19,8 +19,9 @@ from libs.pyexiv import Exiv2Metadata
 from libs.common import xpathquoter
 import os,json
 
-# This file is the bridge between OLD APIS (seel "libs/")
+# This file is the bridge between OLD APIS (see "libs/")
 # and the new frontend !
+# theses apis will be merged in libs, at the end ;-)
 
 class Conf(dict):
     def __init__(self,file):
@@ -48,24 +49,24 @@ class Conf(dict):
 ##############################################################################
 ##############################################################################
 ##############################################################################
+def _photonodes2json(ll): # WARN: very expensive ; adding attributs takes time ! (x2 per attribut)
+    return [dict(path=i.file,date=i.date) for i in ll]
 
-class JBrout:
+
+class JBrout(object):
     db=None
     tags=None
     conf=None
 
-
-class init(object):
-
     def __init__(self,confPath):
         if os.path.isdir(confPath):
             print("USE CONF in",confPath)
-            JBrout.db = DBPhotos(os.path.join(confPath,"db.xml"))
-            JBrout.tags = DBTags(os.path.join(confPath,"tags.xml"))
-            JBrout.conf = Conf(os.path.join(confPath,"conf.json"))
-            JBrout.db.setNormalizeName(JBrout.conf["normalizeName"])
-            JBrout.db.setNormalizeNameFormat(str(JBrout.conf["normalizeNameFormat"]))
-            JBrout.db.setAutorotAtImport(JBrout.conf["autorotAtImport"])
+            self.db = DBPhotos(os.path.join(confPath,"db.xml"))
+            self.tags = DBTags(os.path.join(confPath,"tags.xml"))
+            self.conf = Conf(os.path.join(confPath,"conf.json"))
+            self.db.setNormalizeName(self.conf["normalizeName"])
+            self.db.setNormalizeNameFormat(str(self.conf["normalizeNameFormat"]))
+            self.db.setAutorotAtImport(self.conf["autorotAtImport"])
         else:
             print("ERROR: can't find path to conf:",confPath)
             os._exit(-1)
@@ -74,162 +75,118 @@ class init(object):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        JBrout.db.save()
-        JBrout.tags.save()
-        JBrout.conf.save()
+        self.db.save()
+        self.tags.save()
+        self.conf.save()
+        print("JBrout : db saved !")
 
 
-def addFolder(folder): # in development ;-)
-    importedTags={}
-    for i in JBrout.db.add(folder,importedTags):
-        if type(i)==dict:
-            last=i
-        else:
-            yield i
-    last["importedTags"]=list(importedTags.keys())
-    last["nbImportedTags"]=JBrout.tags.updateImportedTags(last["importedTags"])
-    yield last
+    def addFolder(self,folder): # in development ;-)
+        importedTags={}
+        for i in self.db.add(folder,importedTags):
+            if type(i)==dict:
+                last=i
+            else:
+                yield i
+        last["importedTags"]=list(importedTags.keys())
+        last["nbImportedTags"]=self.tags.updateImportedTags(last["importedTags"])
+        yield last
 
 
-def getConf():
-    return JBrout.conf
+    def getConf(self):
+        return self.conf
 
-##############################################################################
-##############################################################################
-##############################################################################
-def getTags():
-    def tol(f):
-        ll=[]
-        for c in f.getCatgs():
-            ll.append( dict(
-                name=c.name,
-                children=tol(c),
-                type="cat",
-                expand=c.expand,
-            ))
-        for t in f.getTags():
-            ll.append( dict(
-                name=t.name,
-                children=[],
-                type="tag",
-            ))
-        return ll
-    return [ dict(name="Tags",type="cat",expand=True,children=tol( JBrout.tags.getRootTag() )) ]
-
-def getFolders():
-    def tol(f):
-        ll=[]
-        if f:
-            for i in f.getFolders():
+    def getTags(self):
+        def tol(f):
+            ll=[]
+            for c in f.getCatgs():
                 ll.append( dict(
-                    path=i.file,
-                    expand=i.expand,
-                    items=len(i.getPhotos()),
-                    folders=tol(i),
+                    name=c.name,
+                    children=tol(c),
+                    type="cat",
+                    expand=c.expand,
                 ))
-        return ll
-    return tol( JBrout.db.getRootFolder() )
+            for t in f.getTags():
+                ll.append( dict(
+                    name=t.name,
+                    children=[],
+                    type="tag",
+                ))
+            return ll
+        return [ dict(name="Tags",type="cat",expand=True,children=tol( self.tags.getRootTag() )) ]
 
-def _photonodes2json(ll): # WARN: very expensive ; adding attributs takes time ! (x2 per attribut)
-    return [dict(path=i.file,date=i.date) for i in ll]
+    def getFolders(self):
+        def tol(f):
+            ll=[]
+            if f:
+                for i in f.getFolders():
+                    ll.append( dict(
+                        path=i.file,
+                        expand=i.expand,
+                        items=len(i.getPhotos()),
+                        folders=tol(i),
+                    ))
+            return ll
+        return tol( self.db.getRootFolder() )
 
-def selectPhotoNode(path): # -> 1 PhotoNode
-    d=os.path.dirname(path)
-    b=os.path.basename(path)
-    ll= JBrout.db.select('''//folder[@name="%s"]/photo[@name="%s"]''' % (d,b))
-    return ll[0]
 
-def selectFolderNode(path):  # -> 1 FolderNode
-    ll=JBrout.db.selectf('''//folder[@name="%s"]''' % path)
-    return ll[0]
+    def selectPhotoNode(self,path): # -> 1 PhotoNode
+        d=os.path.dirname(path)
+        b=os.path.basename(path)
+        ll= self.db.select('''//folder[@name="%s"]/photo[@name="%s"]''' % (d,b))
+        return ll[0]
 
-def selectCatNode(cat):
-    return JBrout.tags.selectCat(cat)
+    def selectFolderNode(self,path):  # -> 1 FolderNode
+        ll=self.db.selectf('''//folder[@name="%s"]''' % path)
+        return ll[0]
 
-def selectTagNode(tag):
-    return JBrout.tags.selectTag(tag)
+    def selectCatNode(self,cat):
+        return self.tags.selectCat(cat)
 
-def selectFromFolder(path,all=False):
-    kind = "descendant::photo" if all else "photo"
-    ll= JBrout.db.select('''//folder[@name="%s"]/%s''' % (path,kind))
-    return _photonodes2json(ll)
+    def selectTagNode(self,tag):
+        return self.tags.selectTag(tag)
 
-def getYear(year):
-    xpath = """//photo[substring(@date, 1,4)="%s"]""" % str(year)
-    ll= JBrout.db.select(xpath)
-    return _photonodes2json(ll)
-def getYearMonth(yyyymm):
-    xpath = """//photo[substring(@date, 1,6)="%s"]""" % str(yyyymm)
-    ll= JBrout.db.select(xpath)
-    return _photonodes2json(ll)
+    def selectFromFolder(self,path,all=False):
+        kind = "descendant::photo" if all else "photo"
+        ll= self.db.select('''//folder[@name="%s"]/%s''' % (path,kind))
+        return _photonodes2json(ll)
 
-def selectFromTags(tags):
-    xpath = " or ".join(['t=%s' % xpathquoter(t) for t in tags])
-    ll= JBrout.db.select("""//photo[%s]""" % xpath)
-    return _photonodes2json(ll)
+    def getYear(self,year):
+        xpath = """//photo[substring(@date, 1,4)="%s"]""" % str(year)
+        ll= self.db.select(xpath)
+        return _photonodes2json(ll)
+    def getYearMonth(self,yyyymm):
+        xpath = """//photo[substring(@date, 1,6)="%s"]""" % str(yyyymm)
+        ll= self.db.select(xpath)
+        return _photonodes2json(ll)
 
-def selectFromBasket():
-    ll= JBrout.db.getBasket()
-    return _photonodes2json(ll)
+    def selectFromTags(self,tags):
+        xpath = " or ".join(['t=%s' % xpathquoter(t) for t in tags])
+        ll= self.db.select("""//photo[%s]""" % xpath)
+        return _photonodes2json(ll)
 
-def clearBasket():
-    JBrout.db.clearBasket()
+    def selectFromBasket(self):
+        ll= self.db.getBasket()
+        return _photonodes2json(ll)
+
+    def clearBasket(self):
+        self.db.clearBasket()
 
 
 
 
 
 if __name__=="__main__":
-    #~ print(addFolder("/home/manatlan/Bureau/Cal2018"))
-    #~ print(addFolder("/home/manatlan/Bureau/CAL2016"))
+    api=JBrout("/home/manatlan/.local/share/ijbrout/")   #copy of the original jbrout
+    #~ print(api.addFolder("/home/manatlan/Bureau/Cal2018"))
+    #~ print(api.addFolder("/home/manatlan/Bureau/CAL2016"))
     #~ quit()
-    init("/home/manatlan/.local/share/ijbrout/")   #copy of the original jbrout
-    x=getYears()
 
+    x=api.selectTagNode("marco")
     print(x)
-    quit()
-    x=JBrout.tags.selectTag("marco")
-    print(x)
-    x=JBrout.tags.selectCat("potes obernai")
+    x=api.selectCatNode("potes obernai")
     print(x)
     #~ ll=JBrout.db.select('''//folder[@name="%s"]/%s''' % ("/nas/data/photos","descendant::photo"))
-    #~ ll=selectFromFolder("/",True)
+    #~ ll=api.selectFromFolder("/",True)
     #~ print( {i["date"][:4] for i in ll} )
-    print( getYears() )
-    #~ print(getInfo(ll[0]["path"]))
-    quit()
 
-    print(JBrout.db)
-    ll=JBrout.db.getRootFolder().getPhotos()
-    print(ll.xpath)
-    ll=JBrout.db.getRootFolder().getAllPhotos()
-    print(ll.xpath)
-    print(ll[1].getInfo())
-    print(len(ll[1].getImage()))
-    print(ll[1].getThumb())
-    print(ll[1].rebuildThumbnail())
-    print(ll[1].getThumb())
-    print(ll[1].rotate("R"))
-    print(ll[1].resolution)
-    print(ll[1].comment)
-    print(ll[1].date)
-    print(ll[1].addToBasket())
-    print(JBrout.tags.getAllTags())
-    print(JBrout.conf)
-
-    r= JBrout.db.getRootFolder()
-
-    def tol(f):
-        ll=[]
-        for i in f.getFolders():
-            ll.append( dict(
-                name=i.name,
-                path=i.file,
-                expand=i.expand,
-                items=len(i.getPhotos()),
-                folders=tol(i),
-            ))
-        return ll
-    print( tol(r) )
-
-    print(JBrout.conf["normalizeNameFormat"])

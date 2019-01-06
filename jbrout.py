@@ -17,20 +17,18 @@
 
 import os,sys,asyncio
 import wuy,vbuild
-import jbapi as api
-#~ import jbfake as api
-
+from jbapi import JBrout
 
 __version__="0.2.1"
 
 class jbrout:
 
     def getFolders(self):
-        return api.getFolders()
+        return self.api.getFolders()
     def getTags(self):
-        return api.getTags()
+        return self.api.getTags()
     def getYears(self):
-        ll=api.selectFromFolder("/",True)
+        ll=self.api.selectFromFolder("/",True)
 
         if ll:
             ma = 11111111
@@ -49,7 +47,7 @@ class jbrout:
             return await self.refreshFolder(folder)
 
     async def refreshFolder(self,folder):
-        g=api.addFolder(folder)
+        g=self.api.addFolder(folder)
         nb=next(g)
         self.emit("set-working","0/%s"%nb)
         last=None
@@ -66,56 +64,56 @@ class jbrout:
 
 
     def removeFolder(self,folder):
-        f=api.selectFolderNode(folder)
+        f=self.api.selectFolderNode(folder)
         f.remove()
 
-    def albumComment(self,path,value=None): # getter & setter
-        f=api.selectFolderNode(path)
+    def albumComment(self,folder,value=None): # getter & setter
+        f=self.api.selectFolderNode(folder)
         if value is None: # getter
             return f.comment
         else:             # setter
             return f.setComment(value)
 
     def albumExpand(self,folder,bool):
-        f=api.selectFolderNode(folder)
+        f=self.api.selectFolderNode(folder)
         f.setExpand(bool)
 
     def catExpand(self,cat,bool):
-        c=api.selectCatNode(cat)
+        c=self.api.selectCatNode(cat)
         if c:
             c.setExpand(bool)
 
-    def selectFromFolder(self,path,all=False):
-        return api.selectFromFolder(path,all)
+    def selectFromFolder(self,folder,all=False):
+        return self.api.selectFromFolder(folder,all)
     def selectFromBasket(self):
-        return api.selectFromBasket()
+        return self.api.selectFromBasket()
     def selectFromTags(self,tags):
         if tags:
-            return api.selectFromTags(tags)
+            return self.api.selectFromTags(tags)
         else:
             return []
 
     def photoRebuildThumbnail(self,path):
-        p=api.selectPhotoNode(path)
+        p=self.api.selectPhotoNode(path)
         p.rebuildThumbnail()
 
     def photoRotateRight(self,path):
-        p=api.selectPhotoNode(path)
+        p=self.api.selectPhotoNode(path)
         p.rotate("R")
 
     def photoRotateLeft(self,path):
-        p=api.selectPhotoNode(path)
+        p=self.api.selectPhotoNode(path)
         p.rotate("L")
 
     def photoComment(self,path,txt):
-        p=api.selectPhotoNode(path)
+        p=self.api.selectPhotoNode(path)
         p.setComment(txt)
 
     def removeBasket(self):
-        api.clearBasket()
+        self.api.clearBasket()
 
     def photoBasket(self,path,bool):
-        p=api.selectPhotoNode(path)
+        p=self.api.selectPhotoNode(path)
         if bool:
             p.addToBasket()
         else:
@@ -124,69 +122,67 @@ class jbrout:
 
 
     def getYear(self,yyyy):
-        return api.getYear(yyyy)
+        return self.api.getYear(yyyy)
     def getYearMonth(self,yyyymm):
-        return api.getYearMonth(yyyymm)
+        return self.api.getYearMonth(yyyymm)
 
     def tagsAddTag(self,cat,txt):
-        c=api.selectCatNode(cat)
+        c=self.api.selectCatNode(cat)
         if c:
             return c.addTag(txt.strip())
     def tagsAddCat(self,cat,txt):
-        c=api.selectCatNode(cat)
+        c=self.api.selectCatNode(cat)
         if c:
             return c.addCatg(txt.strip())
     def tagsDelTag(self,txt):
-        t=api.selectTagNode(txt)
+        t=self.api.selectTagNode(txt)
         if t:
             t.remove()
             return True
 
     def tagsDelCat(self,txt):
-        c=api.selectCatNode(cat)
+        c=self.api.selectCatNode(cat)
         if c:
             c.remove()
             return True
 
     def tagMoveToCat(self,tag,cat):
-        t1=api.selectTagNode(tag)
-        c2=api.selectCatNode(cat)
+        t1=self.api.selectTagNode(tag)
+        c2=self.api.selectCatNode(cat)
         if t1 and c2:
             t1.moveToCatg(c2)
             return True
 
-        return api.tagMoveToCat(tag,cat)
-
     def catMoveToCat(self,cat1,cat2):
-        c1=api.selectCatNode(cat1)
-        c2=api.selectCatNode(cat2)
+        c1=self.api.selectCatNode(cat1)
+        c2=self.api.selectCatNode(cat2)
         if c1 and c2:
             c1.moveToCatg(c2)
             return True
 
     def catRename(self,cat1,cat2):
-        c1=api.selectCatNode(cat1)
+        c1=self.api.selectCatNode(cat1)
         if c1:
             return c1.rename(cat2)
 
     def photoAddTags(self, path, tags):
         assert type(tags) == list
-        p=api.selectPhotoNode(path)
+        p=self.api.selectPhotoNode(path)
         return p.addTags(tags)
     def photoDelTag(self, path, tag):
-        p=api.selectPhotoNode(path)
+        p=self.api.selectPhotoNode(path)
         return p.delTag(tag)
     def photoClearTags(self,path):
-        p=api.selectPhotoNode(path)
+        p=self.api.selectPhotoNode(path)
         return p.clearTags()
 
 
     def cfgGet(self,k,default=None):
-        cfg=api.getConf()
+        cfg=self.api.getConf()
         return cfg.get(k,default)
 
     def cfgSet(self,k,v):
-        cfg=api.getConf()
+        cfg=self.api.getConf()
         cfg[k]=v
 
 
@@ -214,12 +210,12 @@ class index(wuy.Window,jbrout):
         idx=req.query.get("idx",None)
         if req.path.startswith("/thumb/"):
             path=req.path[7:]
-            pic=api.selectPhotoNode(path)
+            pic=self.api.selectPhotoNode(path)
             if idx is not None: send_info(idx,path,pic)
             return pic.getThumb()
         elif req.path.startswith("/image/"):
             path=req.path[7:]
-            pic=api.selectPhotoNode(path)
+            pic=self.api.selectPhotoNode(path)
             if idx is not None: send_info(idx,path,pic)
             return pic.getImage()
 
@@ -229,12 +225,12 @@ def main():
 
     ## wuy.ChromeApp=wuy.ChromeAppCef    # to test with cefpython3
 
-    #~ with api.init(os.path.expanduser("~/.local/share/jbrout")):  #copy of the original jbrout
-    #~     index()
+    #~ with JBrout(os.path.expanduser("~/.local/share/jbrout")) as api:  #copy of the original jbrout
+    #~     index(api=api)
     #~ quit()
 
-    with api.init(os.path.join(cwd,"tempconf")):
-        index()
+    with JBrout(os.path.join(cwd,"tempconf")) as api:
+        index(api=api)
 
 if __name__=="__main__":
     main()
