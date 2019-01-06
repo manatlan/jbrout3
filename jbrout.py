@@ -22,6 +22,7 @@ from jbapi import JBrout
 __version__="0.2.1"
 
 class jbrout:
+    """ RPC methods exposed in the front, see wuy.<method>() in js """
 
     def getFolders(self):
         return self.api.getFolders()
