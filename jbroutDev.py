@@ -71,11 +71,11 @@ class index(wuy.Server,jbrout):
     """
 
 def main():
-    currentPath = os.path.dirname(__file__)
-    wuy.PATH = currentPath
+    cwd = os.path.dirname(__file__)
+    wuy.PATH = cwd
 
     #~ api.init(os.path.expanduser("~/.local/share/jbrout"))  #copy of the original jbrout
-    api.init(os.path.join(currentPath,"tempconf"))
+    api.init(os.path.join(cwd,"tempconf"))
     index()
     api.save()
 

@@ -181,14 +181,16 @@ class index(wuy.Window,jbrout):
             return api.getImage(path)
 
 def main():
-    currentPath = os.path.dirname(__file__)
-    wuy.PATH = currentPath
+    cwd = os.path.dirname(__file__)
+    wuy.PATH = cwd
+
+    ## wuy.ChromeApp=wuy.ChromeAppCef    # to test with cefpython3
 
     #~ api.init(os.path.expanduser("~/.local/share/jbrout"))  #copy of the original jbrout
     #~ index()
     #~ quit()
 
-    api.init(os.path.join(currentPath,"tempconf"))
+    api.init(os.path.join(cwd,"tempconf"))
     index()
     api.save()
 
