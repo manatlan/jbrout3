@@ -190,7 +190,7 @@ class jbrout:
         try:
             l=[dict(name=i,isdir=os.path.isdir( np(i) ),path=np(i)) for i in os.listdir(path) if not i.startswith(".")]
             folders=[i for i in l if i["isdir"]]
-            files=[i for i in l if not i["isdir"] and (os.path.splitext(i["name"])[1][1:] in self.api.supportedFormats) ]
+            files=[i for i in l if not i["isdir"] and (os.path.splitext(i["name"])[1][1:].lower() in self.api.supportedFormats) ]
             folders.sort(key=lambda x: x["name"].lower())
             files.sort(key=lambda x: x["name"].lower())
             ll.extend( folders )

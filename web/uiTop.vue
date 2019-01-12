@@ -2,10 +2,6 @@
     <div class="ui" @contextmenu.prevent="">
 
         <button @click="$store.dispatch('addFolder')"
-            @dragover.prevent="mydragover($event)"
-            @dragleave.prevent="mydragend($event)"
-            @dragend.prevent="mydragend($event)"
-            @drop.prevent="mydrop(null,$event)"
             title="Add album in jBrout"
             >&#65291;</button>
         
@@ -26,22 +22,6 @@ export default {
         return {};
     },
     methods: {
-        mydragover(e) { e.target.classList.add("dropHighlight") },
-        mydragend(e) { e.target.classList.remove("dropHighlight") },
-        mydrop(i,e) {
-            e.target.classList.remove("dropHighlight")
-//~             for(var item of e.dataTransfer.items)
-//~                 console.log("===",item.getAsFile().path)
-
-            var items  = e.dataTransfer.items;      // -- Items
-            for (var i = 0; i < items.length; i++)
-            {
-                var entry = items[i].webkitGetAsEntry();
-                var file = items[i].getAsFile();
-                console.log("===",items[i],entry,file)
-            }
-        },
-
         selectBasket(path) {
             this.$store.dispatch('selectBasket')
         },

@@ -1,10 +1,12 @@
 <template>
     <div class="ui" @contextmenu.prevent="">
-        <span style="float:right">
-            {{$store.state.selected.length}}
-            /
+        <span v-if="$store.state.selected.length" style="float:right">
+            {{$store.state.selected.length}}/{{$store.state.files.length}}
+        </span>
+        <span v-else style="float:right">
             {{$store.state.files.length}}
         </span>
+        
         <span style="float:right">
             <a class="space" href="#" @click="menuDisplay($event)" @contextmenu.prevent="menuDisplay($event)">display : <b>{{$store.state.displayType}}</b></a>
             <a class="space" href="#" @click="menuOrder($event)" @contextmenu.prevent="menuOrder($event)">order : {{$store.state.orderReverse?"&#9660;":"&#9650;"}}</a>
