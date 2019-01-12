@@ -17,6 +17,7 @@
 from libs.db import DBPhotos,DBTags
 from libs.pyexiv import Exiv2Metadata
 from libs.common import xpathquoter
+from libs.tools import supportedFormats as tools_supportedFormats
 import os,json
 
 # This file is the bridge between OLD APIS (see "libs/")
@@ -80,6 +81,11 @@ class JBrout(object):
     #=--------------------------------------------------------
     #= apis jbrout
     #=--------------------------------------------------------
+
+    @property
+    def supportedFormats(self):
+        return tools_supportedFormats
+
 
     def addFolder(self,folder): # in development ;-)
         importedTags={}

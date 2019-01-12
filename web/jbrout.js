@@ -437,10 +437,15 @@ var mystore = new Vuex.Store({
     //==================================================
     addFolder: async function(context) {
       log("*addFolder")
-      context.dispatch("working","Select folder to add in")
-      var ok=await wuy.addFolder()
-      context.dispatch("working",null)
-      if(ok) await context.dispatch( "init" )
+      var lastpath=await wuy.cfgGet("lastpath","/")
+      bus.$emit("choose-folder","Select Album to import",lastpath,(path)=>{
+        wuy.cfgSet("lastpath",path)
+        context.dispatch( "refreshAlbum", path )        
+      })
+      // context.dispatch("working","Select folder to add in")
+      // var ok=await wuy.addFolder()
+      // context.dispatch("working",null)
+      // if(ok) await context.dispatch( "init" )
     },
     setOrderReverse: function(context,bool) {
       log("*setOrderReverse",bool)

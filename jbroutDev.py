@@ -86,7 +86,7 @@ def main():
 
     #~ with api.init(os.path.expanduser("~/.local/share/jbrout")):  #copy of the original jbrout
     with JBrout(os.path.join(cwd,"tempconf")) as api:
-        index(api=api)        
+        index(api=api)
 
 if __name__=="__main__":
     main()

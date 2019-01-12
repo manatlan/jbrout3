@@ -19,7 +19,7 @@ import os,sys,asyncio
 import wuy,vbuild
 from jbapi import JBrout
 
-__version__="0.2.1"
+__version__="0.2.2"
 
 class jbrout:
     """ RPC methods exposed in the front, see wuy.<method>() in js """
@@ -42,12 +42,6 @@ class jbrout:
                 mi = min(a, mi)
         f=lambda yyyymmdd: yyyymmdd[0:4]+"-"+yyyymmdd[4:6]+"-"+yyyymmdd[6:8]
         return dict(years=sorted(list({i["date"][:4] for i in ll} )), min=f(str(mi)),max=f(str(ma)))
-
-    async def addFolder(self): 
-        import easygui  # until we found another way (in a cefpython instance ; it should be possible to make it client-side!)
-        folder=easygui.diropenbox(msg="Select folder/album to add", title="jbrout")
-        if folder:
-            return await self.refreshFolder(folder)
 
     async def refreshFolder(self,folder):
         g=self.api.addFolder(folder)
@@ -190,6 +184,20 @@ class jbrout:
         cfg=self.api.getConf()
         cfg[k]=v
 
+    def dir(self,path):
+        np=lambda x: os.path.realpath(os.path.join(path,x))
+        ll=[ dict(name="..",isdir=True, path=np("..")) ]
+        try:
+            l=[dict(name=i,isdir=os.path.isdir( np(i) ),path=np(i)) for i in os.listdir(path) if not i.startswith(".")]
+            folders=[i for i in l if i["isdir"]]
+            files=[i for i in l if not i["isdir"] and (os.path.splitext(i["name"])[1][1:] in self.api.supportedFormats) ]
+            folders.sort(key=lambda x: x["name"].lower())
+            files.sort(key=lambda x: x["name"].lower())
+            ll.extend( folders )
+            ll.extend( files )
+        except PermissionError:
+            pass
+        return ll
 
 class index(wuy.Window,jbrout):
     """ wuy tech class (with tech stuff) """

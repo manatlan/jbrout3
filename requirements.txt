@@ -2,6 +2,5 @@ wuy>=0.9.20
 vbuild
 lxml
 py3exiv2
-easygui
 Pillow
 
