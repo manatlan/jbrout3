@@ -41,10 +41,11 @@ export default {
         src: function() {
             if(this.$store.getters.photo!=null) {
                 var ts=this.reload[this.$store.getters.photo.path]
+                var patchUrl=function(u) {return u.replace(/\./g,":")}
                 if(ts)
-                    return `background-image: url("/image/`+this.$store.getters.photo.path+`?idx=`+this.$store.state.viewerIdx+"&refresh="+ts+`")`
+                    return `background-image: url("/image/`+patchUrl(this.$store.getters.photo.path)+`?idx=`+this.$store.state.viewerIdx+"&refresh="+ts+`")`
                 else
-                    return `background-image: url("/image/`+this.$store.getters.photo.path+`?idx=`+this.$store.state.viewerIdx+`")`
+                    return `background-image: url("/image/`+patchUrl(this.$store.getters.photo.path)+`?idx=`+this.$store.state.viewerIdx+`")`
             }
         },
         resolution: function() {

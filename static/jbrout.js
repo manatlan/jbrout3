@@ -16,8 +16,8 @@ var bus=new Vue();
 
 var notImplemented=function() {mystore.dispatch("notify","not implemented")}
 
-wuy.on("set-info", (idx,path,info)=>mystore.dispatch("setInfo",{idx,path,info}) )
-wuy.on("set-working", (msg)=>mystore.dispatch("working",msg) )
+guy.on("set-info", (idx,path,info)=>mystore.dispatch("setInfo",{idx,path,info}) )
+guy.on("set-working", (msg)=>mystore.dispatch("working",msg) )
 var CACHE={} // <- this things is here, just because browser CACHEs "http get jpg"
              //    so it breaks the "set-info" system, and in that case
              //    the vue app get info from here, for cached jpeg.
@@ -128,22 +128,22 @@ var mystore = new Vuex.Store({
       log("*init")
       context.state.files=[];
       context.state.selected=[];
-      context.state.basket=await wuy.selectFromBasket();
-      context.state.folders=await wuy.getFolders();
-      context.state.tags=await wuy.getTags();
+      context.state.basket=await self.selectFromBasket();
+      context.state.folders=await self.getFolders();
+      context.state.tags=await self.getTags();
 
-      var info=await wuy.getYears();
+      var info=await self.getYears();
       info.years.reverse()
       context.state.years=info.years.map( y=>{return {year:y,months:[],expand:false}} );
       context.state.datemin=info.min;
       context.state.datemax=info.max;
 
-      context.state.displayType=await wuy.cfgGet("displayType","name")
-      context.state.orderReverse=await wuy.cfgGet("orderReverse",false)
+      context.state.displayType=await guy.cfg.displayType || "name"
+      context.state.orderReverse=await guy.cfg.orderReverse || false
     },
     selectYear: async function(context,year) {
       log("*selectYear",year)
-      var list=await wuy.selectYear(year);
+      var list=await self.selectYear(year);
 
       var months=new Set([]);
       list.forEach(p=>{months.add( p.date.substr(0,6) )})
@@ -160,13 +160,13 @@ var mystore = new Vuex.Store({
     },
     selectYearMonth: async function(context,yyyymm) {
       log("*selectYearMonth",yyyymm)
-      var list=await wuy.selectYearMonth(yyyymm);
+      var list=await self.selectYearMonth(yyyymm);
       context.dispatch( "_feedFiles", {list,title:"<b>"+monthnameyear(yyyymm)+"</b>"} )
     },
     selectAlbum: async function(context,{path,all}) {
       log("*selectAlbum",path)
-      var list=await wuy.selectFromFolder(path,all)
-      var comment = await wuy.albumComment(path)
+      var list=await self.selectFromFolder(path,all)
+      var comment = await self.albumComment(path)
       context.dispatch( "_feedFiles", {list,title:"Album <b>"+basename(path)+"</b>"+(all?" and sub-albums":" only"),comment:comment} )
       bus.$emit("select-path",path) 
     },
@@ -185,25 +185,25 @@ var mystore = new Vuex.Store({
     },
     refreshAlbum: async function(context,path) {
       log("*refreshAlbum",path)
-      var info=await wuy.refreshFolder(path)
+      var info=await self.refreshFolder(path)
       //TODO: treat info (for errors, new imported tags ...)
       context.dispatch( "notify", info.nb+" photo(s) in '"+info.name+"'" )
       context.dispatch( "selectAlbum", {path,all:true} )
       context.state.files.forEach( i=>bus.$emit("change-photo",i.path) )
-      context.state.folders=await wuy.getFolders();
-      context.state.tags=await wuy.getTags();
+      context.state.folders=await self.getFolders();
+      context.state.tags=await self.getTags();
     },
     removeBasket: async function(context,path) {
       log("*removeBasket",path)
-      await wuy.removeBasket()
-      context.state.basket=await wuy.selectFromBasket()
+      await self.removeBasket()
+      context.state.basket=await self.selectFromBasket()
     },
     removeAlbum: async function(context,path) {
       log("*removeAlbum",path)
-      await wuy.removeFolder(path)
+      await self.removeFolder(path)
       context.dispatch( "_feedFiles", {list:[],title:""} )
-      context.state.folders=await wuy.getFolders();
-      context.state.basket=await wuy.selectFromBasket()
+      context.state.folders=await self.getFolders();
+      context.state.basket=await self.selectFromBasket()
     },
     view: function(context,idx) {
       log("*view",idx)
@@ -233,7 +233,7 @@ var mystore = new Vuex.Store({
     selectTags: async function(context,{tags,cat}) {
       log("*selectTags",tags)
       if(tags.length>0) {
-        var list=await wuy.selectFromTags(tags)
+        var list=await self.selectFromTags(tags)
         var title=cat==null?"Tag <b>"+tags.join(", ")+"</b>":"Category <b>"+cat+"</b>";
         context.dispatch( "_feedFiles", {list,title} )
       }
@@ -270,7 +270,7 @@ var mystore = new Vuex.Store({
     photoRebuildThumbnail: async function(context,path) {
       log("*photoRebuildThumbnail",path)
       if(path) {
-        await wuy.photoRebuildThumbnail(path)
+        await self.photoRebuildThumbnail(path)
         bus.$emit("change-photo",path)
       }
       else
@@ -281,7 +281,7 @@ var mystore = new Vuex.Store({
     photoRotateRight: async function(context,path) {
       log("*photoRotateRight",path)
       if(path) {
-        await wuy.photoRotateRight(path)
+        await self.photoRotateRight(path)
         bus.$emit("change-photo",path)
       }
       else
@@ -293,7 +293,7 @@ var mystore = new Vuex.Store({
     photoRotateLeft: async function(context,path) {
       log("*photoRotateLeft",path)
       if(path) {
-        await wuy.photoRotateLeft(path)
+        await self.photoRotateLeft(path)
         bus.$emit("change-photo",path)
       }
       else
@@ -304,8 +304,8 @@ var mystore = new Vuex.Store({
     photoBasket: async function(context,{path,bool}) {
       log("*photoBasket",path,bool)
       if(path) {
-        await wuy.photoBasket(path,bool)
-        context.state.basket=await wuy.selectFromBasket();
+        await self.photoBasket(path,bool)
+        context.state.basket=await self.selectFromBasket();
       }
       else
         context.state.selected.forEach( p=>context.dispatch("photoBasket",{path:p,bool}))
@@ -313,7 +313,7 @@ var mystore = new Vuex.Store({
     photoComment: async function(context,{path,txt}) {
       log("*photoComment",path,txt)
       if(path) {
-        await wuy.photoComment(path,txt)
+        await self.photoComment(path,txt)
         bus.$emit("change-photo",path)
       }
       else
@@ -333,7 +333,7 @@ var mystore = new Vuex.Store({
     photoAddTags: async function(context,{path,tags}) {
       log("*photoAddTags",path,tags)
       if(path) {
-        var ok=await wuy.photoAddTags(path,tags)
+        var ok=await self.photoAddTags(path,tags)
         if(ok) bus.$emit("change-photo",path)
       }
       else
@@ -344,7 +344,7 @@ var mystore = new Vuex.Store({
     photoClearTags: async function(context,path) {
       log("*photoClearTags",path)
       if(path) {
-        var ok=await wuy.photoClearTags(path)
+        var ok=await self.photoClearTags(path)
         if(ok) bus.$emit("change-photo",path)
       }
       else
@@ -355,7 +355,7 @@ var mystore = new Vuex.Store({
     photoDelTag: async function(context,tag) {
       log("*photoDelTag",tag)
       context.state.selected.forEach( async p=>{
-        var ok=await wuy.photoDelTag(p,tag)
+        var ok=await self.photoDelTag(p,tag)
         if(ok) bus.$emit("change-photo",p)
       })
     },
@@ -369,11 +369,11 @@ var mystore = new Vuex.Store({
     },
     albumExpand: async function(context,{path,bool}) {
       log("*albumExpand",path,bool)
-      await wuy.albumExpand(path,bool)
+      await self.albumExpand(path,bool)
     },
     catExpand: async function(context,{name,bool}) {
       log("*catExpand",name,bool)
-      await wuy.catExpand(name,bool)
+      await self.catExpand(name,bool)
     },
 
     // uiLeftTags ...
@@ -382,54 +382,54 @@ var mystore = new Vuex.Store({
       log("*tagsAddTag")
       var txt=prompt("New Tag under '"+cat+"' ?")
       if(txt) {
-        var ok=await wuy.tagsAddTag(cat,txt)
-        if(ok) context.state.tags=await wuy.getTags();
+        var ok=await self.tagsAddTag(cat,txt)
+        if(ok) context.state.tags=await self.getTags();
       }
     },
     tagsAddCat: async function(context,cat) {
       log("*tagsAddCat")
       var txt=prompt("New Category under '"+cat+"' ?")
       if(txt) {
-        var ok=await wuy.tagsAddCat(cat,txt)
-        if(ok) context.state.tags=await wuy.getTags();
+        var ok=await self.tagsAddCat(cat,txt)
+        if(ok) context.state.tags=await self.getTags();
       }
     },
     tagsDelTag: async function(context,txt) {
       log("*tagsDelTag",txt)
-      var ll=await wuy.selectFromTags([txt])
+      var ll=await self.selectFromTags([txt])
       if(ll.length>0)
         context.dispatch("notify","Tag is in use, can't be deleted")
       else {
-        var ok=await wuy.tagsDelTag(txt)
-        if(ok) context.state.tags=await wuy.getTags();
+        var ok=await self.tagsDelTag(txt)
+        if(ok) context.state.tags=await self.getTags();
       }
     },
     tagsDelCat: async function(context,{cat,tags}) {
       log("*tagsDelCat",cat)
-      var ll=await wuy.selectFromTags(tags)
+      var ll=await self.selectFromTags(tags)
       if(ll.length>0)
         context.dispatch("notify","Category is in use, can't be deleted")
       else {
-        var ok=await wuy.tagsDelCat(cat)
-        if(ok) context.state.tags=await wuy.getTags();
+        var ok=await self.tagsDelCat(cat)
+        if(ok) context.state.tags=await self.getTags();
       }
     },
     tagMoveToCat: async function(context,{tag,cat}) {
       log("*tagMoveToCat",tag,cat)
-      var ok=await wuy.tagMoveToCat(tag,cat)
-      if(ok) context.state.tags=await wuy.getTags();
+      var ok=await self.tagMoveToCat(tag,cat)
+      if(ok) context.state.tags=await self.getTags();
     },
     catMoveToCat: async function(context,{cat1,cat2}) {
       log("*catMoveToCat",cat1,cat2)
-      var ok=await wuy.catMoveToCat(cat1,cat2)
-      if(ok) context.state.tags=await wuy.getTags();
+      var ok=await self.catMoveToCat(cat1,cat2)
+      if(ok) context.state.tags=await self.getTags();
     },
     catRename: async function(context,cat) {
       log("*catRename",cat)
       var newCat=prompt("new category name",cat)
       if(newCat) {
-        var ok=await wuy.catRename(cat,newCat)
-        if(ok) context.state.tags=await wuy.getTags();
+        var ok=await self.catRename(cat,newCat)
+        if(ok) context.state.tags=await self.getTags();
       }
     },
 
@@ -437,9 +437,9 @@ var mystore = new Vuex.Store({
     //==================================================
     addFolder: async function(context) {
       log("*addFolder")
-      var lastpath=await wuy.cfgGet("lastpath","/")
+      var lastpath=await guy.cfg.lastpath || "/"
       bus.$emit("choose-folder","Select Album to handle",lastpath,(path)=>{
-        wuy.cfgSet("lastpath",path)
+        guy.cfg.lastpath=path;
         context.dispatch( "refreshAlbum", path )        
       })
     },
@@ -448,12 +448,12 @@ var mystore = new Vuex.Store({
       context.state.orderReverse=bool;
       var list=context.state.files;
       context.dispatch( "_feedFiles", {list,title:null} )
-      wuy.cfgSet("orderReverse",bool)
+      guy.cfg.orderReverse=bool;
     },
     setDisplayType: function(context,displayType) {
       log("*setDisplayType",displayType)
       context.state.displayType=displayType;
-      wuy.cfgSet("displayType",displayType)
+      guy.cfg.displayType=displayType
     },
 
     // uiMain ...
@@ -485,7 +485,7 @@ var mystore = new Vuex.Store({
 
 Vue.prototype.$myapi = {};  // just for example
 
-wuy.init( function() {new Vue({el:"#jbrout",store:mystore})} )
+guy.init( function() {new Vue({el:"#jbrout",store:mystore})} )
 
 
 

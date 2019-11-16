@@ -1,4 +1,4 @@
-wuy>=0.9.20
+guy
 vbuild
 lxml
 py3exiv2

@@ -16,13 +16,13 @@
 # ###########################################################################
 
 import os,sys,asyncio
-import wuy,vbuild
+import guy,vbuild
 from jbapi import JBrout
 
 __version__="0.2.2"
 
 class jbrout:
-    """ RPC methods exposed in the front, see wuy.<method>() in js """
+    """ RPC methods exposed in the front, see self.<method>() in js """
 
     def getFolders(self):
         return self.api.getFolders()
@@ -199,54 +199,71 @@ class jbrout:
             pass
         return ll
 
-class index(wuy.Window,jbrout):
-    """ wuy tech class (with tech stuff) """
+class index(guy.Guy,jbrout):
+    """ guy tech class (with tech stuff) """
     size=(1024,780)
+
+    def __init__(self,api):
+        self.api=api
+        guy.Guy.__init__(self)
 
     def _render(self,path): #here is the magic
         # load your template (from web folder)
-        with open( os.path.join(path,"web","index.html") ) as fid:
+        with open( os.path.join(path,"static","index.html") ) as fid:
             content=fid.read()
 
         # load all vue/sfc components
-        v=vbuild.render( os.path.join(path,"web/*.vue") )
+        v=vbuild.render( os.path.join(path,"static/*.vue") )
 
         # and inject them in your template
         return content.replace("<!-- HERE -->",str(v))
 
-    def request(self,req):  #override to hook others web requests
 
-        def getPic(path,idx):
-            i=self.api.selectPhotoNode(path)
-            if idx is not None:
-                info=dict(
-                    tags=i.tags,
-                    comment=i.comment,
-                    rating=i.rating,
-                    resolution=i.resolution,
-                    real=i.real
-                )
-                self.emit("set-info",idx,path,info)
-            return i
 
-        idx=req.query.get("idx",None)
-        if req.path.startswith("/thumb/"):
-            return getPic(req.path[7:],idx).getThumb()
-        elif req.path.startswith("/image/"):
-            return getPic(req.path[7:],idx).getImage()
+async def getPic(web,path,idx):
+    i=web.instance.api.selectPhotoNode(path)
+    if idx is not None:
+        info=dict(
+            tags=i.tags,
+            comment=i.comment,
+            rating=i.rating,
+            resolution=i.resolution,
+            real=i.real
+        )
+        await web.instance.emit("set-info",idx,path,info)
+    return i
+
+@guy.http("/h")
+def t(web):
+    print("====")
+    web.write("hello")
+
+
+@guy.http("/thumb/(.+)")
+async def requestThumb(web,path):  #override to hook others web requests
+    path=path.replace(":",".")  # see patchUrl() is js
+    idx=web.get_argument('idx', None)
+    i=await getPic(web,path,idx)
+    web.write( i.getThumb() )
+
+@guy.http("/image/(.+)")
+async def requestImage(web,path):  #override to hook others web requests
+    path=path.replace(":",".") # see patchUrl() is js
+    idx=web.get_argument('idx', None)
+    i=await getPic(web,path,idx)
+    web.write( i.getImage() )
 
 def main():
     cwd = os.path.dirname(__file__)
-    wuy.PATH = cwd
-
-    ## wuy.ChromeApp=wuy.ChromeAppCef    # to test with cefpython3
 
     #~ with JBrout(os.path.expanduser("~/.local/share/jbrout")) as api:  #copy of the original jbrout
-    #~     index(api=api)
+    #~     w=index(api=api)
+    #~     w.run()
     #~ quit()
 
     with JBrout(os.path.join(cwd,"tempconf")) as api:
-        index(api=api)
+        w=index(api=api)
+        w.run()
 
 if __name__=="__main__":
     main()

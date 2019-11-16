@@ -50,10 +50,11 @@ export default {
     computed: {
         src: function() {
             var ts=this.reload[this.value.path]
+            var patchUrl=function(u) {return u.replace(/\./g,":")}
             if(ts)
-                return '/thumb/'+this.value.path+'?idx='+this.idx+"&refresh="+ts;
+                return '/thumb/'+patchUrl(this.value.path)+'?idx='+this.idx+"&refresh="+ts;
             else
-                return '/thumb/'+this.value.path+'?idx='+this.idx+"&refresh="+new Date().getTime();
+                return '/thumb/'+patchUrl(this.value.path)+'?idx='+this.idx+"&refresh="+new Date().getTime();
         }
     },
     methods: {

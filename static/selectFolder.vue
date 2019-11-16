@@ -42,14 +42,14 @@ export default {
         browse:function(path) {
             this.path=path;
             this.precpath=path;
-            wuy.dir(path).then( ll=>{
+            self.dir(path).then( ll=>{
                 this.list=ll;
                 log(ll)
                 this.$forceUpdate()
             })
         },
         changeManually:function(e) {
-            wuy.dir(this.path).then( ll=>{
+            self.dir(this.path).then( ll=>{
                 this.browse(this.path)
             }).catch( err=>{
                 this.path=this.precpath
