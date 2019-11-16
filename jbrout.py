@@ -233,11 +233,6 @@ async def getPic(web,path,idx):
         await web.instance.emit("set-info",idx,path,info)
     return i
 
-@guy.http("/h")
-def t(web):
-    print("====")
-    web.write("hello")
-
 
 @guy.http("/thumb/(.+)")
 async def requestThumb(web,path):  #override to hook others web requests
