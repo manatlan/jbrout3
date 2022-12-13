@@ -207,7 +207,7 @@ class index(guy.Guy,jbrout):
         self.api=api
         guy.Guy.__init__(self)
 
-    def _render(self,path): #here is the magic
+    def render(self,path): #here is the magic
         # load your template (from web folder)
         with open( os.path.join(path,"static","index.html") ) as fid:
             content=fid.read()
