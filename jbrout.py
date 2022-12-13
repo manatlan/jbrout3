@@ -33,28 +33,27 @@ class jbrout:
     def getYears(self):
         ll=self.api.selectFromFolder("/",True)
 
-        if ll:
-            ma = 11111111
-            mi = 99999999
-            for i in ll:
-                a = int(i["date"][:8])
-                ma = max(a, ma)
-                mi = min(a, mi)
+        ma = 11111111
+        mi = 99999999
+        for i in ll:
+            a = int(i["date"][:8])
+            ma = max(a, ma)
+            mi = min(a, mi)
         f=lambda yyyymmdd: yyyymmdd[0:4]+"-"+yyyymmdd[4:6]+"-"+yyyymmdd[6:8]
         return dict(years=sorted(list({i["date"][:4] for i in ll} )), min=f(str(mi)),max=f(str(ma)))
 
     async def refreshFolder(self,folder):
         g=self.api.addFolder(folder)
         nb=next(g)
-        self.emit("set-working","0/%s"%nb)
+        await self.emit("set-working","0/%s"%nb)
         last=None
         for i in g:
             await asyncio.sleep(0.00001)
             if type(i)==dict:
-                self.emit("set-working",None)
+                await self.emit("set-working",None)
                 last=i
             else:
-                self.emit("set-working","%s/%s"%(i+1,nb))
+                await self.emit("set-working","%s/%s"%(i+1,nb))
         return last
 
     def removeFolder(self,folder):
